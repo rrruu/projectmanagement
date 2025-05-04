@@ -17,7 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/example/projectmanagement/MainFrame.fxml")
+                Main.class.getResource("/com/example/projectmanagement/MainFrame.fxml")
         );
         Parent root = loader.load();
 
@@ -28,7 +28,7 @@ public class Main extends Application {
 
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/projectmanagement/style.css").toExternalForm());
+        scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
         primaryStage.setTitle("项目管理系统");
         primaryStage.setMaximized(true); // 窗口最大化
         primaryStage.setScene(scene);

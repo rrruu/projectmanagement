@@ -4,6 +4,7 @@ package com.example.projectmanagement.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -15,7 +16,7 @@ public class MainFrameController {
 
     @FXML
     private void initialize() {
-        loadGanttModule(); // 默认加载甘特图模块
+        loadWelcomeModule(); // 默认加载欢迎界面
     }
 
 
@@ -39,6 +40,9 @@ public class MainFrameController {
         loadModule("/com/example/projectmanagement/schedule.fxml");
     }
 
+    @FXML
+    private void loadWelcomeModule() { loadModule("/com/example/projectmanagement/welcome.fxml"); }
+
 
 
 
@@ -46,13 +50,17 @@ public class MainFrameController {
     private void loadModule(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+
+
+
+
             contentPane.getChildren().setAll((Node) loader.load());
 
-            // 传递primaryStage给需要它的控制器  如果加载的是甘特图模块，传递primaryStage参数
-            if (fxmlPath.contains("main.fxml") && primaryStage != null) {
-                MainController mainController = loader.getController();
-                mainController.setPrimaryStage(primaryStage);
-            }
+//            // 传递primaryStage给需要它的控制器  如果加载的是甘特图模块，传递primaryStage参数
+//            if (fxmlPath.contains("welcome.fxml") && primaryStage != null) {
+//                MainController mainController = loader.getController();
+//                mainController.setPrimaryStage(primaryStage);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
