@@ -4,7 +4,6 @@ package com.example.projectmanagement.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -27,7 +26,7 @@ public class MainFrameController {
 
     @FXML
     private void loadGanttModule() {
-        loadModule("/com/example/projectmanagement/main.fxml");
+        loadModule("/com/example/projectmanagement/gantt.fxml");
     }
 
     @FXML
@@ -58,7 +57,7 @@ public class MainFrameController {
 
 //            // 传递primaryStage给需要它的控制器  如果加载的是甘特图模块，传递primaryStage参数
 //            if (fxmlPath.contains("welcome.fxml") && primaryStage != null) {
-//                MainController mainController = loader.getController();
+//                GanttController mainController = loader.getController();
 //                mainController.setPrimaryStage(primaryStage);
 //            }
         } catch (Exception e) {

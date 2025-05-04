@@ -10,7 +10,7 @@
 <AnchorPane prefHeight="600.0" prefWidth="1100.0"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.projectmanagement.controller.MainController"
+            fx:controller="com.example.projectmanagement.controller.GanttController"
             fx:id="mainContent">
 
 

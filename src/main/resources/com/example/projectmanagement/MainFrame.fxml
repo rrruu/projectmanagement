@@ -15,7 +15,7 @@
         <!-- 导航栏 -->
         <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f0f0f0;">
             <Label text="项目管理" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-            <Button text="甘特图生成" onAction="#loadGanttModule" styleClass="navButton"/>
+            <Button text="甘特图生成" onAction="#loadGanttModule" styleClass="navButton" style="-fx-background-color:#FFB6C1"/>
             <Button text="资源管理" onAction="#loadResourceModule" styleClass="navButton"/>
             <Button text="个人日程" onAction="#loadScheduleModule" styleClass="navButton"/>
         </VBox>

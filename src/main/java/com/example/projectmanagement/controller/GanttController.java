@@ -46,7 +46,7 @@ import java.util.List;
  * 主界面控制器
  */
 
-public class MainController {
+public class GanttController {
 
 
     private Stage primaryStage;

@@ -7,9 +7,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane style="-fx-padding: 20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.projectmanagement.controller.WelcomeController">
+<!--style="-fx-padding: 20;"代表20像素内边距-->
 
+<AnchorPane style="-fx-padding: 20;-fx-background-color: lightblue;"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.projectmanagement.controller.WelcomeController">
 
-       <Label text="WELCOME!" style="-fx-font-size: 50;"/>
+          <Label style="-fx-font-size: 100;-fx-background-color: coral;" text="WELCOME!"
+                 AnchorPane.leftAnchor="0"
+                 AnchorPane.rightAnchor="0"
+                 AnchorPane.topAnchor="0"
+                 AnchorPane.bottomAnchor="0"
+                 alignment="CENTER"/>
+
 
 </AnchorPane>
