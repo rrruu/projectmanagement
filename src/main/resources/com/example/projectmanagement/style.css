@@ -1,0 +1,146 @@
+.root {
+    -fx-font-family: "Arial";
+    -fx-base: #e0e0e0;
+}
+
+.table-view {
+    -fx-background-color: #f5f5f5;
+}
+
+/*.button {*/
+/*    -fx-background-color: #4CAF50;*/
+/*    -fx-text-fill: white;*/
+/*    -fx-padding: 5 15;*/
+/*}*/
+
+.canvas {
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+}
+
+/* 时间轴文本样式 */
+.canvas-text {
+    -fx-font-size: 10px;
+    -fx-fill: #666;
+}
+
+.dialog-pane {
+    -fx-background-color: #f0f0f0;
+}
+
+.dialog-pane .label {
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .text-field {
+    -fx-pref-width: 200px;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: derive(-fx-base, 20%);
+}
+
+.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+    -fx-background-color: derive(-fx-base, -30%);
+    -fx-background-insets: 2;
+}
+
+
+.gantt-completed {
+    -fx-background-color: #000080; /* 已完成颜色 */
+}
+
+.gantt-uncompleted {
+    -fx-background-color: #6495ED; /* 未完成颜色 */
+}
+
+
+
+
+/*addtask.fxml中的button样式*/
+.button1 {
+    -fx-background-color: #3c3f41; /* 蓝色背景 */
+    -fx-text-fill: #9ea2a4; /* 白色文字 */
+    -fx-background-radius: 5px; /* 圆角 */
+    -fx-font-weight: bold; /* 加粗字体 */
+}
+
+
+/*!*使用ID选择器*!*/
+/*#mainButton{*/
+/*    -fx-background-color: #3c3f41;*/
+/*    -fx-text-fill: white;*/
+/*    -fx-padding: 5 15;*/
+/*}*/
+
+
+/*main.fxml中的button样式*/
+.mainButton{
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: white;
+    -fx-padding: 5 15;
+}
+
+/* 在style.css中添加 */
+.time-axis-week {
+    -fx-font-size: 10px;
+    -fx-fill: #333;
+}
+
+.time-axis-day {
+    -fx-font-size: 9px;
+    -fx-fill: #666;
+}
+
+
+/* 在style.css中添加 */
+.time-axis-divider {
+    -fx-stroke: #999;
+    -fx-stroke-width: 0.5;
+}
+
+.day-label {
+    -fx-font-size: 11px;
+    -fx-fill: #444;
+}
+
+.week-label {
+    -fx-font-size: 12px;
+    -fx-fill: #222;
+}
+
+/* 在style.css中添加 */
+.daily-divider {
+    -fx-stroke: #e0e0e0;
+    -fx-stroke-width: 0.5;
+}
+
+
+/* 优化Tooltip显示 */
+.tooltip {
+    -fx-font-size: 12px;
+    -fx-background-color: #ffffcc;
+    -fx-text-fill: #333;
+}
+
+/* TextArea样式 */
+.text-area {
+    -fx-font-family: "Arial";
+    -fx-font-size: 12px;
+}
+
+
+
+
+
+
+
+
