@@ -139,6 +139,32 @@
 
 
 
+/* 新增导航按钮样式 */
+.navButton {
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
+    -fx-font-size: 14px;
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+}
+
+.navButton:hover {
+    -fx-background-color: #2b2b2b;
+}
+
+/* 调整主内容区域边距 */
+.stack-pane {
+    -fx-padding: 20px;
+}
+
+/* 调整甘特图滚动条位置 */
+.scroll-pane {
+    -fx-fit-to-height: true;
+    -fx-fit-to-width: true;
+}
+
+
 
 
 

@@ -48,6 +48,9 @@ import java.util.List;
 
 public class MainController {
 
+
+    private Stage primaryStage;
+
     // 常量
     private static final double BASE_DAY_WIDTH = 40.0;  // 每天基础宽度
     private static final double ROW_HEIGHT = 30.0;     // 每行高度
@@ -138,6 +141,13 @@ public class MainController {
 
     }
 
+
+    public void setPrimaryStage(Stage stage) {
+        this.primaryStage = stage;
+        // 监听窗口大小变化
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
+    }
 
 
     @FXML
