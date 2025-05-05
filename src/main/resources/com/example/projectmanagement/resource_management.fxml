@@ -11,5 +11,25 @@
             fx:controller="com.example.projectmanagement.controller.ResourceManagementController"
             style="-fx-padding: 20;">
 
-    <Label text="资源管理模块（开发中）" style="-fx-font-size: 24;"/>
+    <VBox spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <HBox spacing="10" style="-fx-padding: 0 0 10 0;">
+            <Button text="添加资源" styleClass="mainButton" onAction="#handleAddResource"/>
+            <Button text="编辑资源" styleClass="mainButton" onAction="#handleEditResource"/>
+            <Button text="删除资源" styleClass="mainButton" onAction="#handleDeleteResource"/>
+        </HBox>
+
+        <TableView fx:id="resourceTable">
+            <columns>
+                <TableColumn fx:id="nameColumn" text="名称" prefWidth="150"/>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="120"/>
+                <TableColumn fx:id="phoneColumn" text="电话" prefWidth="150"/>
+                <TableColumn fx:id="emailColumn" text="邮箱" prefWidth="200"/>
+                <TableColumn fx:id="typeColumn" text="类型" prefWidth="100"/>
+                <TableColumn fx:id="rateColumn" text="单价/天" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+    </VBox>
 </AnchorPane>
