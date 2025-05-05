@@ -45,15 +45,77 @@ public class ResourceManagementController {
 
     @FXML
     private void handleAddResource(){
-        showResourceDialog(null);
+        try {
+            //加载新的FXML对话框
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/projectmanagement/resourceadd.fxml")
+            );
+            AnchorPane root = loader.load();
+            ResourceAddController controller = loader.getController();
+            //创建并配置对话框
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("添加新资源");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);//模态窗口
+            dialogStage.initOwner(resourceTable.getScene().getWindow());//设置父窗口
+
+
+            //让resourceadd.fxml使用style.css的样式
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
+            dialogStage.setScene(scene);
+
+
+            // 显示窗口并等待
+            dialogStage.showAndWait();
+
+
+            //获取新资源（如果有）
+            ResourceModel newResource = controller.getNewResource();
+            if(newResource != null){
+                resources.add(newResource);
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "添加资源对话框加载失败：" + e.getMessage()).show();
+        }
+
     }
 
     @FXML
     private void handleDeleteResource(){
 
-        ResourceModel selected = resourceTable.getSelectionModel().getSelectedItem();
-        if(selected != null){
-            resources.remove(selected);
+        ResourceModel selectedResource = resourceTable.getSelectionModel().getSelectedItem();
+        if(selectedResource == null){
+            new Alert(Alert.AlertType.WARNING, "请先选择一个资源", ButtonType.OK).show();
+            return;
+        }
+
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    Main.class.getResource("/com/example/projectmanagement/resourcedelete.fxml")
+            );
+
+            AnchorPane root = loader.load();
+            ResourceDeleteController controller = loader.getController();
+            controller.setResourceToDelete(selectedResource);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("确认删除");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(resourceTable.getScene().getWindow());
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+
+            if(controller.isConfirmed()){
+                resources.remove(selectedResource);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "删除资源对话框加载失败：" + e.getMessage()).show();
         }
     }
 
@@ -61,60 +123,76 @@ public class ResourceManagementController {
     private void handleEditResource(){
 
 
-        ResourceModel selected = resourceTable.getSelectionModel().getSelectedItem();
-        if(selected != null){
-            showResourceDialog(selected);
+        ResourceModel selectedResource = resourceTable.getSelectionModel().getSelectedItem();
+        if(selectedResource == null){
+            new Alert(Alert.AlertType.WARNING, "请先选择一个资源", ButtonType.OK).show();
+            return;
         }
+
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    Main.class.getResource("/com/example/projectmanagement/resourceedit.fxml")
+            );
+
+            AnchorPane root = loader.load();
+            ResourceEditController controller = loader.getController();
+            controller.setResourceToEdit(selectedResource);// 传递待修改的任务
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("修改资源");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(resourceTable.getScene().getWindow());
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+
+            // 由于 ResourceModel 是对象引用，直接修改后无需额外操作
+            // ObservableList 会自动通知 ResourceView 更新
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "修改资源对话框加载失败：" + e.getMessage()).show();
+        }
+
+
     }
 
 
 
-    private void showResourceDialog(ResourceModel resource){
-        try {
-            //加载对话框FXML
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/example/projectmanagement/resource_dialog.fxml")
-            );
-
-            AnchorPane root = loader.load();
-            ResourceDialogController controller = loader.getController();
-
-
-            //初始化对话框
-            Stage dialogStage = new Stage();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-            dialogStage.setScene(scene);
-
-            dialogStage.setScene(scene);
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-//            Dialog<ButtonType> dialog = new Dialog<>();
-//            dialog.setDialogPane(root);
-//            dialog.initModality(Modality.APPLICATION_MODAL);
-
-
-            if(resource != null){
-                controller.setResource(resource);
-            }
-
-            dialogStage.showAndWait();
-            if(controller.isConfirmed()){
-                ResourceModel newResource = controller.getResource();
-                    if(resource == null){
-                        resources.add(newResource);
-                    }else {
-                        resource.setName(newResource.getName());
-                        resource.setId(newResource.getId());
-                        resource.setPhone(newResource.getPhone());
-                        resource.setEmail(newResource.getEmail());
-                        resource.setType(newResource.getType());
-                        resource.setDailyRate(newResource.getDailyRate());
-                    }
-            }
-
-//        ifPresent(result -> {
-//                if (result == ButtonType.OK){
-//                    ResourceModel newResource = controller.getResource();
+//    private void showResourceDialog(ResourceModel resource){
+//        try {
+//            //加载对话框FXML
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/com/example/projectmanagement/resourceadd.fxml")
+//            );
+//
+//            AnchorPane root = loader.load();
+//            ResourceAddController controller = loader.getController();
+//
+//
+//            //初始化对话框
+//            Stage dialogStage = new Stage();
+//            Scene scene = new Scene(root);
+//            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
+//            dialogStage.setScene(scene);
+//
+//            dialogStage.setScene(scene);
+//            dialogStage.initModality(Modality.APPLICATION_MODAL);
+////            Dialog<ButtonType> dialog = new Dialog<>();
+////            dialog.setDialogPane(root);
+////            dialog.initModality(Modality.APPLICATION_MODAL);
+//
+//
+//            if(resource != null){
+//                controller.setResource(resource);
+//            }
+//
+//            dialogStage.showAndWait();
+//            if(controller.isConfirmed()){
+//                ResourceModel newResource = controller.getResource();
 //                    if(resource == null){
 //                        resources.add(newResource);
 //                    }else {
@@ -125,14 +203,29 @@ public class ResourceManagementController {
 //                        resource.setType(newResource.getType());
 //                        resource.setDailyRate(newResource.getDailyRate());
 //                    }
-//                }
-//            });
-
-
-        } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR,"加载资源对话框失败").show();
-        }
-    }
+//            }
+//
+////        ifPresent(result -> {
+////                if (result == ButtonType.OK){
+////                    ResourceModel newResource = controller.getResource();
+////                    if(resource == null){
+////                        resources.add(newResource);
+////                    }else {
+////                        resource.setName(newResource.getName());
+////                        resource.setId(newResource.getId());
+////                        resource.setPhone(newResource.getPhone());
+////                        resource.setEmail(newResource.getEmail());
+////                        resource.setType(newResource.getType());
+////                        resource.setDailyRate(newResource.getDailyRate());
+////                    }
+////                }
+////            });
+//
+//
+//        } catch (IOException e) {
+//            new Alert(Alert.AlertType.ERROR,"加载资源对话框失败").show();
+//        }
+//    }
 
 
     // 获取资源列表（后续用于绑定）

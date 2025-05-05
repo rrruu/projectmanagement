@@ -20,6 +20,10 @@ public class AddTaskController {
 
     private TaskModel newTask = null;
 
+    public TaskModel getNewTask() {
+        return newTask;
+    }
+
 
     @FXML
     private void handleOk() {
@@ -116,9 +120,7 @@ public class AddTaskController {
 
 
 
-    public TaskModel getNewTask() {
-        return newTask;
-    }
+
 
 
 
