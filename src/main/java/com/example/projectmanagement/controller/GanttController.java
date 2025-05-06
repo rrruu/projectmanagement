@@ -86,6 +86,7 @@ public class GanttController {
     public void setDataModel(DataModel dataModel) {
         this.dataModel = dataModel;
         taskTable.setItems(dataModel.getTasks()); // 重新绑定数据
+
     }
 
 
@@ -433,9 +434,8 @@ public class GanttController {
         if(dataModel.getTasks().isEmpty())return;
 
 
-
         // 动态监听窗口尺寸变化（仅在第一次调用时注册）
-        if (!isWindowSizeListenerAdded) {
+        if(!isWindowSizeListenerAdded){
             taskTable.sceneProperty().addListener((obsScene, oldScene, newScene) -> {
                 if (newScene != null) {
                     newScene.windowProperty().addListener((obsWin, oldWin, newWin) -> {
@@ -450,14 +450,9 @@ public class GanttController {
                     });
                 }
             });
-            isWindowSizeListenerAdded = true;
         }
 
-
-
-
-
-
+        isWindowSizeListenerAdded = true;
 
 
         // 计算调整后的时间范围（以周为单位）
