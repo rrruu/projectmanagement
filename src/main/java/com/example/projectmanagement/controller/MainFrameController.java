@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 
+import com.example.projectmanagement.model.DataModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -50,10 +51,23 @@ public class MainFrameController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
+            Node node = loader.load();
 
 
+            //如果是甘特图模块，传递DataModel
+            if(fxmlPath.contains("gantt.fxml")){
+                GanttController controller = loader.getController();
+                controller.setDataModel(DataModel.getInstance());
+            }
 
-            contentPane.getChildren().setAll((Node) loader.load());
+            //如果是资源管理模块，传递DataModel
+            if(fxmlPath.contains("resource_management.fxml")){
+                ResourceManagementController controller = loader.getController();
+                controller.setDataModel(DataModel.getInstance());
+            }
+
+
+            contentPane.getChildren().setAll(node);
 
 //            // 传递primaryStage给需要它的控制器  如果加载的是甘特图模块，传递primaryStage参数
 //            if (fxmlPath.contains("welcome.fxml") && primaryStage != null) {

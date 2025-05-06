@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.Main;
+import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.TaskModel;
 import com.example.projectmanagement.model.TaskModelTypeAdapter;
 import com.google.gson.Gson;
@@ -79,9 +80,13 @@ public class GanttController {
     //    ObservableList<TaskModel>是关键数据容器，是JavaFX提供的可观察列表，特点如下
 //    自动通知机制：当列表内容发生变动（增、删、改）时，会主动通知所有依赖它的 UI 组件。
 //    与TableView绑定：通过 taskTable.setItems(tasks)，表格直接监听此列表的变动。
-    private final ObservableList<TaskModel> tasks = FXCollections.observableArrayList();
+//    private final ObservableList<TaskModel> tasks = FXCollections.observableArrayList();
 
-
+    private DataModel dataModel = DataModel.getInstance();
+    public void setDataModel(DataModel dataModel) {
+        this.dataModel = dataModel;
+        taskTable.setItems(dataModel.getTasks()); // 重新绑定数据
+    }
 
 
     /**
@@ -131,10 +136,12 @@ public class GanttController {
             }
         });
 
-        taskTable.setItems(tasks);
+//        taskTable.setItems(tasks);
+
+        taskTable.setItems(dataModel.getTasks());
 
         // 监听数据变化更新甘特图
-        tasks.addListener((javafx.collections.ListChangeListener.Change<? extends TaskModel> c) -> {
+        dataModel.getTasks().addListener((javafx.collections.ListChangeListener.Change<? extends TaskModel> c) -> {
             drawGanttChart();
         });
 
@@ -183,7 +190,7 @@ public class GanttController {
             // 获取新任务（如果有）
             TaskModel newTask = controller.getNewTask();
             if (newTask != null) {
-                tasks.add(newTask);
+                dataModel.getTasks().add(newTask);
             }
 
 
@@ -220,7 +227,7 @@ public class GanttController {
             dialogStage.showAndWait();
 
             if (controller.isConfirmed()) {
-                tasks.remove(selectedTask);
+                dataModel.getTasks().remove(selectedTask);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -270,7 +277,7 @@ public class GanttController {
     private void handleExport(){
         try {
             // 确保画布已经绘制
-            if (ganttCanvas == null || tasks.isEmpty()) {
+            if (ganttCanvas == null || dataModel.getTasks().isEmpty()) {
                 new Alert(Alert.AlertType.WARNING, "没有可导出的内容").show();
                 return;
             }
@@ -327,7 +334,7 @@ public class GanttController {
                     .setPrettyPrinting()
                     .create();
             // 直接序列化 ObservableList
-            gson.toJson(tasks, writer);
+            gson.toJson(dataModel.getTasks(), writer);
             new Alert(Alert.AlertType.INFORMATION, "项目导出成功！").show();
         } catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "导出失败：" + e.getMessage()).show();
@@ -359,7 +366,7 @@ public class GanttController {
 //            tasks.clear();
 
             //使用 setAll 为直接导入（会清空原有内容）
-            tasks.setAll(importedTasks);
+            dataModel.getTasks().setAll(importedTasks);
             drawGanttChart();
             new Alert(Alert.AlertType.INFORMATION, "项目导入成功！").show();
         } catch (IOException e) {
@@ -393,7 +400,7 @@ public class GanttController {
 
 
             //使用 addAll 为追加导入，会保留原有内容
-            tasks.addAll(importedTasks);
+            dataModel.getTasks().addAll(importedTasks);
             drawGanttChart();
             new Alert(Alert.AlertType.INFORMATION, "项目导入成功！").show();
         } catch (IOException e) {
@@ -423,7 +430,7 @@ public class GanttController {
         // 清空画布
         var gc = ganttCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, ganttCanvas.getWidth(), ganttCanvas.getHeight());
-        if(tasks.isEmpty())return;
+        if(dataModel.getTasks().isEmpty())return;
 
 
 
@@ -454,11 +461,11 @@ public class GanttController {
 
 
         // 计算调整后的时间范围（以周为单位）
-        LocalDate minTaskStart = tasks.stream()
+        LocalDate minTaskStart = dataModel.getTasks().stream()
                 .map(TaskModel::getStartDate)
                 .min(LocalDate::compareTo)
                 .orElse(LocalDate.now());
-        LocalDate maxTaskEnd = tasks.stream()
+        LocalDate maxTaskEnd = dataModel.getTasks().stream()
                 .map(TaskModel::getEndDate)
                 .max(LocalDate::compareTo)
                 .orElse(LocalDate.now());
@@ -472,7 +479,7 @@ public class GanttController {
 
         // 计算画布尺寸
         double canvasWidth = 100 + totalDays * BASE_DAY_WIDTH; // 左右边距各50
-        double canvasHeight = TIME_AXIS_HEIGHT + tasks.size() * ROW_HEIGHT + 50;
+        double canvasHeight = TIME_AXIS_HEIGHT + dataModel.getTasks().size() * ROW_HEIGHT + 50;
 
 
         // 获取主窗口的当前高度（扣除顶部按钮区域和表格高度）
@@ -505,7 +512,7 @@ public class GanttController {
 
 
         double yPos = TIME_AXIS_HEIGHT + 20; // 任务条起始Y坐标
-        for (TaskModel task : tasks) {
+        for (TaskModel task : dataModel.getTasks()) {
 
 
             long startOffset = ChronoUnit.DAYS.between(adjustedProjectStart, task.getStartDate());

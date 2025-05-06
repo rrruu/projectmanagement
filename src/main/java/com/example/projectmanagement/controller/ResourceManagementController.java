@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.Main;
+import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,17 @@ public class ResourceManagementController {
     @FXML private TableColumn<ResourceModel, String> statusColumn;
 
 
-    private final ObservableList<ResourceModel> resources = FXCollections.observableArrayList();
+//    private final ObservableList<ResourceModel> resources = FXCollections.observableArrayList();
+    private DataModel dataModel = DataModel.getInstance();
+    public void setDataModel(DataModel dataModel) {
+        this.dataModel = dataModel;
+        resourceTable.setItems(dataModel.getResources()); // 重新绑定数据
+    }
+
+
+
+
+
 
     @FXML
     private void initialize(){
@@ -80,7 +91,7 @@ public class ResourceManagementController {
 
 
 
-        resourceTable.setItems(resources);
+        resourceTable.setItems(dataModel.getResources());
     }
 
 
@@ -113,7 +124,7 @@ public class ResourceManagementController {
             //获取新资源（如果有）
             ResourceModel newResource = controller.getNewResource();
             if(newResource != null){
-                resources.add(newResource);
+                dataModel.getResources().add(newResource);
             }
 
 
@@ -151,7 +162,7 @@ public class ResourceManagementController {
             dialogStage.showAndWait();
 
             if(controller.isConfirmed()){
-                resources.remove(selectedResource);
+                dataModel.getResources().remove(selectedResource);
             }
 
         } catch (IOException e) {
@@ -271,7 +282,7 @@ public class ResourceManagementController {
 
     // 获取资源列表（后续用于绑定）
     public ObservableList<ResourceModel> getResources() {
-        return resources;
+        return dataModel.getResources();
     }
 
 
