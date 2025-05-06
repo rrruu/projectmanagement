@@ -12,6 +12,7 @@ public class ResourceModel {
     private final SimpleStringProperty type = new SimpleStringProperty("人力"); // 默认类型为人力
     private final SimpleDoubleProperty dailyRate = new SimpleDoubleProperty();
     private final SimpleStringProperty status = new SimpleStringProperty("可用"); // 新增状态属性
+    private final SimpleStringProperty comment = new SimpleStringProperty();
 
 
     // 无参构造器用于JSON反序列化
@@ -20,13 +21,14 @@ public class ResourceModel {
 
 
     //有参构造
-    public ResourceModel(String name,String id,String phone,String email,String type,double dailyRate){
+    public ResourceModel(String name,String id,String phone,String email,String type,double dailyRate,String comment){
         this.name.set(name);
         this.id.set(id);
         this.phone.set(phone);
         this.email.set(email);
         this.type.set(type);
         this.dailyRate.set(dailyRate);
+        this.comment.set(comment);
     }
 
 
@@ -95,6 +97,16 @@ public class ResourceModel {
         this.dailyRate.set(dailyRate);
     }
 
+
+    public String getComment() {
+        return comment.get();
+    }
+    public SimpleStringProperty commentProperty() {
+        return comment;
+    }
+    public void setComment(String comment) {
+        this.comment.set(comment);
+    }
 
     //用于后续资源调度
     public String getStatus() {

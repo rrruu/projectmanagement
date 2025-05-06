@@ -32,6 +32,12 @@
 
             <Label text="单价/天:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
             <TextField fx:id="rateField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+            <Label text="备注:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+            <ScrollPane prefHeight="80" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                <TextArea fx:id="commentField" wrapText="true"/>
+            </ScrollPane>
+
         </GridPane>
 
 

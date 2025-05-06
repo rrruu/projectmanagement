@@ -7,9 +7,9 @@ import javafx.scene.control.Label;
 public class DeleteTaskController {
 
     @FXML
-    private Label messageLabel;
-    private TaskModel taskToDelete;
-    private boolean confirmed = false;
+    public Label messageLabel;
+    public TaskModel taskToDelete;
+    public boolean confirmed = false;
 
     public void setTaskToDelete(TaskModel task) {
         this.taskToDelete = task;

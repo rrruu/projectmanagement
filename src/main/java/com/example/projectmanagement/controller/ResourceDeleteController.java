@@ -8,9 +8,9 @@ public class ResourceDeleteController {
 
 
     @FXML
-    private Label messageLabel;
-    private ResourceModel resourceToDelete;
-    private boolean isconfirmed = false;
+    public Label messageLabel;
+    public ResourceModel resourceToDelete;
+    public boolean isconfirmed = false;
 
 
     public void setResourceToDelete(ResourceModel resource){

@@ -24,6 +24,8 @@ public class ResourceManagementController {
     @FXML private TableColumn<ResourceModel,String> emailColumn;
     @FXML private TableColumn<ResourceModel,String> typeColumn;
     @FXML private TableColumn<ResourceModel,Number> rateColumn;
+    @FXML private TableColumn<ResourceModel,String> commentColumn;
+    @FXML private TableColumn<ResourceModel, String> statusColumn;
 
 
     private final ObservableList<ResourceModel> resources = FXCollections.observableArrayList();
@@ -37,6 +39,45 @@ public class ResourceManagementController {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         rateColumn.setCellValueFactory(new PropertyValueFactory<>("dailyRate"));
+        commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        //为备注列定义自定义的单元格渲染逻辑
+        // 为备注列添加Tooltip
+        commentColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                //item：当前单元格绑定的数据（TaskModel的comment属性值）
+                //empty：标识单元格是否为空（无数据）
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    //如果数据为空或单元格无内容，清空文本和Tooltip
+                    setText(null);
+                    setTooltip(null);
+                } else {
+                    setText(abbreviateString(item, 15)); // 将备注内容截断为前15个字符，超过15字符添加省略号
+                    Tooltip tooltip = new Tooltip(item); //用完整备注内容创建提示
+                    tooltip.setWrapText(true);//允许文本自动换行
+                    tooltip.setMaxWidth(400);//限制提示框最大宽度为400像素，避免过宽
+                    setTooltip(tooltip);//鼠标悬停时显示完整备注
+                }
+            }
+
+            // 字符串截断方法
+            private String abbreviateString(String str, int maxLength) {
+                return str.length() > maxLength ? str.substring(0, maxLength) + "..." : str;
+            }
+        });
+
+
+
+
+
+
+
+
+
+
 
 
         resourceTable.setItems(resources);
