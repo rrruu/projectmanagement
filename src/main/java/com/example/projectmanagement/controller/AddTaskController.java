@@ -1,9 +1,13 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.TaskModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 //添加新任务
@@ -29,13 +33,17 @@ public class AddTaskController {
     @FXML
     private void handleOk() {
         try {
-            // 执行所有验证并创建任务
             newTask = validateAndCreateTask();
-            // 关闭窗口
+            saveTaskToDatabase(newTask); // 新增数据库保存
+            DatabaseManager.getConnection().commit(); // 提交事务
+            DataModel.getInstance().loadTasks(); // 重新加载数据
             nameField.getScene().getWindow().hide();
         } catch (IllegalArgumentException e) {
-            // 显示错误提示（保持在当前窗口）
-            new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK).show();
+            showErrorAlert(e);
+            rollbackTransaction();
+        } catch (SQLException e){
+            showErrorAlert(new Exception("数据库操作失败：" + e.getMessage()));
+            rollbackTransaction();
         }
     }
 
@@ -125,6 +133,35 @@ public class AddTaskController {
     }
 
 
+
+    private void saveTaskToDatabase(TaskModel task) throws SQLException {
+        String sql = "INSERT INTO tasks(id, name, start_date, end_date, progress, leader, comment) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, task.getId());
+            stmt.setString(2, task.getTaskName());
+            stmt.setString(3, task.getStartDate().toString());
+            stmt.setString(4, task.getEndDate().toString());
+            stmt.setDouble(5, task.getProgress());
+            stmt.setString(6, task.getLeader());
+            stmt.setString(7, task.getComment());
+            stmt.executeUpdate();
+        }
+    }
+
+    private void showErrorAlert(Exception e) {
+        new Alert(Alert.AlertType.ERROR,
+                "操作失败：" + e.getMessage(),
+                ButtonType.OK).show();
+    }
+
+    private void rollbackTransaction() {
+        try {
+            DatabaseManager.getConnection().rollback();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 
 
 

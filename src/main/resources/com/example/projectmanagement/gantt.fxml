@@ -22,7 +22,7 @@
                 <HBox spacing="10" style="-fx-padding: 10;">
                     <children>
                         <Button onAction="#handleAddTask" text="添加任务" styleClass="mainButton"/>
-                        <Button onAction="#handleEditTask" text="修改任务" styleClass="mainButton"/>
+                        <Button onAction="#handleEditTask" text="编辑任务" styleClass="mainButton"/>
                         <Button onAction="#handleDeleteTask" text="删除任务" styleClass="mainButton"/>
                         <Button onAction="#handleExport" text="导出图片" styleClass="mainButton"/>
                         <Button onAction="#handleImportProject" text="导入项目" styleClass="mainButton"/>

@@ -1,11 +1,15 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.db.DatabaseManager;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class ResourceEditController {
 
@@ -85,19 +89,27 @@ public class ResourceEditController {
 
 
     private void updateTaskAssociations(ResourceModel res, ObservableList<TaskModel> newTasks) {
-        // 移除旧关联
-        res.getAssignedTasks().forEach(task ->
-                task.getAssignedResources().remove(res)
-        );
-        res.getAssignedTasks().clear();
+        // 删除旧关联
+        String deleteSql = "DELETE FROM task_resources WHERE resource_id = ?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(deleteSql)) {
+            stmt.setString(1, res.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         // 添加新关联
-        newTasks.forEach(task -> {
-            res.getAssignedTasks().add(task);
-            if (!task.getAssignedResources().contains(res)) {
-                task.getAssignedResources().add(res);
+        String insertSql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(insertSql)) {
+            for (TaskModel task : newTasks) {
+                stmt.setString(1, task.getId());
+                stmt.setString(2, res.getId());
+                stmt.addBatch();
             }
-        });
+            stmt.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 

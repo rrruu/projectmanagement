@@ -198,14 +198,15 @@ public class GanttController {
             dialogStage.showAndWait();
 
 
-            // 获取新任务（如果有）
-            TaskModel newTask = controller.getNewTask();
-            if (newTask != null) {
-                dataModel.getTasks().add(newTask);
-            }
+//            // 获取新任务（如果有）
+//            TaskModel newTask = controller.getNewTask();
+//            if (newTask != null) {
+//                dataModel.getTasks().add(newTask);
+//            }
 
 
 
+            drawGanttChart();
 
 
         } catch (IOException e) {

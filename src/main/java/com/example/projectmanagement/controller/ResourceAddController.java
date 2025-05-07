@@ -1,8 +1,14 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
+import com.example.projectmanagement.model.TaskModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class ResourceAddController {
 
@@ -55,6 +61,36 @@ public class ResourceAddController {
 //        return resource;
 //    }
 
+    @FXML
+    private void handleConfirm() {
+        try{
+            //执行所有验证并创建任务
+            newResource = validateAndCreateResource();
+            saveResourceToDatabase(newResource);//数据库保存
+            DatabaseManager.getConnection().commit();//提交事务
+            DataModel.getInstance().loadResources();//重新加载数据
+            nameField.getScene().getWindow().hide();
+
+
+            //关闭窗口
+            idField.getScene().getWindow().hide();
+        } catch (IllegalArgumentException e) {
+            showErrorAlert(e);
+            rollbackTransaction();
+        } catch (SQLException e) {
+            showErrorAlert(new Exception("数据库操作失败：" + e.getMessage()));
+            rollbackTransaction();
+        }
+
+        confirmed = true;
+        nameField.getScene().getWindow().hide();
+    }
+
+    @FXML
+    private void handleCancel() {
+        idField.getScene().getWindow().hide();
+    }
+
 
 
     private ResourceModel validateAndCreateResource(){
@@ -105,30 +141,40 @@ public class ResourceAddController {
 
     }
 
-
-
-
-
-    @FXML
-    private void handleConfirm() {
-        try{
-            //执行所有验证并创建任务
-            newResource = validateAndCreateResource();
-
-            //关闭窗口
-            idField.getScene().getWindow().hide();
-        } catch (IllegalArgumentException e) {
-            //显示错误提示（保持在当前窗口）
-            new Alert(Alert.AlertType.ERROR,e.getMessage(), ButtonType.OK).show();
+    private void saveResourceToDatabase(ResourceModel resource) throws SQLException {
+        String sql = "INSERT INTO tasks(id, name, phone, email, type, daily_rate, status, comment) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, resource.getId());
+            stmt.setString(2, resource.getName());
+            stmt.setString(3, resource.getPhone());
+            stmt.setString(4, resource.getEmail());
+            stmt.setString(5, resource.getType());
+            stmt.setDouble(6, resource.getDailyRate());
+            stmt.setString(7, resource.getStatus());
+            stmt.setString(8, resource.getComment());
+            stmt.executeUpdate();
         }
-
-        confirmed = true;
-        nameField.getScene().getWindow().hide();
     }
 
-    @FXML
-    private void handleCancel() {
-        idField.getScene().getWindow().hide();
+
+
+
+
+
+
+    private void showErrorAlert(Exception e) {
+        new Alert(Alert.AlertType.ERROR,
+                "操作失败：" + e.getMessage(),
+                ButtonType.OK).show();
+    }
+
+    private void rollbackTransaction() {
+        try {
+            DatabaseManager.getConnection().rollback();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 //    public boolean isConfirmed() {

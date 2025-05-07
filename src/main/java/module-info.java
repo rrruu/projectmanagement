@@ -4,6 +4,7 @@ module com.example.projectmanagement {
     requires javafx.graphics;
     requires javafx.swing;
     requires com.google.gson;
+    requires java.sql;
 
 
     opens com.example.projectmanagement to javafx.fxml,javafx.graphics;

@@ -1,6 +1,7 @@
 package com.example.projectmanagement;
 
 import com.example.projectmanagement.controller.MainFrameController;
+import com.example.projectmanagement.db.DatabaseManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +17,8 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
+        // 初始化数据库
+        DatabaseManager.initialize();
         FXMLLoader loader = new FXMLLoader(
                 Main.class.getResource("/com/example/projectmanagement/MainFrame.fxml")
         );
@@ -33,6 +36,11 @@ public class Main extends Application {
         primaryStage.setMaximized(true); // 窗口最大化
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() {
+        DatabaseManager.close();
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.db.DatabaseManager;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
@@ -7,6 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class EditTaskController {
@@ -59,6 +62,8 @@ public class EditTaskController {
     }
 
     private void validateAndUpdateTask() {
+
+        try {
         // 复用 AddTaskController 的验证逻辑
         validateRequiredFields();
         double progress = parseProgress();
@@ -76,26 +81,84 @@ public class EditTaskController {
 
         //更新资源关联
         ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
-        updateResourceAssociations(taskToEdit, selected);
+
+
+
+            updateTaskInDatabase(taskToEdit); // 更新数据库
+            updateResourceAssociations(taskToEdit, selected);
+            DatabaseManager.getConnection().commit();
+            DataModel.getInstance().loadAllData(); // 重新加载数据
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "数据库错误").show();
+            rollbackTransaction();
+        }
     }
 
 
+
+
+
+    private void updateTaskInDatabase(TaskModel task) throws SQLException {
+        String sql = "UPDATE tasks SET name=?, start_date=?, end_date=?, progress=?, leader=?, comment=? " +
+                "WHERE id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, task.getTaskName());
+            stmt.setString(2, task.getStartDate().toString());
+            stmt.setString(3, task.getEndDate().toString());
+            stmt.setDouble(4, task.getProgress());
+            stmt.setString(5, task.getLeader());
+            stmt.setString(6, task.getComment());
+            stmt.setString(7, task.getId());
+            stmt.executeUpdate();
+        }
+    }
+
+
+
+
+
+
+
     private void updateResourceAssociations(TaskModel task, ObservableList<ResourceModel> newResources){
-        //移除旧关联
-        for (ResourceModel res : task.getAssignedResources()){
-            res.getAssignedTasks().remove(task);
+// 删除旧关联
+        String deleteSql = "DELETE FROM task_resources WHERE task_id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(deleteSql)) {
+            stmt.setString(1, task.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        task.getAssignedResources().clear();
 
-
-        //添加新关联
-        for (ResourceModel res : newResources){
-            task.getAssignedResources().add(res);
-            if(!res.getAssignedTasks().contains(task)){
-                res.getAssignedTasks().add(task);
+        // 插入新关联
+        String insertSql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(insertSql)) {
+            for (ResourceModel res : newResources) {
+                stmt.setString(1, task.getId());
+                stmt.setString(2, res.getId());
+                stmt.addBatch();
             }
+            stmt.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
+    }
+
+
+
+
+    private void showErrorAlert(Exception e) {
+        new Alert(Alert.AlertType.ERROR,
+                "操作失败：" + e.getMessage(),
+                ButtonType.OK).show();
+    }
+
+    private void rollbackTransaction() {
+        try {
+            DatabaseManager.getConnection().rollback();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 

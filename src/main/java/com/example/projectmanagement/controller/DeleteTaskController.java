@@ -1,8 +1,14 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.db.DatabaseManager;
 import com.example.projectmanagement.model.TaskModel;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import com.example.projectmanagement.model.DataModel;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class DeleteTaskController {
 
@@ -18,12 +24,17 @@ public class DeleteTaskController {
 
     @FXML
     private void handleConfirm() {
-        confirmed = true;
-        // 删除前解除资源关联
-        taskToDelete.getAssignedResources().forEach(res ->
-                res.getAssignedTasks().remove(taskToDelete)
-        );
-        messageLabel.getScene().getWindow().hide();
+        try {
+            deleteTaskFromDatabase(taskToDelete);
+            deleteTaskAssociations(taskToDelete);
+            DatabaseManager.getConnection().commit();//提交事务
+            DataModel.getInstance().loadAllData(); // 重新加载数据
+            confirmed = true;
+            messageLabel.getScene().getWindow().hide();
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "删除失败").show();
+            rollbackTransaction();
+        }
     }
 
     @FXML
@@ -34,6 +45,38 @@ public class DeleteTaskController {
 
     public boolean isConfirmed() {
         return confirmed;
+    }
+
+
+    private void deleteTaskFromDatabase(TaskModel task) throws SQLException {
+        String sql = "DELETE FROM tasks WHERE id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, task.getId());
+            stmt.executeUpdate();
+        }
+    }
+
+    private void deleteTaskAssociations(TaskModel task) throws SQLException {
+        String sql = "DELETE FROM task_resources WHERE task_id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, task.getId());
+            stmt.executeUpdate();
+        }
+    }
+
+
+    private void showErrorAlert(Exception e) {
+        new Alert(Alert.AlertType.ERROR,
+                "操作失败：" + e.getMessage(),
+                ButtonType.OK).show();
+    }
+
+    private void rollbackTransaction() {
+        try {
+            DatabaseManager.getConnection().rollback();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }
 
