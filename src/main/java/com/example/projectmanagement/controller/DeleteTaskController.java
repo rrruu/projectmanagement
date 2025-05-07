@@ -19,6 +19,10 @@ public class DeleteTaskController {
     @FXML
     private void handleConfirm() {
         confirmed = true;
+        // 删除前解除资源关联
+        taskToDelete.getAssignedResources().forEach(res ->
+                res.getAssignedTasks().remove(taskToDelete)
+        );
         messageLabel.getScene().getWindow().hide();
     }
 

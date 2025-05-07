@@ -1,7 +1,9 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -17,6 +19,7 @@ public class ResourceEditController {
     @FXML public TextField rateField;
     @FXML public TextArea commentField;
     @FXML public ListView<TaskModel> taskListView;//新增任务关联
+
 
     private ResourceModel resourceToEdit = null;
     private boolean isConfirmed = false;
@@ -41,7 +44,14 @@ public class ResourceEditController {
         typeCombo.setValue(resource.getType());
         rateField.setText(String.valueOf(resource.getDailyRate()));
         commentField.setText(resource.getComment());
-        taskListView.setItems(resource.getAssignedTasks());
+//        taskListView.setItems(resource.getAssignedTasks());
+
+
+        // 初始化任务列表
+        taskListView.setItems(DataModel.getInstance().getTasks());
+        taskListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        // 选中已关联任务
+        taskListView.getSelectionModel().selectAll();
     }
 
 
@@ -67,6 +77,27 @@ public class ResourceEditController {
         resourceToEdit.setDailyRate(rate);
         resourceToEdit.setComment(commentField.getText().trim());
 
+        // 更新任务关联
+        ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
+        updateTaskAssociations(resourceToEdit, selected);
+
+    }
+
+
+    private void updateTaskAssociations(ResourceModel res, ObservableList<TaskModel> newTasks) {
+        // 移除旧关联
+        res.getAssignedTasks().forEach(task ->
+                task.getAssignedResources().remove(res)
+        );
+        res.getAssignedTasks().clear();
+
+        // 添加新关联
+        newTasks.forEach(task -> {
+            res.getAssignedTasks().add(task);
+            if (!task.getAssignedResources().contains(res)) {
+                task.getAssignedResources().add(res);
+            }
+        });
     }
 
 

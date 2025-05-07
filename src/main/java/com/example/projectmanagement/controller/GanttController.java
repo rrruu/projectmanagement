@@ -6,6 +6,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -107,6 +108,13 @@ public class GanttController {
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
 
 
+
+        // 新增关联资源列
+        TableColumn<TaskModel, String> resourcesColumn = new TableColumn<>("关联资源");
+        resourcesColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getAssignedResourcesInfo())
+        );
+        taskTable.getColumns().add(resourcesColumn);
 
 
         //为备注列定义自定义的单元格渲染逻辑

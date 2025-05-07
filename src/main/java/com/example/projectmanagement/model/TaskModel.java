@@ -181,4 +181,17 @@ public class TaskModel {
     public ObservableList<ResourceModel> getAssignedResources() {
         return assignedResources;
     }
+
+
+
+    // TaskModel.java 添加关联资源展示方法
+    public String getAssignedResourcesInfo() {
+        return assignedResources.stream()
+                .map(res -> res.getName() + "(" + res.getId() + ")")
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("");
+    }
+
+
+
 }

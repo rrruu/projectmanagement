@@ -136,4 +136,17 @@ public class ResourceModel {
     public ObservableList<TaskModel> getAssignedTasks() {
         return assignedTasks;
     }
+
+
+
+    //关联任务展示方法
+    public String getAssignedTasksInfo(){
+        return assignedTasks.stream()
+                .map(task -> task.getTaskName() + "(" + task.getId() + ")")
+                .reduce((a,b) -> a + "," + b)
+                .orElse("");
+    }
+
+
+
 }

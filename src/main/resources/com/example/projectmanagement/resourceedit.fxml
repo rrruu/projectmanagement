@@ -7,10 +7,12 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.util.Callback?>
+<?import com.example.projectmanagement.model.TaskModel?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ResourceEditController"
-            prefHeight="400.0" prefWidth="600.0">
+            prefHeight="800.0" prefWidth="800.0">
     <children>
         <GridPane hgap="10" vgap="10">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
@@ -39,7 +41,8 @@
 
             <Label text="关联任务:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
             <ListView fx:id="taskListView" GridPane.rowIndex="7" GridPane.columnIndex="1"
-                      prefHeight="150" prefWidth="200"/>
+                      prefHeight="150" prefWidth="300">
+            </ListView>
 
         </GridPane>
 

@@ -3,6 +3,7 @@ package com.example.projectmanagement.controller;
 import com.example.projectmanagement.Main;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -53,6 +54,20 @@ public class ResourceManagementController {
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
+
+
+
+
+        //新增关联任务列
+        TableColumn<ResourceModel, String> tasksColumn = new TableColumn<>("关联任务");
+        tasksColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getAssignedTasksInfo())
+        );
+        resourceTable.getColumns().add(tasksColumn);
+
+
+
+
         //为备注列定义自定义的单元格渲染逻辑
         // 为备注列添加Tooltip
         commentColumn.setCellFactory(column -> new TableCell<>() {
@@ -79,6 +94,11 @@ public class ResourceManagementController {
                 return str.length() > maxLength ? str.substring(0, maxLength) + "..." : str;
             }
         });
+
+
+
+
+
 
 
 
