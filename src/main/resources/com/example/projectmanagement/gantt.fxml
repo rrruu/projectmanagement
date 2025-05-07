@@ -34,6 +34,7 @@
                 <TableView fx:id="taskTable" prefHeight="200">
                     <columns>
                         <TableColumn fx:id="taskNameColumn" prefWidth="200" text="任务名称" />
+                        <TableColumn fx:id="idColumn" prefWidth="150" text="ID" />
                         <TableColumn fx:id="startDateColumn" prefWidth="150" text="开始日期" />
                         <TableColumn fx:id="endDateColumn" prefWidth="150" text="结束日期" />
                         <TableColumn fx:id="durationColumn" prefWidth="150" text="工期" />

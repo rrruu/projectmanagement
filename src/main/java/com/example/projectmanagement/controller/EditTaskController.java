@@ -10,6 +10,7 @@ public class EditTaskController {
 
     @FXML
     public TextField nameField;
+    @FXML public TextField idField;
     @FXML public DatePicker startPicker;
     @FXML public DatePicker endPicker;
     @FXML public TextField progressField;
@@ -23,6 +24,7 @@ public class EditTaskController {
         this.taskToEdit = task;
         // 将任务数据填充到表单
         nameField.setText(task.getTaskName());
+        idField.setText(task.getId());
         startPicker.setValue(task.getStartDate());
         endPicker.setValue(task.getEndDate());
         progressField.setText(String.valueOf(task.getProgress()));
@@ -55,6 +57,7 @@ public class EditTaskController {
 
         // 更新任务属性
         taskToEdit.setTaskName(nameField.getText().trim());
+        taskToEdit.setId(idField.getText().trim());
         taskToEdit.setStartDate(startPicker.getValue());
         taskToEdit.setEndDate(endPicker.getValue());
         taskToEdit.setProgress(progress);
@@ -66,6 +69,9 @@ public class EditTaskController {
     private void validateRequiredFields() {
         if (nameField.getText().trim().isEmpty()) {
             throw new IllegalArgumentException("任务名称不能为空");
+        }
+        if (idField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("任务ID不能为空");
         }
         if (leaderField.getText().trim().isEmpty()) {
             throw new IllegalArgumentException("负责人不能为空");

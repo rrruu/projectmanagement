@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class AddTaskController {
     @FXML
     public TextField nameField;
+    @FXML public TextField idField;
     @FXML public DatePicker startPicker;
     @FXML public DatePicker endPicker;
     @FXML public TextField progressField;
@@ -47,6 +48,7 @@ public class AddTaskController {
 
         //  用户点击"确定"
         //  → 验证任务名称
+        //  → 验证任务ID
         //  → 验证负责人
         //  → 验证进度
         //  → 验证进度范围
@@ -68,6 +70,7 @@ public class AddTaskController {
         // 创建并返回新任务
         return new TaskModel(
                 nameField.getText().trim(),
+                idField.getText().trim(),
                 startPicker.getValue(),
                 endPicker.getValue(),
                 progress,
@@ -80,6 +83,9 @@ public class AddTaskController {
     private void validateRequiredFields() {
         if (nameField.getText().trim().isEmpty()) {
             throw new IllegalArgumentException("任务名称不能为空");
+        }
+        if (idField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("任务ID不能为空");
         }
         if (leaderField.getText().trim().isEmpty()) {
             throw new IllegalArgumentException("负责人不能为空");

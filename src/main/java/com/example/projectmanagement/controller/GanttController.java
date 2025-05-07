@@ -67,6 +67,7 @@ public class GanttController {
     @FXML
     private TableView<TaskModel> taskTable;
     @FXML private TableColumn<TaskModel, String> taskNameColumn;
+    @FXML private TableColumn<TaskModel, String> idColumn;
     @FXML private TableColumn<TaskModel, LocalDate> startDateColumn;
     @FXML private TableColumn<TaskModel, LocalDate> endDateColumn;
     @FXML private TableColumn<TaskModel, Number> durationColumn;
@@ -81,7 +82,7 @@ public class GanttController {
     //    ObservableList<TaskModel>是关键数据容器，是JavaFX提供的可观察列表，特点如下
 //    自动通知机制：当列表内容发生变动（增、删、改）时，会主动通知所有依赖它的 UI 组件。
 //    与TableView绑定：通过 taskTable.setItems(tasks)，表格直接监听此列表的变动。
-//    private final ObservableList<TaskModel> tasks = FXCollections.observableArrayList();
+
 
     private DataModel dataModel = DataModel.getInstance();
     public void setDataModel(DataModel dataModel) {
@@ -101,6 +102,7 @@ public class GanttController {
 
         // 初始化表格列
         taskNameColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         durationColumn.setCellValueFactory(new PropertyValueFactory<>("duration"));
@@ -138,7 +140,7 @@ public class GanttController {
             }
         });
 
-//        taskTable.setItems(tasks);
+
 
         taskTable.setItems(dataModel.getTasks());
 

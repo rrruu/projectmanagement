@@ -12,6 +12,7 @@ public class TaskModelTypeAdapter implements JsonSerializer<TaskModel>, JsonDese
     public JsonElement serialize(TaskModel task, Type type, JsonSerializationContext context) {
         JsonObject obj = new JsonObject();
         obj.addProperty("taskName", task.getTaskName());
+        obj.addProperty("id", task.getId());
         obj.add("startDate", context.serialize(task.getStartDate()));
         obj.add("endDate", context.serialize(task.getEndDate()));
         obj.addProperty("progress", task.getProgress());
@@ -26,6 +27,7 @@ public class TaskModelTypeAdapter implements JsonSerializer<TaskModel>, JsonDese
         JsonObject obj = json.getAsJsonObject();
         TaskModel task = new TaskModel();
         task.setTaskName(obj.get("taskName").getAsString());
+        task.setId(obj.get("id").getAsString());
         task.setStartDate(context.deserialize(obj.get("startDate"), LocalDate.class));
         task.setEndDate(context.deserialize(obj.get("endDate"), LocalDate.class));
         task.setProgress(obj.get("progress").getAsDouble());

@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 public class TaskModel {
 
     private final SimpleStringProperty taskName;
+    private final SimpleStringProperty id;
     private final SimpleObjectProperty<LocalDate> startDate;
     private final SimpleObjectProperty<LocalDate> endDate;
     private final ReadOnlyIntegerWrapper duration;
@@ -35,6 +36,7 @@ public class TaskModel {
     // 添加无参构造函数
     public TaskModel() {
         this.taskName = new SimpleStringProperty();
+        this.id = new SimpleStringProperty();
         this.startDate = new SimpleObjectProperty<>();
         this.endDate = new SimpleObjectProperty<>();
         this.progress = new SimpleDoubleProperty();
@@ -44,7 +46,7 @@ public class TaskModel {
     }
 
     //有参构造函数
-    public TaskModel(String taskName, LocalDate startDate, LocalDate endDate,
+    public TaskModel(String taskName, String id, LocalDate startDate, LocalDate endDate,
                      double progress, String leader,String comment) {
 
         //校验开始日期和结束日期正确性
@@ -53,6 +55,7 @@ public class TaskModel {
         }
 
         this.taskName = new SimpleStringProperty(taskName);
+        this.id = new SimpleStringProperty(id);
         this.startDate = new SimpleObjectProperty<>(startDate);
         this.endDate = new SimpleObjectProperty<>(endDate);
         this.progress = new SimpleDoubleProperty(progress);
@@ -83,6 +86,16 @@ public class TaskModel {
         this.taskName.set(taskName);
     }
 
+    @SerializedName("id")
+    public String getId() {
+        return id.get();
+    }
+    public SimpleStringProperty idProperty() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id.set(id);
+    }
 
     @SerializedName("startDate")
     public LocalDate getStartDate() {
