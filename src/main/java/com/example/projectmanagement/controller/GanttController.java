@@ -74,6 +74,7 @@ public class GanttController {
     @FXML private TableColumn<TaskModel, String> leaderColumn;
     @FXML private TableColumn<TaskModel, String> commentColumn;
     @FXML private Canvas ganttCanvas;
+    @FXML private ScrollPane ganttScrollPane;
 
 
 
@@ -145,6 +146,9 @@ public class GanttController {
         dataModel.getTasks().addListener((javafx.collections.ListChangeListener.Change<? extends TaskModel> c) -> {
             drawGanttChart();
         });
+
+
+        drawGanttChart(); // 新增：初始化时立即绘制一次
 
 
     }
@@ -427,32 +431,46 @@ public class GanttController {
 
 
 
-    private void drawGanttChart() {
+    public void drawGanttChart() {
+        if (taskTable.getScene() == null || ganttCanvas == null) {
+            return;
+        }
+
+
         // 清空画布
         var gc = ganttCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, ganttCanvas.getWidth(), ganttCanvas.getHeight());
         if(dataModel.getTasks().isEmpty())return;
 
 
-        // 动态监听窗口尺寸变化（仅在第一次调用时注册）
-        if(!isWindowSizeListenerAdded){
-            taskTable.sceneProperty().addListener((obsScene, oldScene, newScene) -> {
-                if (newScene != null) {
-                    newScene.windowProperty().addListener((obsWin, oldWin, newWin) -> {
-                        if (newWin != null) {
-                            newWin.widthProperty().addListener((obsWidth, oldWidth, newWidth) -> {
-                                drawGanttChart();
-                            });
-                            newWin.heightProperty().addListener((obsHeight, oldHeight, newHeight) -> {
-                                drawGanttChart();
-                            });
-                        }
-                    });
-                }
-            });
-        }
+        // 动态计算画布尺寸（基于父容器 ScrollPane）
+//        ScrollPane scrollPane = (ScrollPane) ganttCanvas.getParent().getParent();
+//        double availableWidth = ganttScrollPane.getWidth() - 20;
+//        double availableHeight = ganttScrollPane.getHeight() - 20;
+//
+//        ganttCanvas.setWidth(availableWidth);
+//        ganttCanvas.setHeight(availableHeight);
 
-        isWindowSizeListenerAdded = true;
+
+
+//        // 动态监听窗口尺寸变化（仅在第一次调用时注册）
+//        if (!isWindowSizeListenerAdded) {
+//            taskTable.sceneProperty().addListener((obsScene, oldScene, newScene) -> {
+//                if (newScene != null) {
+//                    newScene.windowProperty().addListener((obsWin, oldWin, newWin) -> {
+//                        if (newWin != null) {
+//                            newWin.widthProperty().addListener((obsWidth, oldWidth, newWidth) -> {
+//                                drawGanttChart();
+//                            });
+//                            newWin.heightProperty().addListener((obsHeight, oldHeight, newHeight) -> {
+//                                drawGanttChart();
+//                            });
+//                        }
+//                    });
+//                }
+//            });
+//            isWindowSizeListenerAdded = true;
+//        }
 
 
         // 计算调整后的时间范围（以周为单位）
@@ -477,17 +495,22 @@ public class GanttController {
         double canvasHeight = TIME_AXIS_HEIGHT + dataModel.getTasks().size() * ROW_HEIGHT + 50;
 
 
-        // 获取主窗口的当前高度（扣除顶部按钮区域和表格高度）
-        double windowAvailableHeight = taskTable.getScene().getHeight()
-                - taskTable.getHeight() // 表格高度
-                - 120; // 顶部按钮区域和边距
-        double timeAxisHeight = 50; // 时间轴高度
+//        // 获取主窗口的当前高度（扣除顶部按钮区域和表格高度）
+//        double windowAvailableHeight = taskTable.getScene().getHeight()
+//                - taskTable.getHeight() // 表格高度
+//                - 120; // 顶部按钮区域和边距
+//        double timeAxisHeight = 50; // 时间轴高度
 
 
 
         // 设置Canvas尺寸
         ganttCanvas.setWidth(canvasWidth);
         ganttCanvas.setHeight(canvasHeight);
+
+
+        // 设置画布尺寸后，强制刷新 ScrollPane
+        ganttScrollPane.setContent(ganttCanvas);
+        ganttScrollPane.layout();
 
 
 

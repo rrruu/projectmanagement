@@ -2,6 +2,7 @@ package com.example.projectmanagement.controller;
 
 
 import com.example.projectmanagement.model.DataModel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -58,12 +59,16 @@ public class MainFrameController {
             if(fxmlPath.contains("gantt.fxml")){
                 GanttController controller = loader.getController();
                 controller.setDataModel(DataModel.getInstance());
+                Platform.runLater(() -> {
+                    controller.drawGanttChart();
+                });
             }
 
             //如果是资源管理模块，传递DataModel
             if(fxmlPath.contains("resource_management.fxml")){
                 ResourceManagementController controller = loader.getController();
                 controller.setDataModel(DataModel.getInstance());
+
             }
 
 

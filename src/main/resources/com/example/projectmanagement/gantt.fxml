@@ -43,7 +43,7 @@
                     </columns>
                 </TableView>
 
-                <ScrollPane fitToHeight="true" fitToWidth="true" hvalue="1.0" vvalue="1.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                <ScrollPane fx:id="ganttScrollPane" fitToHeight="true" fitToWidth="true" hvalue="1.0" vvalue="1.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
                             AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120">
                     <content>
                         <Canvas fx:id="ganttCanvas" />
