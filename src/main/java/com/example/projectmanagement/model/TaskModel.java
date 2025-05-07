@@ -2,6 +2,8 @@ package com.example.projectmanagement.model;
 
 import com.google.gson.annotations.SerializedName;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -20,6 +22,10 @@ public class TaskModel {
     private final SimpleStringProperty leader;
     private final SimpleStringProperty comment;
 
+    //新增资源列表属性
+    private final ObservableList<ResourceModel> assignedResources = FXCollections.observableArrayList();
+
+
 
 //    public TaskModel(String taskName, LocalDate startDate, LocalDate endDate) {
 //
@@ -32,6 +38,9 @@ public class TaskModel {
 //        this.startDate = new SimpleObjectProperty<>(startDate);
 //        this.endDate = new SimpleObjectProperty<>(endDate);
 //    }
+
+
+
 
     // 添加无参构造函数
     public TaskModel() {
@@ -165,5 +174,11 @@ public class TaskModel {
     }
     public void setComment(String comment) {
         this.comment.set(comment);
+    }
+
+
+    @SerializedName("assignedResources")
+    public ObservableList<ResourceModel> getAssignedResources() {
+        return assignedResources;
     }
 }

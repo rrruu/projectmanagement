@@ -1,13 +1,8 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.Main;
-import com.example.projectmanagement.model.DataModel;
-import com.example.projectmanagement.model.TaskModel;
-import com.example.projectmanagement.model.TaskModelTypeAdapter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.TypeAdapter;
+import com.example.projectmanagement.model.*;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -42,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 主界面控制器
@@ -329,7 +325,7 @@ public class GanttController {
 
 
 
-        fileChooser.setInitialFileName("gantt_project_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE));
+        fileChooser.setInitialFileName("project_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE));
 
         File file = fileChooser.showSaveDialog(taskTable.getScene().getWindow());
         if (file == null) return;
@@ -337,11 +333,22 @@ public class GanttController {
         try (FileWriter writer = new FileWriter(file)) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
+                    .registerTypeAdapter(ResourceModel.class, new ResourceModelTypeAdapter())
                     .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                     .setPrettyPrinting()
                     .create();
-            // 直接序列化 ObservableList
-            gson.toJson(dataModel.getTasks(), writer);
+
+            // 构建包含完整项目数据的JSON对象
+            JsonObject project = new JsonObject();
+            project.add("tasks", gson.toJsonTree(dataModel.getTasks()));
+            project.add("resources", gson.toJsonTree(dataModel.getResources()));
+
+            gson.toJson(project, writer);
+
+
+
+//            // 直接序列化 ObservableList
+//            gson.toJson(dataModel.getTasks(), writer);
             new Alert(Alert.AlertType.INFORMATION, "项目导出成功！").show();
         } catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "导出失败：" + e.getMessage()).show();
@@ -360,20 +367,46 @@ public class GanttController {
         try (FileReader reader = new FileReader(file)) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter()) // 添加TaskModel适配器
+                    .registerTypeAdapter(ResourceModel.class, new ResourceModelTypeAdapter())
                     .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                     .create();
-//            // 直接反序列化为 ObservableList
-//            Type taskListType = new TypeToken<ObservableList<TaskModel>>(){}.getType();
-//            ObservableList<TaskModel> importedTasks = gson.fromJson(reader, taskListType);
-            // 改为反序列化为普通List
+////            // 直接反序列化为 ObservableList
+////            Type taskListType = new TypeToken<ObservableList<TaskModel>>(){}.getType();
+////            ObservableList<TaskModel> importedTasks = gson.fromJson(reader, taskListType);
+//            // 改为反序列化为普通List
+//            Type taskListType = new TypeToken<List<TaskModel>>(){}.getType();
+//            List<TaskModel> importedTasks = gson.fromJson(reader, taskListType);
+//
+//
+////            tasks.clear();
+//
+//            //使用 setAll 为直接导入（会清空原有内容）
+//            dataModel.getTasks().setAll(importedTasks);
+
+            // 解析完整项目数据
+            JsonObject project = gson.fromJson(reader, JsonObject.class);
+
+            // 先导入资源（因为任务需要引用资源）
+            Type resourceListType = new TypeToken<List<ResourceModel>>(){}.getType();
+            List<ResourceModel> importedResourcesList = gson.fromJson(
+                    project.get("resources"),
+                    resourceListType
+            );
+            ObservableList<ResourceModel> importedResources = FXCollections.observableArrayList(importedResourcesList);
+            dataModel.getResources().setAll(importedResources);
+
+            // 再导入任务（包含资源关联）
             Type taskListType = new TypeToken<List<TaskModel>>(){}.getType();
-            List<TaskModel> importedTasks = gson.fromJson(reader, taskListType);
-
-
-//            tasks.clear();
-
-            //使用 setAll 为直接导入（会清空原有内容）
+            List<TaskModel> importedTasksList = gson.fromJson(
+                    project.get("tasks"),
+                    taskListType
+            );
+            ObservableList<TaskModel> importedTasks = FXCollections.observableArrayList(importedTasksList);
             dataModel.getTasks().setAll(importedTasks);
+
+            // 重建双向关联
+            rebuildAssociations();
+
             drawGanttChart();
             new Alert(Alert.AlertType.INFORMATION, "项目导入成功！").show();
         } catch (IOException e) {
@@ -381,6 +414,42 @@ public class GanttController {
         } catch (JsonSyntaxException e) {
             new Alert(Alert.AlertType.ERROR, "文件格式错误").show();
         }
+    }
+
+    // 新增方法：重建资源与任务的关联关系
+    private void rebuildAssociations() {
+        // 清除所有现有关联
+        dataModel.getResources().forEach(res -> res.getAssignedTasks().clear());
+        dataModel.getTasks().forEach(task -> task.getAssignedResources().clear());
+
+//        // 重建任务到资源的关联
+//        for (TaskModel task : dataModel.getTasks()) {
+//            for (ResourceModel res : task.getAssignedResources()) {
+//                ResourceModel actualRes = dataModel.findResourceById(res.getId());
+//                if (actualRes != null && !actualRes.getAssignedTasks().contains(task)) {
+//                    actualRes.getAssignedTasks().add(task);
+//                    task.getAssignedResources().add(actualRes);
+//                }
+//            }
+//        }
+
+
+        // 建立新关联
+        dataModel.getTasks().forEach(task -> {
+            task.getAssignedResources().replaceAll(tempRes -> {
+                // 通过ID查找真实的资源对象
+                ResourceModel realRes = dataModel.findResourceById(tempRes.getId());
+                if (realRes != null) {
+                    // 建立双向关联
+                    realRes.getAssignedTasks().add(task);
+                    return realRes;
+                }
+                return null; // 无效资源将被过滤
+            });
+
+            // 过滤掉无效的null值
+            task.getAssignedResources().removeIf(Objects::isNull);
+        });
     }
 
 

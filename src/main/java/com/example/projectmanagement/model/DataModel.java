@@ -23,4 +23,19 @@ public class DataModel {
     public ObservableList<ResourceModel> getResources() {
         return resources;
     }
+
+
+    public ResourceModel findResourceById(String id){
+        return resources.stream()
+                .filter(r -> r.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public TaskModel findTaskById(String id){
+        return tasks.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
 }

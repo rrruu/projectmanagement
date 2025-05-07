@@ -1,7 +1,10 @@
 package com.example.projectmanagement.model;
 
+import com.google.gson.annotations.SerializedName;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class ResourceModel {
 
@@ -14,6 +17,8 @@ public class ResourceModel {
     private final SimpleStringProperty status = new SimpleStringProperty("可用"); // 新增状态属性
     private final SimpleStringProperty comment = new SimpleStringProperty();
 
+    //新增任务列表属性
+    private final ObservableList<TaskModel> assignedTasks = FXCollections.observableArrayList();
 
     // 无参构造器用于JSON反序列化
     public ResourceModel() {
@@ -32,6 +37,7 @@ public class ResourceModel {
     }
 
 
+    @SerializedName("name")
     public String getName() {
         return name.get();
     }
@@ -43,6 +49,7 @@ public class ResourceModel {
     }
 
 
+    @SerializedName("id")
     public String getId() {
         return id.get();
     }
@@ -54,6 +61,7 @@ public class ResourceModel {
     }
 
 
+    @SerializedName("phone")
     public String getPhone() {
         return phone.get();
     }
@@ -65,6 +73,7 @@ public class ResourceModel {
     }
 
 
+    @SerializedName("email")
     public String getEmail() {
         return email.get();
     }
@@ -76,6 +85,7 @@ public class ResourceModel {
     }
 
 
+    @SerializedName("type")
     public String getType() {
         return type.get();
     }
@@ -87,6 +97,7 @@ public class ResourceModel {
     }
 
 
+    @SerializedName("dailyRate")
     public double getDailyRate() {
         return dailyRate.get();
     }
@@ -98,6 +109,7 @@ public class ResourceModel {
     }
 
 
+    @SerializedName("comment")
     public String getComment() {
         return comment.get();
     }
@@ -109,6 +121,7 @@ public class ResourceModel {
     }
 
     //用于后续资源调度
+    @SerializedName("status")
     public String getStatus() {
         return status.get();
     }
@@ -117,5 +130,10 @@ public class ResourceModel {
     }
     public void setStatus(String status) {
         this.status.set(status);
+    }
+
+    @SerializedName("assignedTasks")
+    public ObservableList<TaskModel> getAssignedTasks() {
+        return assignedTasks;
     }
 }

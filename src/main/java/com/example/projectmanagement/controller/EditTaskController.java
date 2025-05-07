@@ -1,6 +1,9 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.model.DataModel;
+import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -16,6 +19,7 @@ public class EditTaskController {
     @FXML public TextField progressField;
     @FXML public TextField leaderField;
     @FXML public TextArea commentField;
+    @FXML public ListView<ResourceModel> resourceListView;//新增资源关联
 
     private TaskModel taskToEdit;
     private boolean isConfirmed = false;
@@ -30,6 +34,11 @@ public class EditTaskController {
         progressField.setText(String.valueOf(task.getProgress()));
         leaderField.setText(task.getLeader());
         commentField.setText(task.getComment());
+
+        //资源关联
+        resourceListView.setItems(DataModel.getInstance().getResources());
+        resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        resourceListView.getSelectionModel().selectAll();//选中已关联资源
     }
 
     @FXML
@@ -63,7 +72,34 @@ public class EditTaskController {
         taskToEdit.setProgress(progress);
         taskToEdit.setLeader(leaderField.getText().trim());
         taskToEdit.setComment(commentField.getText().trim());
+
+
+        //更新资源关联
+        ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
+        updateResourceAssociations(taskToEdit, selected);
     }
+
+
+    private void updateResourceAssociations(TaskModel task, ObservableList<ResourceModel> newResources){
+        //移除旧关联
+        for (ResourceModel res : task.getAssignedResources()){
+            res.getAssignedTasks().remove(task);
+        }
+        task.getAssignedResources().clear();
+
+
+        //添加新关联
+        for (ResourceModel res : newResources){
+            task.getAssignedResources().add(res);
+            if(!res.getAssignedTasks().contains(task)){
+                res.getAssignedTasks().add(task);
+            }
+        }
+
+    }
+
+
+
 
     // 以下方法与 AddTaskController 相同
     private void validateRequiredFields() {

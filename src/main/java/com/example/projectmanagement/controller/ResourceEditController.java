@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.model.ResourceModel;
+import com.example.projectmanagement.model.TaskModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -15,6 +16,7 @@ public class ResourceEditController {
     @FXML public ComboBox<String> typeCombo;
     @FXML public TextField rateField;
     @FXML public TextArea commentField;
+    @FXML public ListView<TaskModel> taskListView;//新增任务关联
 
     private ResourceModel resourceToEdit = null;
     private boolean isConfirmed = false;
@@ -39,6 +41,7 @@ public class ResourceEditController {
         typeCombo.setValue(resource.getType());
         rateField.setText(String.valueOf(resource.getDailyRate()));
         commentField.setText(resource.getComment());
+        taskListView.setItems(resource.getAssignedTasks());
     }
 
 
