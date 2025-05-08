@@ -27,13 +27,14 @@ public class ResourceDAO {
                 + "WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             bindResourceParameters(stmt, resource);
-            stmt.setString(8, resource.getId());
+//            stmt.setString(8, resource.getId());
             stmt.executeUpdate();
         }
     }
 
     private static void bindResourceParameters(PreparedStatement stmt, ResourceModel resource) throws SQLException {
 
+        //id在update方法中单独设置
         stmt.setString(1, resource.getId());
         stmt.setString(2, resource.getName());
         stmt.setString(3, resource.getPhone());

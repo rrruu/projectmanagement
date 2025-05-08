@@ -26,12 +26,14 @@ public class TaskDAO {
                 + "WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             bindTaskParameters(stmt, task);
-            stmt.setString(7, task.getId());
+//            stmt.setString(7, task.getId());
             stmt.executeUpdate();
         }
     }
 
     private static void bindTaskParameters(PreparedStatement stmt, TaskModel task) throws SQLException {
+
+        //id在update方法中单独设置
         stmt.setString(1, task.getId());
         stmt.setString(2, task.getTaskName());
         stmt.setString(3, task.getStartDate().toString());
