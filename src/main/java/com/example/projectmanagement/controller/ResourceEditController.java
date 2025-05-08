@@ -23,7 +23,7 @@ public class ResourceEditController {
     @FXML public ComboBox<String> typeCombo;
     @FXML public TextField rateField;
     @FXML public TextArea commentField;
-    @FXML public ListView<TaskModel> taskListView;//新增任务关联
+//    @FXML public ListView<TaskModel> taskListView;//新增任务关联
 
 
     private ResourceModel resourceToEdit = null;
@@ -52,11 +52,11 @@ public class ResourceEditController {
 //        taskListView.setItems(resource.getAssignedTasks());
 
 
-        // 初始化任务列表
-        taskListView.setItems(DataModel.getInstance().getTasks());
-        taskListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        // 选中已关联任务
-        taskListView.getSelectionModel().selectAll();
+//        // 初始化任务列表
+//        taskListView.setItems(DataModel.getInstance().getTasks());
+//        taskListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//        // 选中已关联任务
+//        taskListView.getSelectionModel().selectAll();
     }
 
 
@@ -128,9 +128,9 @@ public class ResourceEditController {
             //使用DAO更新资源
             ResourceDAO.update(resourceToEdit);
 
-            // 处理任务关联
-            ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
-            updateTaskAssociations(selected);
+//            // 处理任务关联
+//            ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
+//            updateTaskAssociations(selected);
 
             // 增量刷新数据
             DataModel.getInstance().loadResources();

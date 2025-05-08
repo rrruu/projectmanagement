@@ -64,6 +64,7 @@ public class DataModel {
         tasks.forEach(task -> task.getAssignedResources().clear());
         resources.forEach(res -> res.getAssignedTasks().clear());
 
+        // 重新加载数据库关联
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(
                 "SELECT * FROM task_resources")) {
             ResultSet rs = stmt.executeQuery();

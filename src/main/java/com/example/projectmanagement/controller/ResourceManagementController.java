@@ -234,6 +234,57 @@ public class ResourceManagementController {
 
 
 
+
+
+
+
+
+
+
+
+
+    @FXML
+    private void handleLinkTasks() {
+        ResourceModel selected = resourceTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "请先选择一个资源").show();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    Main.class.getResource("/com/example/projectmanagement/link_task.fxml")
+            );
+            AnchorPane root = loader.load();
+            LinkTaskController controller = loader.getController();
+            controller.setCurrentResource(selected);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("关联任务");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+
+            resourceTable.refresh(); // 刷新资源列表
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //    private void showResourceDialog(ResourceModel resource){
 //        try {
 //            //加载对话框FXML

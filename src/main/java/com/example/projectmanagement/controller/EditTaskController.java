@@ -23,7 +23,7 @@ public class EditTaskController {
     @FXML public TextField progressField;
     @FXML public TextField leaderField;
     @FXML public TextArea commentField;
-    @FXML public ListView<ResourceModel> resourceListView;//新增资源关联
+//    @FXML public ListView<ResourceModel> resourceListView;//新增资源关联
 
     private TaskModel taskToEdit;
     private boolean isConfirmed = false;
@@ -39,10 +39,10 @@ public class EditTaskController {
         leaderField.setText(task.getLeader());
         commentField.setText(task.getComment());
 
-        //资源关联
-        resourceListView.setItems(DataModel.getInstance().getResources());
-        resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        resourceListView.getSelectionModel().selectAll();//选中已关联资源
+//        //资源关联
+//        resourceListView.setItems(DataModel.getInstance().getResources());
+//        resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//        resourceListView.getSelectionModel().selectAll();//选中已关联资源
     }
 
     @FXML
@@ -82,18 +82,23 @@ public class EditTaskController {
             // 使用DAO更新任务
             TaskDAO.update(taskToEdit);
 
-            //更新资源关联
-            ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
-            updateResourceAssociations(taskToEdit, selected);
+//            //更新资源关联
+//            ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
+//            updateResourceAssociations(taskToEdit, selected);
 
 
-            // 直接更新内存中的关联，避免重新加载数据库
-            taskToEdit.getAssignedResources().setAll(selected);
-            selected.forEach(res -> {
-                if (!res.getAssignedTasks().contains(taskToEdit)) {
-                    res.getAssignedTasks().add(taskToEdit);
-                }
-            });
+//            // 直接更新内存中的关联，避免重新加载数据库
+//            taskToEdit.getAssignedResources().setAll(selected);
+//            selected.forEach(res -> {
+//                if (!res.getAssignedTasks().contains(taskToEdit)) {
+//                    res.getAssignedTasks().add(taskToEdit);
+//                }
+//            });
+
+
+            // 增量刷新数据
+            DataModel.getInstance().loadResources();
+            DataModel.getInstance().loadAssociations();
 
 
         } catch (SQLException e) {

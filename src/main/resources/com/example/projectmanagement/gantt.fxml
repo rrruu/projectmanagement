@@ -26,8 +26,9 @@
                         <Button onAction="#handleDeleteTask" text="删除任务" styleClass="mainButton"/>
                         <Button onAction="#handleExport" text="导出图片" styleClass="mainButton"/>
                         <Button onAction="#handleImportProject" text="导入项目" styleClass="mainButton"/>
-                        <Button onAction="#handleAdditionalImportProject" text="追加导入" styleClass="mainButton"/>
+<!--                        <Button onAction="#handleAdditionalImportProject" text="追加导入" styleClass="mainButton"/>-->
                         <Button onAction="#handleExportProject" text="导出项目" styleClass="mainButton"/>
+                        <Button onAction="#handleLinkResources" text="关联资源" styleClass="mainButton"/>
                     </children>
                 </HBox>
 

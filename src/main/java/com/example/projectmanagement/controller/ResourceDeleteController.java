@@ -34,10 +34,16 @@ public class ResourceDeleteController {
 
         DatabaseManager.executeTransaction(() -> {
             try {
+
+                // 先删除关联关系
+                ResourceDAO.clearResourceTasks(resourceToDelete.getId());
                 // 使用DAO删除资源
                 ResourceDAO.delete(resourceToDelete.getId());
-
-                // 增量更新数据模型
+                // 从任务中删除关联
+                DataModel.getInstance().getTasks().forEach(task ->
+                        task.getAssignedResources().remove(resourceToDelete)
+                );
+                // 删除内存数据
                 DataModel.getInstance().getResources().remove(resourceToDelete);
 
                 isConfirmed = true;

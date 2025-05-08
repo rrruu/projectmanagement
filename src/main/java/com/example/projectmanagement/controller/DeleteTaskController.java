@@ -27,13 +27,18 @@ public class DeleteTaskController {
     private void handleConfirm() {
         DatabaseManager.executeTransaction(() -> {
             try {
-                // 使用DAO进行删除
+                // 先删除关联关系
+                TaskDAO.clearTaskResources(taskToDelete.getId());
+                // 使用DAO删除任务
                 TaskDAO.delete(taskToDelete.getId());
-                confirmed = true;
+                // 从资源中删除关联
+                DataModel.getInstance().getResources().forEach(res ->
+                        res.getAssignedTasks().remove(taskToDelete)
+                );
 
-                // 增量更新数据
+                // 删除内存数据
                 DataModel.getInstance().getTasks().remove(taskToDelete);
-
+                confirmed = true;
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "删除失败").show();
                 throw new RuntimeException("删除操作失败", e);

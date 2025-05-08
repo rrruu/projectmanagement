@@ -18,6 +18,7 @@
             <Button text="添加资源" styleClass="mainButton" onAction="#handleAddResource"/>
             <Button text="编辑资源" styleClass="mainButton" onAction="#handleEditResource"/>
             <Button text="删除资源" styleClass="mainButton" onAction="#handleDeleteResource"/>
+            <Button text="关联任务" styleClass="mainButton" onAction="#handleLinkTasks"/>
         </HBox>
 
         <TableView fx:id="resourceTable">

@@ -285,6 +285,49 @@ public class GanttController {
         }
     }
 
+
+
+
+
+
+
+    @FXML
+    private void handleLinkResources() {
+        TaskModel selectedTask = taskTable.getSelectionModel().getSelectedItem();
+        if (selectedTask == null) {
+            new Alert(Alert.AlertType.WARNING, "请先选择一个任务").show();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    Main.class.getResource("/com/example/projectmanagement/link_resource.fxml")
+            );
+            AnchorPane root = loader.load();
+            LinkResourceController controller = loader.getController();
+            controller.setCurrentTask(selectedTask);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("关联资源");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+
+            drawGanttChart(); // 刷新甘特图
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
     @FXML
     private void handleExport(){
         try {
