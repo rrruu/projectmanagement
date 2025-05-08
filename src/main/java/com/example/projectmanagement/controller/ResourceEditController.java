@@ -59,33 +59,93 @@ public class ResourceEditController {
     }
 
 
+    @FXML
+    private void handleConfirm(){
+        try {
+            validateAndUpdateResource();
+            isConfirmed = true;
+            idField.getScene().getWindow().hide();
+        } catch (IllegalArgumentException e) {
+            //显示错误提示（保持在当前窗口）
+            new Alert(Alert.AlertType.ERROR,e.getMessage(), ButtonType.OK).show();
+        }
+    }
+
+
+
+    @FXML
+    private void handleCancel() {
+        isConfirmed = false;
+        idField.getScene().getWindow().hide();
+    }
+
 
 
     private void validateAndUpdateResource(){
-        //验证必填字段
-        validateRequiredFields();
-
-        //验证价格有效性
-        validateRateRange();
-
-        double rate = Double.parseDouble(rateField.getText().trim());
 
 
+        try {
+            //验证必填字段
+            validateRequiredFields();
 
-        //更新任务属性
-        resourceToEdit.setName(nameField.getText().trim());
-        resourceToEdit.setId(idField.getText().trim());
-        resourceToEdit.setPhone(phoneField.getText().trim());
-        resourceToEdit.setEmail(emailField.getText().trim());
-        resourceToEdit.setType(typeCombo.getValue().trim());
-        resourceToEdit.setDailyRate(rate);
-        resourceToEdit.setComment(commentField.getText().trim());
+            //验证价格有效性
+            validateRateRange();
 
-        // 更新任务关联
-        ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
-        updateTaskAssociations(resourceToEdit, selected);
+            double rate = Double.parseDouble(rateField.getText().trim());
+
+
+
+            //更新任务属性
+            resourceToEdit.setName(nameField.getText().trim());
+            resourceToEdit.setId(idField.getText().trim());
+            resourceToEdit.setPhone(phoneField.getText().trim());
+            resourceToEdit.setEmail(emailField.getText().trim());
+            resourceToEdit.setType(typeCombo.getValue().trim());
+            resourceToEdit.setDailyRate(rate);
+            resourceToEdit.setComment(commentField.getText().trim());
+
+            // 更新任务关联
+            ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
+            updateTaskAssociations(resourceToEdit, selected);
+
+
+            updateResourceInDatabase(resourceToEdit); //更新数据库
+            updateTaskAssociations(resourceToEdit,selected);
+
+
+            DatabaseManager.getConnection().commit();
+            DataModel.getInstance().loadAllData();//重新加载数据库
+
+
+
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "数据库错误").show();
+            rollbackTransaction();
+        }
+
 
     }
+
+
+
+    private void updateResourceInDatabase(ResourceModel resource) throws SQLException {
+        String sql = "UPDATE resources SET name=?, phone=?, email=?, type=?, daily_rate=?, status=?, comment=? " +
+                "WHERE id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, resource.getName());
+            stmt.setString(2, resource.getPhone());
+            stmt.setString(3, resource.getEmail());
+            stmt.setString(4, resource.getType());
+            stmt.setDouble(5, resource.getDailyRate());
+            stmt.setString(6, resource.getStatus());
+            stmt.setString(7, resource.getComment());
+            stmt.setString(8, resource.getId());
+            stmt.executeUpdate();
+        }
+    }
+
+
+
 
 
     private void updateTaskAssociations(ResourceModel res, ObservableList<TaskModel> newTasks) {
@@ -139,29 +199,26 @@ public class ResourceEditController {
 
     }
 
-    @FXML
-    private void handleConfirm(){
-        try {
-            validateAndUpdateResource();
-            isConfirmed = true;
-            idField.getScene().getWindow().hide();
-        } catch (IllegalArgumentException e) {
-            //显示错误提示（保持在当前窗口）
-            new Alert(Alert.AlertType.ERROR,e.getMessage(), ButtonType.OK).show();
-        }
-    }
 
-
-
-    @FXML
-    private void handleCancel() {
-        isConfirmed = false;
-        idField.getScene().getWindow().hide();
-    }
 
 
     public boolean isConfirmed() {
         return isConfirmed;
+    }
+
+
+    private void showErrorAlert(Exception e) {
+        new Alert(Alert.AlertType.ERROR,
+                "操作失败：" + e.getMessage(),
+                ButtonType.OK).show();
+    }
+
+    private void rollbackTransaction() {
+        try {
+            DatabaseManager.getConnection().rollback();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 

@@ -64,23 +64,23 @@ public class EditTaskController {
     private void validateAndUpdateTask() {
 
         try {
-        // 复用 AddTaskController 的验证逻辑
-        validateRequiredFields();
-        double progress = parseProgress();
-        validateDateRange();
+            // 复用 AddTaskController 的验证逻辑
+            validateRequiredFields();
+            double progress = parseProgress();
+            validateDateRange();
 
-        // 更新任务属性
-        taskToEdit.setTaskName(nameField.getText().trim());
-        taskToEdit.setId(idField.getText().trim());
-        taskToEdit.setStartDate(startPicker.getValue());
-        taskToEdit.setEndDate(endPicker.getValue());
-        taskToEdit.setProgress(progress);
-        taskToEdit.setLeader(leaderField.getText().trim());
-        taskToEdit.setComment(commentField.getText().trim());
+            // 更新任务属性
+            taskToEdit.setTaskName(nameField.getText().trim());
+            taskToEdit.setId(idField.getText().trim());
+            taskToEdit.setStartDate(startPicker.getValue());
+            taskToEdit.setEndDate(endPicker.getValue());
+            taskToEdit.setProgress(progress);
+            taskToEdit.setLeader(leaderField.getText().trim());
+            taskToEdit.setComment(commentField.getText().trim());
 
 
-        //更新资源关联
-        ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
+            //更新资源关联
+            ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
 
 
 
@@ -88,6 +88,8 @@ public class EditTaskController {
             updateResourceAssociations(taskToEdit, selected);
             DatabaseManager.getConnection().commit();
             DataModel.getInstance().loadAllData(); // 重新加载数据
+
+
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "数据库错误").show();
             rollbackTransaction();

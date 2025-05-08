@@ -69,21 +69,19 @@ public class ResourceAddController {
             saveResourceToDatabase(newResource);//数据库保存
             DatabaseManager.getConnection().commit();//提交事务
             DataModel.getInstance().loadResources();//重新加载数据
-            nameField.getScene().getWindow().hide();
-
-
-            //关闭窗口
             idField.getScene().getWindow().hide();
+
+
         } catch (IllegalArgumentException e) {
             showErrorAlert(e);
             rollbackTransaction();
         } catch (SQLException e) {
             showErrorAlert(new Exception("数据库操作失败：" + e.getMessage()));
+            e.printStackTrace();
             rollbackTransaction();
         }
 
-        confirmed = true;
-        nameField.getScene().getWindow().hide();
+
     }
 
     @FXML
@@ -142,7 +140,7 @@ public class ResourceAddController {
     }
 
     private void saveResourceToDatabase(ResourceModel resource) throws SQLException {
-        String sql = "INSERT INTO tasks(id, name, phone, email, type, daily_rate, status, comment) " +
+        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, status, comment) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setString(1, resource.getId());

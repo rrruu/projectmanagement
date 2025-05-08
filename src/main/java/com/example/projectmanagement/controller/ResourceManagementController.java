@@ -123,7 +123,7 @@ public class ResourceManagementController {
                     getClass().getResource("/com/example/projectmanagement/resourceadd.fxml")
             );
             AnchorPane root = loader.load();
-            ResourceAddController controller = loader.getController();
+//            ResourceAddController controller = loader.getController();
             //创建并配置对话框
             Stage dialogStage = new Stage();
             dialogStage.setTitle("添加新资源");
@@ -140,12 +140,12 @@ public class ResourceManagementController {
             // 显示窗口并等待
             dialogStage.showAndWait();
 
-
-            //获取新资源（如果有）
-            ResourceModel newResource = controller.getNewResource();
-            if(newResource != null){
-                dataModel.getResources().add(newResource);
-            }
+//
+//            //获取新资源（如果有）
+//            ResourceModel newResource = controller.getNewResource();
+//            if(newResource != null){
+//                dataModel.getResources().add(newResource);
+//            }
 
 
         } catch (IOException e) {

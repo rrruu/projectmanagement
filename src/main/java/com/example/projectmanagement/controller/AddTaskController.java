@@ -49,7 +49,7 @@ public class AddTaskController {
 
     @FXML
     private void handleCancel() {
-        nameField.getScene().getWindow().hide();
+        idField.getScene().getWindow().hide();
     }
 
     private TaskModel validateAndCreateTask() {
