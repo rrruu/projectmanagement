@@ -38,13 +38,22 @@ public class AddTaskController {
             try {
                 newTask = validateAndCreateTask();
                 TaskDAO.create(newTask);  // 使用DAO层
-                updateTaskResources(newTask); // 处理资源关联
+//                updateTaskResources(newTask); // 处理资源关联
                 DataModel.getInstance().getTasks().add(newTask); // 增量更新
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+
+
+                idField.getScene().getWindow().hide();
+
+
+            } catch (IllegalArgumentException e) {
+                showErrorAlert(e);
+                throw new RuntimeException("验证失败", e);
+            } catch (SQLException e) {
+                showErrorAlert(new Exception("数据库操作失败"));
+                throw new RuntimeException("数据库错误", e);
             }
         });
-        nameField.getScene().getWindow().hide();
+
     }
 
     @FXML

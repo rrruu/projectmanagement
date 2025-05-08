@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.ResourceDAO;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
@@ -63,23 +64,26 @@ public class ResourceAddController {
 
     @FXML
     private void handleConfirm() {
-        try{
-            //执行所有验证并创建任务
-            newResource = validateAndCreateResource();
-            saveResourceToDatabase(newResource);//数据库保存
-            DatabaseManager.getConnection().commit();//提交事务
-            DataModel.getInstance().loadResources();//重新加载数据
-            idField.getScene().getWindow().hide();
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                newResource = validateAndCreateResource();
 
+                // 使用DAO创建资源
+                ResourceDAO.create(newResource);
 
-        } catch (IllegalArgumentException e) {
-            showErrorAlert(e);
-            rollbackTransaction();
-        } catch (SQLException e) {
-            showErrorAlert(new Exception("数据库操作失败：" + e.getMessage()));
-            e.printStackTrace();
-            rollbackTransaction();
-        }
+                // 增量添加到数据模型
+                DataModel.getInstance().getResources().add(newResource);
+
+                idField.getScene().getWindow().hide();
+
+            } catch (IllegalArgumentException e) {
+                showErrorAlert(e);
+                throw new RuntimeException("验证失败", e);
+            } catch (SQLException e) {
+                showErrorAlert(new Exception("数据库操作失败"));
+                throw new RuntimeException("数据库错误", e);
+            }
+        });
 
 
     }
@@ -178,4 +182,6 @@ public class ResourceAddController {
 //    public boolean isConfirmed() {
 //        return confirmed;
 //    }
+
+
 }

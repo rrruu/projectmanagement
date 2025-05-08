@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.ResourceDAO;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
@@ -61,13 +62,18 @@ public class ResourceEditController {
 
     @FXML
     private void handleConfirm(){
-        try {
-            validateAndUpdateResource();
-            isConfirmed = true;
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                validateAndUpdateResource();
+                isConfirmed = true;
+            } catch (Exception e) {
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+                throw new RuntimeException("资源更新失败", e);
+            }
+        });
+
+        if (isConfirmed) {
             idField.getScene().getWindow().hide();
-        } catch (IllegalArgumentException e) {
-            //显示错误提示（保持在当前窗口）
-            new Alert(Alert.AlertType.ERROR,e.getMessage(), ButtonType.OK).show();
         }
     }
 
@@ -91,41 +97,67 @@ public class ResourceEditController {
             //验证价格有效性
             validateRateRange();
 
-            double rate = Double.parseDouble(rateField.getText().trim());
 
 
 
-            //更新任务属性
-            resourceToEdit.setName(nameField.getText().trim());
-            resourceToEdit.setId(idField.getText().trim());
-            resourceToEdit.setPhone(phoneField.getText().trim());
-            resourceToEdit.setEmail(emailField.getText().trim());
-            resourceToEdit.setType(typeCombo.getValue().trim());
-            resourceToEdit.setDailyRate(rate);
-            resourceToEdit.setComment(commentField.getText().trim());
 
-            // 更新任务关联
+//            //更新任务属性
+//            resourceToEdit.setName(nameField.getText().trim());
+//            resourceToEdit.setId(idField.getText().trim());
+//            resourceToEdit.setPhone(phoneField.getText().trim());
+//            resourceToEdit.setEmail(emailField.getText().trim());
+//            resourceToEdit.setType(typeCombo.getValue().trim());
+//            resourceToEdit.setDailyRate(rate);
+//            resourceToEdit.setComment(commentField.getText().trim());
+//
+//            // 更新任务关联
+//            ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
+//            updateTaskAssociations(resourceToEdit, selected);
+//
+//
+//            updateResourceInDatabase(resourceToEdit); //更新数据库
+//            updateTaskAssociations(resourceToEdit,selected);
+//
+//
+//            DatabaseManager.getConnection().commit();
+//            DataModel.getInstance().loadAllData();//重新加载数据库
+
+            // 更新资源基本信息
+            updateResourceFields();
+
+            //使用DAO更新资源
+            ResourceDAO.update(resourceToEdit);
+
+            // 处理任务关联
             ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
-            updateTaskAssociations(resourceToEdit, selected);
+            updateTaskAssociations(selected);
 
-
-            updateResourceInDatabase(resourceToEdit); //更新数据库
-            updateTaskAssociations(resourceToEdit,selected);
-
-
-            DatabaseManager.getConnection().commit();
-            DataModel.getInstance().loadAllData();//重新加载数据库
-
-
+            // 增量刷新数据
+            DataModel.getInstance().loadResources();
+            DataModel.getInstance().loadAssociations();
 
         } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "数据库错误").show();
+            new Alert(Alert.AlertType.ERROR, "数据库操作失败").show();
             rollbackTransaction();
         }
 
 
     }
 
+
+
+    private void updateResourceFields() {
+        double rate = Double.parseDouble(rateField.getText().trim());
+
+
+        resourceToEdit.setName(nameField.getText().trim());
+        resourceToEdit.setId(idField.getText().trim());
+        resourceToEdit.setPhone(phoneField.getText().trim());
+        resourceToEdit.setEmail(emailField.getText().trim());
+        resourceToEdit.setType(typeCombo.getValue().trim());
+        resourceToEdit.setDailyRate(rate);
+        resourceToEdit.setComment(commentField.getText().trim());
+    }
 
 
     private void updateResourceInDatabase(ResourceModel resource) throws SQLException {
@@ -148,28 +180,19 @@ public class ResourceEditController {
 
 
 
-    private void updateTaskAssociations(ResourceModel res, ObservableList<TaskModel> newTasks) {
-        // 删除旧关联
-        String deleteSql = "DELETE FROM task_resources WHERE resource_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(deleteSql)) {
-            stmt.setString(1, res.getId());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private void updateTaskAssociations(ObservableList<TaskModel> newTasks) {
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                // 清除旧关联
+                ResourceDAO.clearResourceTasks(resourceToEdit.getId());
 
-        // 添加新关联
-        String insertSql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(insertSql)) {
-            for (TaskModel task : newTasks) {
-                stmt.setString(1, task.getId());
-                stmt.setString(2, res.getId());
-                stmt.addBatch();
+                // 添加新关联
+                ResourceDAO.addResourceTasks(resourceToEdit.getId(), newTasks);
+
+            } catch (SQLException e) {
+                throw new RuntimeException("关联更新失败", e);
             }
-            stmt.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
 

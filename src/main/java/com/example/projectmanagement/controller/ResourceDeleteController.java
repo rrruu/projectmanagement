@@ -3,6 +3,7 @@ package com.example.projectmanagement.controller;
 import com.example.projectmanagement.db.DatabaseManager;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
+import com.example.projectmanagement.db.ResourceDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -17,7 +18,7 @@ public class ResourceDeleteController {
     @FXML
     public Label messageLabel;
     public ResourceModel resourceToDelete;
-    public boolean isconfirmed = false;
+    public boolean isConfirmed = false;
 
 
     public void setResourceToDelete(ResourceModel resource){
@@ -31,28 +32,36 @@ public class ResourceDeleteController {
     @FXML
     private void handleConfirm(){
 
-        try {
-            deleteResourceFromDatabase(resourceToDelete);
-            deleteResourceAssociations(resourceToDelete);
-            DatabaseManager.getConnection().commit();//提交事务
-            DataModel.getInstance().loadAllData();//重新加载数据
-            isconfirmed = true;
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                // 使用DAO删除资源
+                ResourceDAO.delete(resourceToDelete.getId());
+
+                // 增量更新数据模型
+                DataModel.getInstance().getResources().remove(resourceToDelete);
+
+                isConfirmed = true;
+
+            } catch (SQLException e) {
+                new Alert(Alert.AlertType.ERROR, "删除失败").show();
+                throw new RuntimeException("删除操作失败", e);
+            }
+        });
+
+        if (isConfirmed) {
             messageLabel.getScene().getWindow().hide();
-        } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "删除失败").show();
-            rollbackTransaction();
         }
 
     }
 
     @FXML
     private void handleCancel(){
-        isconfirmed = false;
+        isConfirmed = false;
         messageLabel.getScene().getWindow().hide();
     }
 
     public boolean isConfirmed() {
-        return isconfirmed;
+        return isConfirmed;
     }
 
 

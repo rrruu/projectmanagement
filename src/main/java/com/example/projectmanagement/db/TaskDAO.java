@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,15 +54,19 @@ public class TaskDAO {
     }
 
     private static TaskModel mapResultSetToTask(ResultSet rs) throws SQLException {
-        return new TaskModel(
-                rs.getString("name"),
-                rs.getString("id"),
-                LocalDate.parse(rs.getString("start_date")),
-                LocalDate.parse(rs.getString("end_date")),
-                rs.getDouble("progress"),
-                rs.getString("leader"),
-                rs.getString("comment")
-        );
+        try {
+            return new TaskModel(
+                    rs.getString("name"),
+                    rs.getString("id"),
+                    LocalDate.parse(rs.getString("start_date")),
+                    LocalDate.parse(rs.getString("end_date")),
+                    rs.getDouble("progress"),
+                    rs.getString("leader"),
+                    rs.getString("comment")
+            );
+        } catch (DateTimeParseException e) {
+            throw new SQLException("Invalid date format in database", e);
+        }
     }
 
 

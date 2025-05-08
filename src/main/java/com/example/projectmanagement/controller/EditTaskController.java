@@ -52,12 +52,13 @@ public class EditTaskController {
                 validateAndUpdateTask();
                 isConfirmed = true;
             } catch (Exception e) {
-                throw new RuntimeException("Task update failed", e);
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+                throw new RuntimeException("任务更新失败", e);
             }
         });
 
         if (isConfirmed) {
-            nameField.getScene().getWindow().hide();
+            idField.getScene().getWindow().hide();
         }
     }
 
@@ -72,9 +73,12 @@ public class EditTaskController {
         try {
             // 复用 AddTaskController 的验证逻辑
             validateRequiredFields();
-            double progress = parseProgress();
+
             validateDateRange();
 
+
+            //更新任务基本信息
+            updateTaskFields();
             // 使用DAO更新任务
             TaskDAO.update(taskToEdit);
 
@@ -83,19 +87,34 @@ public class EditTaskController {
             updateResourceAssociations(taskToEdit, selected);
 
 
-            // 增量更新数据模型
-            DataModel.getInstance().loadTasks();
-            DataModel.getInstance().loadAssociations();
+            // 直接更新内存中的关联，避免重新加载数据库
+            taskToEdit.getAssignedResources().setAll(selected);
+            selected.forEach(res -> {
+                if (!res.getAssignedTasks().contains(taskToEdit)) {
+                    res.getAssignedTasks().add(taskToEdit);
+                }
+            });
 
 
         } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "数据库错误").show();
+            new Alert(Alert.AlertType.ERROR, "数据库操作失败").show();
             rollbackTransaction();
         }
     }
 
 
 
+    private void updateTaskFields(){
+        double progress = parseProgress();
+
+        taskToEdit.setTaskName(nameField.getText().trim());
+        taskToEdit.setId(idField.getText().trim());
+        taskToEdit.setStartDate(startPicker.getValue());
+        taskToEdit.setEndDate(endPicker.getValue());
+        taskToEdit.setProgress(progress);
+        taskToEdit.setLeader(leaderField.getText().trim());
+        taskToEdit.setComment(commentField.getText().trim());
+    }
 
 
     private void updateTaskInDatabase(TaskModel task) throws SQLException {

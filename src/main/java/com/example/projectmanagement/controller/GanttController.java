@@ -177,7 +177,7 @@ public class GanttController {
             );
 
             AnchorPane root = loader.load();
-            AddTaskController controller = loader.getController();
+//            AddTaskController controller = loader.getController();
 
             // 创建并配置对话框
             Stage dialogStage = new Stage();

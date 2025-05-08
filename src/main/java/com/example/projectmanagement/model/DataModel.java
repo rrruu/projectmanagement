@@ -60,12 +60,18 @@ public class DataModel {
 
     // 加载关联关系
     public void loadAssociations() {
+        // 先清空现有关联
+        tasks.forEach(task -> task.getAssignedResources().clear());
+        resources.forEach(res -> res.getAssignedTasks().clear());
+
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(
                 "SELECT * FROM task_resources")) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                TaskModel task = findTaskById(rs.getString("task_id"));
-                ResourceModel res = findResourceById(rs.getString("resource_id"));
+                String taskId = rs.getString("task_id");
+                String resourceId = rs.getString("resource_id");
+                TaskModel task = findTaskById(taskId);
+                ResourceModel res = findResourceById(resourceId);
                 if (task != null && res != null) {
                     task.getAssignedResources().add(res);
                     res.getAssignedTasks().add(task);

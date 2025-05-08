@@ -64,9 +64,11 @@ public class DatabaseManager {
     public static void executeTransaction(Runnable operation) {
         Connection conn = getConnection();
         try {
+            boolean originalAutoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             operation.run();
             conn.commit();
+            conn.setAutoCommit(originalAutoCommit); // 恢复原始状态
         } catch (Exception e) {
             try {
                 conn.rollback();
@@ -74,13 +76,9 @@ public class DatabaseManager {
                 ex.printStackTrace();
             }
             throw new RuntimeException("Transaction failed", e);
-        } finally {
-            try {
-                conn.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+
+
     }
 
 

@@ -71,4 +71,34 @@ public class ResourceDAO {
 
 
 
+    public static void delete(String resourceId) throws SQLException {
+        String sql = "DELETE FROM resources WHERE id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, resourceId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public static void clearResourceTasks(String resourceId) throws SQLException {
+        String sql = "DELETE FROM task_resources WHERE resource_id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, resourceId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public static void addResourceTasks(String resourceId, List<TaskModel> tasks) throws SQLException {
+        String sql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            for (TaskModel task : tasks) {
+                stmt.setString(1, task.getId());
+                stmt.setString(2, resourceId);
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        }
+    }
+
+
+
 }
