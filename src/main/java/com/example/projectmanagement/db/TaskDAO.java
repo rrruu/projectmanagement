@@ -16,7 +16,7 @@ public class TaskDAO {
         String sql = "INSERT INTO tasks(id, name, start_date, end_date, progress, leader, comment) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            bindTaskParameters(stmt, task);
+            bindTaskParametersforcreate(stmt, task);
             stmt.executeUpdate();
         }
     }
@@ -25,13 +25,13 @@ public class TaskDAO {
         String sql = "UPDATE tasks SET name=?, start_date=?, end_date=?, progress=?, leader=?, comment=? "
                 + "WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            bindTaskParameters(stmt, task);
+            bindTaskParametersforupdate(stmt, task);
 //            stmt.setString(7, task.getId());
             stmt.executeUpdate();
         }
     }
 
-    private static void bindTaskParameters(PreparedStatement stmt, TaskModel task) throws SQLException {
+    private static void bindTaskParametersforcreate(PreparedStatement stmt, TaskModel task) throws SQLException {
 
         //id在update方法中单独设置
         stmt.setString(1, task.getId());
@@ -41,6 +41,18 @@ public class TaskDAO {
         stmt.setDouble(5, task.getProgress());
         stmt.setString(6, task.getLeader());
         stmt.setString(7, task.getComment());
+    }
+
+    private static void bindTaskParametersforupdate(PreparedStatement stmt, TaskModel task) throws SQLException {
+
+
+        stmt.setString(1, task.getTaskName());
+        stmt.setString(2, task.getStartDate().toString());
+        stmt.setString(3, task.getEndDate().toString());
+        stmt.setDouble(4, task.getProgress());
+        stmt.setString(5, task.getLeader());
+        stmt.setString(6, task.getComment());
+        stmt.setString(7, task.getId());
     }
 
     public static List<TaskModel> findAll() throws SQLException {

@@ -16,7 +16,7 @@ public class ResourceDAO {
         String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, status, comment) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            bindResourceParameters(stmt, resource);
+            bindResourceParametersForCreate(stmt, resource);
             stmt.executeUpdate();
         }
     }
@@ -26,13 +26,13 @@ public class ResourceDAO {
         String sql = "UPDATE resources SET name=?, phone=?, email=?, type=?, daily_rate=?, status=?, comment=? "
                 + "WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            bindResourceParameters(stmt, resource);
+            bindResourceParametersForUpdate(stmt, resource);
 //            stmt.setString(8, resource.getId());
             stmt.executeUpdate();
         }
     }
 
-    private static void bindResourceParameters(PreparedStatement stmt, ResourceModel resource) throws SQLException {
+    private static void bindResourceParametersForCreate(PreparedStatement stmt, ResourceModel resource) throws SQLException {
 
         //id在update方法中单独设置
         stmt.setString(1, resource.getId());
@@ -43,6 +43,21 @@ public class ResourceDAO {
         stmt.setDouble(6, resource.getDailyRate());
         stmt.setString(7, resource.getStatus());
         stmt.setString(8, resource.getComment());
+
+    }
+
+    private static void bindResourceParametersForUpdate(PreparedStatement stmt, ResourceModel resource) throws SQLException {
+
+
+
+        stmt.setString(1, resource.getName());
+        stmt.setString(2, resource.getPhone());
+        stmt.setString(3, resource.getEmail());
+        stmt.setString(4, resource.getType());
+        stmt.setDouble(5, resource.getDailyRate());
+        stmt.setString(6, resource.getStatus());
+        stmt.setString(7, resource.getComment());
+        stmt.setString(8, resource.getId());
 
     }
 
