@@ -59,4 +59,29 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
+
+    public static void executeTransaction(Runnable operation) {
+        Connection conn = getConnection();
+        try {
+            conn.setAutoCommit(false);
+            operation.run();
+            conn.commit();
+        } catch (Exception e) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            throw new RuntimeException("Transaction failed", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

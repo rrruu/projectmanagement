@@ -1,7 +1,9 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.TaskDAO;
 import com.example.projectmanagement.model.DataModel;
+import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,19 +34,17 @@ public class AddTaskController {
 
     @FXML
     private void handleOk() {
-        try {
-            newTask = validateAndCreateTask();
-            saveTaskToDatabase(newTask); // 新增数据库保存
-            DatabaseManager.getConnection().commit(); // 提交事务
-            DataModel.getInstance().loadTasks(); // 重新加载数据
-            nameField.getScene().getWindow().hide();
-        } catch (IllegalArgumentException e) {
-            showErrorAlert(e);
-            rollbackTransaction();
-        } catch (SQLException e){
-            showErrorAlert(new Exception("数据库操作失败：" + e.getMessage()));
-            rollbackTransaction();
-        }
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                newTask = validateAndCreateTask();
+                TaskDAO.create(newTask);  // 使用DAO层
+                updateTaskResources(newTask); // 处理资源关联
+                DataModel.getInstance().getTasks().add(newTask); // 增量更新
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        nameField.getScene().getWindow().hide();
     }
 
     @FXML
@@ -160,6 +160,19 @@ public class AddTaskController {
             DatabaseManager.getConnection().rollback();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+
+
+    private void updateTaskResources(TaskModel task) throws SQLException {
+        String sql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            for (ResourceModel res : task.getAssignedResources()) {
+                stmt.setString(1, task.getId());
+                stmt.setString(2, res.getId());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.TaskDAO;
 import com.example.projectmanagement.model.TaskModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -24,16 +25,23 @@ public class DeleteTaskController {
 
     @FXML
     private void handleConfirm() {
-        try {
-            deleteTaskFromDatabase(taskToDelete);
-            deleteTaskAssociations(taskToDelete);
-            DatabaseManager.getConnection().commit();//提交事务
-            DataModel.getInstance().loadAllData(); // 重新加载数据
-            confirmed = true;
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                // 使用DAO进行删除
+                TaskDAO.delete(taskToDelete.getId());
+                confirmed = true;
+
+                // 增量更新数据
+                DataModel.getInstance().getTasks().remove(taskToDelete);
+
+            } catch (SQLException e) {
+                new Alert(Alert.AlertType.ERROR, "删除失败").show();
+                throw new RuntimeException("删除操作失败", e);
+            }
+        });
+
+        if (confirmed) {
             messageLabel.getScene().getWindow().hide();
-        } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "删除失败").show();
-            rollbackTransaction();
         }
     }
 

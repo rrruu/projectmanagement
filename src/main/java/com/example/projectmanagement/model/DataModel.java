@@ -2,6 +2,8 @@
 package com.example.projectmanagement.model;
 
 import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.ResourceDAO;
+import com.example.projectmanagement.db.TaskDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -9,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class DataModel {
     private static DataModel instance = new DataModel();
@@ -34,52 +37,29 @@ public class DataModel {
     //加载任务
     public void loadTasks(){
         tasks.clear();
-        try(PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(
-                "SELECT * FROM tasks"
-        )){
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()){
-                TaskModel task = new TaskModel(
-                        rs.getString("name"),
-                        rs.getString("id"),
-                        LocalDate.parse(rs.getString("start_date")),
-                        LocalDate.parse(rs.getString("end_date")),
-                        rs.getDouble("progress"),
-                        rs.getString("leader"),
-                        rs.getString("comment")
-                );
-                tasks.add(task);
-            }
+        try {
+            List<TaskModel> newTasks = TaskDAO.findAll();
+            tasks.setAll(newTasks);
+            loadAssociations(); // 加载关联关系
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataLoadingException("Failed to load tasks", e);
         }
     }
 
     // 加载资源
     public void loadResources() {
         resources.clear();
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(
-                "SELECT * FROM resources")) {
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                ResourceModel res = new ResourceModel(
-                        rs.getString("name"),
-                        rs.getString("id"),
-                        rs.getString("phone"),
-                        rs.getString("email"),
-                        rs.getString("type"),
-                        rs.getDouble("daily_rate"),
-                        rs.getString("comment")
-                );
-                resources.add(res);
-            }
+        try {
+            List<ResourceModel> newResources = ResourceDAO.findAll();
+            resources.setAll(newResources);
+            loadAssociations();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataLoadingException("Failed to load resources", e);
         }
     }
 
     // 加载关联关系
-    private void loadAssociations() {
+    public void loadAssociations() {
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(
                 "SELECT * FROM task_resources")) {
             ResultSet rs = stmt.executeQuery();
@@ -117,5 +97,13 @@ public class DataModel {
                 .filter(t -> t.getId().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+
+
+    // 新增自定义异常
+    private static class DataLoadingException extends RuntimeException {
+        public DataLoadingException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.TaskDAO;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
@@ -46,12 +47,17 @@ public class EditTaskController {
 
     @FXML
     private void handleOk() {
-        try {
-            validateAndUpdateTask();
-            isConfirmed = true;
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                validateAndUpdateTask();
+                isConfirmed = true;
+            } catch (Exception e) {
+                throw new RuntimeException("Task update failed", e);
+            }
+        });
+
+        if (isConfirmed) {
             nameField.getScene().getWindow().hide();
-        } catch (IllegalArgumentException e) {
-            new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK).show();
         }
     }
 
@@ -69,25 +75,17 @@ public class EditTaskController {
             double progress = parseProgress();
             validateDateRange();
 
-            // 更新任务属性
-            taskToEdit.setTaskName(nameField.getText().trim());
-            taskToEdit.setId(idField.getText().trim());
-            taskToEdit.setStartDate(startPicker.getValue());
-            taskToEdit.setEndDate(endPicker.getValue());
-            taskToEdit.setProgress(progress);
-            taskToEdit.setLeader(leaderField.getText().trim());
-            taskToEdit.setComment(commentField.getText().trim());
-
+            // 使用DAO更新任务
+            TaskDAO.update(taskToEdit);
 
             //更新资源关联
             ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
-
-
-
-            updateTaskInDatabase(taskToEdit); // 更新数据库
             updateResourceAssociations(taskToEdit, selected);
-            DatabaseManager.getConnection().commit();
-            DataModel.getInstance().loadAllData(); // 重新加载数据
+
+
+            // 增量更新数据模型
+            DataModel.getInstance().loadTasks();
+            DataModel.getInstance().loadAssociations();
 
 
         } catch (SQLException e) {
@@ -121,29 +119,16 @@ public class EditTaskController {
 
 
 
-    private void updateResourceAssociations(TaskModel task, ObservableList<ResourceModel> newResources){
-// 删除旧关联
-        String deleteSql = "DELETE FROM task_resources WHERE task_id=?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(deleteSql)) {
-            stmt.setString(1, task.getId());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        // 插入新关联
-        String insertSql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(insertSql)) {
-            for (ResourceModel res : newResources) {
-                stmt.setString(1, task.getId());
-                stmt.setString(2, res.getId());
-                stmt.addBatch();
+    private void updateResourceAssociations(TaskModel task, ObservableList<ResourceModel> newResources) {
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                // 使用DAO处理关联
+                TaskDAO.clearTaskResources(task.getId());
+                TaskDAO.addTaskResources(task.getId(), newResources);
+            } catch (SQLException e) {
+                throw new RuntimeException("关联更新失败", e);
             }
-            stmt.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        });
     }
 
 
