@@ -11,8 +11,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LinkResourceController {
     @FXML
@@ -53,9 +56,32 @@ public class LinkResourceController {
                         if (empty || item == null) {
                             setGraphic(null);
                             setText(null);
+//                            setTooltip(null);
                         } else {
+                            boolean isAvailable = isResourceAvailable(item);
+
                             checkBox.setText(item.getName() + " (" + item.getId() + ")");
                             checkBox.setSelected(resourceListView.getSelectionModel().getSelectedItems().contains(item));
+
+
+                            // 设置不可用状态
+                            checkBox.setDisable(!isAvailable);
+                            setDisable(!isAvailable); // 整行不可选
+
+                            if (!isAvailable) {
+                                setStyle("-fx-opacity: 0.6; -fx-background-color: #ffeeee;");
+//                                Tooltip tooltip = new Tooltip("该资源存在时间冲突");
+//
+//                                checkBox.setTooltip(tooltip);
+//                                setTooltip(tooltip);//附加整行到ListCell
+
+                            } else {
+//                                checkBox.setTooltip(null);//清除提示
+//                                setTooltip(null); // 清除 tooltip，防止复用 cell 时错误提示
+                                setStyle("");
+                            }
+
+
                             setGraphic(checkBox);
                         }
                     }
@@ -88,7 +114,18 @@ public class LinkResourceController {
     private void handleConfirm() {
         ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
 
+        // 验证选中的资源是否全部可用
+        List<ResourceModel> invalidResources = new ArrayList<>();
+        for (ResourceModel res : selected) {
+            if (!isResourceAvailable(res)) {
+                invalidResources.add(res);
+            }
+        }
 
+        if (!invalidResources.isEmpty()) {
+            showConflictAlert(invalidResources);
+            return;
+        }
 
         //更新数据库关联
         updateResourceAssociations(currentTask, selected);
@@ -209,6 +246,23 @@ public class LinkResourceController {
         currentTask.getAssignedResources().forEach(res ->
                 resourceListView.getSelectionModel().select(res)
         );
+    }
+
+
+
+    // 新增冲突提示方法
+    private void showConflictAlert(List<ResourceModel> invalidResources) {
+        StringBuilder message = new StringBuilder("以下资源存在时间冲突：\n");
+        for (ResourceModel res : invalidResources) {
+            message.append("• ").append(res.getName()).append(" (").append(res.getId()).append(")\n");
+        }
+        message.append("\n请切换到'可用资源'视图选择可用资源");
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("时间冲突警告");
+        alert.setHeaderText("存在不可用的资源选择");
+        alert.setContentText(message.toString());
+        alert.showAndWait();
     }
 
 

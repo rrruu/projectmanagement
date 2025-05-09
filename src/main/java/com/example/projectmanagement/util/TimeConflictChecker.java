@@ -29,4 +29,23 @@ public class TimeConflictChecker {
     }
 
 
+
+    // 新增批量检查方法
+    public static boolean hasAnyConflict(ResourceModel resource, List<TaskModel> tasks) {
+        return tasks.stream().anyMatch(task ->
+                resource.getAssignedTasks().stream()
+                        .filter(t -> t != task)
+                        .anyMatch(t -> hasTimeConflict(task, t))
+        );
+    }
+
+    public static boolean hasAnyConflict(TaskModel task, List<ResourceModel> resources) {
+        return resources.stream().anyMatch(res ->
+                res.getAssignedTasks().stream()
+                        .filter(t -> t != task)
+                        .anyMatch(t -> hasTimeConflict(task, t))
+        );
+    }
+
+
 }

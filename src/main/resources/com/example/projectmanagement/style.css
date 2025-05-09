@@ -184,6 +184,15 @@
     -fx-background-color: #ffeeee;
 }
 
+/*关联窗口内提示框样式*/
+
+.tooltip {
+    -fx-font-size: 12px;
+    -fx-background-color: #fff3cd; /* 浅黄色背景 */
+    -fx-text-fill: #856404;        /* 深黄色文字 */
+    -fx-padding: 8px;
+    -fx-border-color: #ffeeba;
+}
 
 
 
