@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -71,6 +72,7 @@ public class GanttController {
     @FXML private TableColumn<TaskModel, Number> progressColumn;
     @FXML private TableColumn<TaskModel, String> leaderColumn;
     @FXML private TableColumn<TaskModel, String> commentColumn;
+    @FXML private TableColumn<TaskModel, Number> costColumn;
     @FXML private Canvas ganttCanvas;
     @FXML private ScrollPane ganttScrollPane;
 
@@ -107,6 +109,11 @@ public class GanttController {
         leaderColumn.setCellValueFactory(new PropertyValueFactory<>("leader"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
 
+
+        //任务成本列
+//        TableColumn<TaskModel, Number> costColumn = new TableColumn<>("任务成本");
+        costColumn.setCellValueFactory(cellData -> cellData.getValue().costProperty());
+//        taskTable.getColumns().add(costColumn);
 
 
         // 新增关联资源列

@@ -3,6 +3,7 @@ package com.example.projectmanagement.model;
 import com.google.gson.annotations.SerializedName;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
@@ -21,9 +22,41 @@ public class TaskModel {
     private final SimpleDoubleProperty progress;
     private final SimpleStringProperty leader;
     private final SimpleStringProperty comment;
+    private final ReadOnlyDoubleWrapper cost;
 
     //新增资源列表属性
     private final ObservableList<ResourceModel> assignedResources = FXCollections.observableArrayList();
+
+
+
+    // 改进点1：优化监听器初始化
+    private void initListeners() {
+        // 日期变化监听（同时影响工期和成本）
+        startDate.addListener((obs, oldVal, newVal) -> {
+            updateDuration();
+            calculateCost();
+        });
+
+        endDate.addListener((obs, oldVal, newVal) -> {
+            updateDuration();
+            calculateCost();
+        });
+
+        // 资源列表变化监听
+        assignedResources.addListener((ListChangeListener<ResourceModel>) c -> {
+            calculateCost();
+            // 同时监听资源单价变化
+            while (c.next()) {
+                c.getAddedSubList().forEach(res ->
+                        res.dailyRateProperty().addListener((obs, o, n) -> calculateCost())
+                );
+                c.getRemoved().forEach(res ->
+                        res.dailyRateProperty().removeListener((obs, o, n) -> calculateCost())
+                );
+            }
+        });
+    }
+
 
 
 
@@ -37,6 +70,10 @@ public class TaskModel {
         this.leader = new SimpleStringProperty();
         this.comment = new SimpleStringProperty();
         this.duration = new ReadOnlyIntegerWrapper(0);
+        this.cost = new ReadOnlyDoubleWrapper(0);
+
+        initListeners(); // 初始化监听器
+        calculateCost(); // 初始计算成本
     }
 
     //有参构造函数
@@ -60,9 +97,13 @@ public class TaskModel {
         this.duration = new ReadOnlyIntegerWrapper(
                 (int) ChronoUnit.DAYS.between(startDate, endDate) + 1
         );
-        // 监听日期变化自动更新工期
-        this.startDate.addListener((obs, oldVal, newVal) -> updateDuration());
-        this.endDate.addListener((obs, oldVal, newVal) -> updateDuration());
+
+        this.cost = new ReadOnlyDoubleWrapper(0);
+
+
+        initListeners(); // 初始化监听器
+        calculateCost(); // 初始计算成本
+
     }
 
     private void updateDuration() {
@@ -174,14 +215,41 @@ public class TaskModel {
     }
 
 
+    public ReadOnlyDoubleProperty costProperty() {
+        return cost.getReadOnlyProperty();
+    }
 
-    // TaskModel.java 添加关联资源展示方法
+    @SerializedName("cost")
+    public double getCost(){
+        return  cost.get();
+    }
+
+    // 关联资源展示方法
     public String getAssignedResourcesInfo() {
         return assignedResources.stream()
                 .map(res -> res.getName() + "(" + res.getId() + ")")
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
     }
+
+    private void calculateCost() {
+        try {
+            double total = getAssignedResources().stream()
+                    .mapToDouble(ResourceModel::getDailyRate)
+                    .sum() * getDuration();
+            cost.set(total);
+        } catch (Exception e) {
+            // 异常处理（例如资源未正确初始化时）
+            cost.set(0);
+        }
+    }
+
+//    //任务成本计算
+//    public double getCost() {
+//        return getAssignedResources().stream()
+//                .mapToDouble(ResourceModel::getDailyRate)
+//                .sum() * getDuration();
+//    }
 
 
 

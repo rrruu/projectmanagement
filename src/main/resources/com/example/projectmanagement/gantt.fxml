@@ -34,14 +34,15 @@
 
                 <TableView fx:id="taskTable" prefHeight="200">
                     <columns>
-                        <TableColumn fx:id="taskNameColumn" prefWidth="200" text="任务名称" />
+                        <TableColumn fx:id="taskNameColumn" prefWidth="150" text="任务名称" />
                         <TableColumn fx:id="idColumn" prefWidth="150" text="ID" />
-                        <TableColumn fx:id="startDateColumn" prefWidth="150" text="开始日期" />
-                        <TableColumn fx:id="endDateColumn" prefWidth="150" text="结束日期" />
+                        <TableColumn fx:id="startDateColumn" prefWidth="100" text="开始日期" />
+                        <TableColumn fx:id="endDateColumn" prefWidth="100" text="结束日期" />
                         <TableColumn fx:id="durationColumn" prefWidth="150" text="工期" />
                         <TableColumn fx:id="progressColumn" prefWidth="150" text="完成进度" />
                         <TableColumn fx:id="leaderColumn" prefWidth="150" text="负责人" />
                         <TableColumn fx:id="commentColumn" prefWidth="150" text="备注" />
+                        <TableColumn fx:id="costColumn" prefWidth="150" text="任务成本"/>
                     </columns>
                 </TableView>
 
