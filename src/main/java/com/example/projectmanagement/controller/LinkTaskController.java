@@ -6,21 +6,24 @@ import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
 import com.example.projectmanagement.db.ResourceDAO;
+import com.example.projectmanagement.util.TimeConflictChecker;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.util.Callback;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LinkTaskController {
     @FXML
     private ListView<TaskModel> taskListView;
 
     private ResourceModel currentResource;
+
+    private boolean showAvailableOnly = false;
 
     public void setCurrentResource(ResourceModel resource) {
         this.currentResource = resource;
@@ -54,8 +57,10 @@ public class LinkTaskController {
                             setGraphic(null);
                             setText(null);
                         } else {
+
                             checkBox.setText(item.getTaskName() + " (" + item.getId() + ")");
                             checkBox.setSelected(taskListView.getSelectionModel().getSelectedItems().contains(item));
+
                             setGraphic(checkBox);
                         }
                     }
@@ -160,5 +165,49 @@ public class LinkTaskController {
             DataModel.getInstance().getResources().set(index, r);
         });
     }
+
+
+
+    private void updateTaskList() {
+        if (showAvailableOnly) {
+            taskListView.setItems(getAvailableTasks());
+        } else {
+            taskListView.setItems(DataModel.getInstance().getTasks());
+        }
+    }
+
+    private ObservableList<TaskModel> getAvailableTasks() {
+        ObservableList<TaskModel> availableTasks = FXCollections.observableArrayList();
+
+        for (TaskModel task : DataModel.getInstance().getTasks()) {
+            if (isTaskAvailable(task)) {
+                availableTasks.add(task);
+            }
+        }
+        return availableTasks;
+    }
+
+    private boolean isTaskAvailable(TaskModel task) {
+        // 检查是否与当前资源已有任务冲突
+        for (TaskModel assignedTask : currentResource.getAssignedTasks()) {
+            if (assignedTask != task && // 排除当前任务自身
+                    TimeConflictChecker.hasTimeConflict(task, assignedTask)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @FXML
+    private void handleToggleAvailabilityFilter() {
+        showAvailableOnly = !showAvailableOnly;
+        updateTaskList();
+        // 更新按钮文本
+        Button btn = (Button) taskListView.getScene().lookup("#toggleAvailabilityBtn");
+        btn.setText(showAvailableOnly ? "显示所有任务" : "显示可用任务");
+    }
+
+
+
 
 }

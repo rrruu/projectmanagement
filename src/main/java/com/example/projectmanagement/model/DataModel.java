@@ -119,4 +119,34 @@ public class DataModel {
             super(message, cause);
         }
     }
+
+
+
+    /**
+     * 获取资源的所有关联任务（包括通过其他任务间接关联的）
+     */
+    public ObservableList<TaskModel> getAllRelatedTasks(ResourceModel resource) {
+        ObservableList<TaskModel> allTasks = FXCollections.observableArrayList();
+        resource.getAssignedTasks().forEach(task -> {
+            if (!allTasks.contains(task)) {
+                allTasks.add(task);
+            }
+        });
+        return allTasks;
+    }
+
+    /**
+     * 获取任务的所有关联资源（包括通过其他资源间接关联的）
+     */
+    public ObservableList<ResourceModel> getAllRelatedResources(TaskModel task) {
+        ObservableList<ResourceModel> allResources = FXCollections.observableArrayList();
+        task.getAssignedResources().forEach(res -> {
+            if (!allResources.contains(res)) {
+                allResources.add(res);
+            }
+        });
+        return allResources;
+    }
+
+
 }

@@ -166,6 +166,28 @@
 
 
 
+/* 添加不可用状态样式 */
+.list-cell:disabled {
+    -fx-opacity: 0.8;
+    -fx-background-color: #f5f5f5;
+}
+
+.availability-warning {
+    -fx-text-fill: #d9534f;
+    -fx-font-weight: bold;
+}
+
+
+/* 冲突资源样式 */
+.conflict-resource {
+    -fx-opacity: 0.6;
+    -fx-background-color: #ffeeee;
+}
+
+
+
+
+
 
 
 

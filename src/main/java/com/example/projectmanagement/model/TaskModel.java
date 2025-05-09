@@ -27,21 +27,6 @@ public class TaskModel {
 
 
 
-//    public TaskModel(String taskName, LocalDate startDate, LocalDate endDate) {
-//
-//        //校验开始日期和结束日期正确性
-//        if (startDate.isAfter(endDate)) {
-//            throw new IllegalArgumentException("结束日期不能早于开始日期");
-//        }
-//
-//        this.taskName = new SimpleStringProperty(taskName);
-//        this.startDate = new SimpleObjectProperty<>(startDate);
-//        this.endDate = new SimpleObjectProperty<>(endDate);
-//    }
-
-
-
-
     // 添加无参构造函数
     public TaskModel() {
         this.taskName = new SimpleStringProperty();
@@ -114,6 +99,9 @@ public class TaskModel {
         return startDate;
     }
     public void setStartDate(LocalDate startDate) {
+        if (endDate != null && startDate.isAfter(endDate.get())) {
+            throw new IllegalArgumentException("开始日期不能晚于结束日期");
+        }
         this.startDate.set(startDate);
     }
 
@@ -126,6 +114,9 @@ public class TaskModel {
         return endDate;
     }
     public void setEndDate(LocalDate endDate) {
+        if (startDate != null && endDate.isBefore(startDate.get())) {
+            throw new IllegalArgumentException("结束日期不能早于开始日期");
+        }
         this.endDate.set(endDate);
     }
 

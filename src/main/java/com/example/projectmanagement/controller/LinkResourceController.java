@@ -5,12 +5,11 @@ import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
 import com.example.projectmanagement.db.TaskDAO;
+import com.example.projectmanagement.util.TimeConflictChecker;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.util.Callback;
 
 import java.sql.SQLException;
@@ -20,6 +19,7 @@ public class LinkResourceController {
     private ListView<ResourceModel> resourceListView;
 
     private TaskModel currentTask;
+    private boolean showAvailableOnly = false;
 
     public void setCurrentTask(TaskModel task) {
         this.currentTask = task;
@@ -70,6 +70,7 @@ public class LinkResourceController {
                 resourceListView.getSelectionModel().select(res)
         );
     }
+
 
 
     @FXML
@@ -163,6 +164,51 @@ public class LinkResourceController {
             int index = DataModel.getInstance().getTasks().indexOf(t);
             DataModel.getInstance().getTasks().set(index, t);
         });
+    }
+
+
+    private void updateResourceList() {
+        if (showAvailableOnly) {
+            resourceListView.setItems(getAvailableResources());
+        } else {
+            resourceListView.setItems(DataModel.getInstance().getResources());
+        }
+    }
+
+
+
+
+
+
+    private ObservableList<ResourceModel> getAvailableResources() {
+        ObservableList<ResourceModel> availableResources = FXCollections.observableArrayList();
+
+        for (ResourceModel res : DataModel.getInstance().getResources()) {
+            if (isResourceAvailable(res)) {
+                availableResources.add(res);
+            }
+        }
+        return availableResources;
+    }
+
+    private boolean isResourceAvailable(ResourceModel resource) {
+        // 获取该资源所有已关联任务
+        for (TaskModel associatedTask : resource.getAssignedTasks()) {
+            if (associatedTask != currentTask && // 排除当前任务自身
+                    TimeConflictChecker.hasTimeConflict(currentTask, associatedTask)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @FXML
+    private void handleToggleAvailabilityFilter() {
+        showAvailableOnly = !showAvailableOnly;
+        updateResourceList();
+        // 更新按钮文本
+        Button btn = (Button) resourceListView.getScene().lookup("#toggleAvailabilityBtn");
+        btn.setText(showAvailableOnly ? "显示所有资源" : "显示可用资源");
     }
 
 
