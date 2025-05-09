@@ -64,18 +64,18 @@ public class DatabaseManager {
     public static void executeTransaction(Runnable operation) {
         Connection conn = getConnection();
         try {
-            boolean originalAutoCommit = conn.getAutoCommit();
-            conn.setAutoCommit(false);
-            operation.run();
-            conn.commit();
-            conn.setAutoCommit(originalAutoCommit); // 恢复原始状态
+            boolean originalAutoCommit = conn.getAutoCommit();//记录原始状态
+            conn.setAutoCommit(false);//开启事务
+            operation.run();//执行传入的业务逻辑
+            conn.commit();  //提交事务
+            conn.setAutoCommit(originalAutoCommit); // 恢复auto-commit原始状态
         } catch (Exception e) {
             try {
-                conn.rollback();
+                conn.rollback();//如果出错，回滚事务
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                ex.printStackTrace();//打印回滚失败日志
             }
-            throw new RuntimeException("Transaction failed", e);
+            throw new RuntimeException("Transaction failed", e);//抛出原始异常，供外部捕获或记录
         }
 
 

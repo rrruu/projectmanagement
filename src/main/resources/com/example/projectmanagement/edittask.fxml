@@ -39,9 +39,7 @@
                 <TextArea fx:id="commentField" wrapText="true"/>
             </ScrollPane>
 
-            <Label text="分配资源:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-            <ListView fx:id="resourceListView" GridPane.rowIndex="7" GridPane.columnIndex="1"
-                      prefHeight="150" prefWidth="200"/>
+
         </GridPane>
 
         <HBox spacing="10" layoutX="20" layoutY="400" AnchorPane.rightAnchor="20">

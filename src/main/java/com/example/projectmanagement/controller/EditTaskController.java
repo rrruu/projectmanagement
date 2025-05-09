@@ -23,10 +23,12 @@ public class EditTaskController {
     @FXML public TextField progressField;
     @FXML public TextField leaderField;
     @FXML public TextArea commentField;
-//    @FXML public ListView<ResourceModel> resourceListView;//新增资源关联
+
 
     private TaskModel taskToEdit;
     private boolean isConfirmed = false;
+
+
 
     public void setTaskToEdit(TaskModel task) {
         this.taskToEdit = task;
@@ -39,10 +41,6 @@ public class EditTaskController {
         leaderField.setText(task.getLeader());
         commentField.setText(task.getComment());
 
-//        //资源关联
-//        resourceListView.setItems(DataModel.getInstance().getResources());
-//        resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-//        resourceListView.getSelectionModel().selectAll();//选中已关联资源
     }
 
     @FXML
@@ -82,19 +80,6 @@ public class EditTaskController {
             // 使用DAO更新任务
             TaskDAO.update(taskToEdit);
 
-//            //更新资源关联
-//            ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
-//            updateResourceAssociations(taskToEdit, selected);
-
-
-//            // 直接更新内存中的关联，避免重新加载数据库
-//            taskToEdit.getAssignedResources().setAll(selected);
-//            selected.forEach(res -> {
-//                if (!res.getAssignedTasks().contains(taskToEdit)) {
-//                    res.getAssignedTasks().add(taskToEdit);
-//                }
-//            });
-
 
             // 增量刷新数据
             DataModel.getInstance().loadResources();
@@ -102,8 +87,10 @@ public class EditTaskController {
 
 
         } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "数据库操作失败").show();
             rollbackTransaction();
+            new Alert(Alert.AlertType.ERROR, "数据库操作失败").show();
+            throw new RuntimeException("数据库操作失败", e); // 再抛出，交给 executeTransaction 做二次处理
+
         }
     }
 
@@ -120,42 +107,6 @@ public class EditTaskController {
         taskToEdit.setLeader(leaderField.getText().trim());
         taskToEdit.setComment(commentField.getText().trim());
     }
-
-
-    private void updateTaskInDatabase(TaskModel task) throws SQLException {
-        String sql = "UPDATE tasks SET name=?, start_date=?, end_date=?, progress=?, leader=?, comment=? " +
-                "WHERE id=?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, task.getTaskName());
-            stmt.setString(2, task.getStartDate().toString());
-            stmt.setString(3, task.getEndDate().toString());
-            stmt.setDouble(4, task.getProgress());
-            stmt.setString(5, task.getLeader());
-            stmt.setString(6, task.getComment());
-            stmt.setString(7, task.getId());
-            stmt.executeUpdate();
-        }
-    }
-
-
-
-
-
-
-
-    private void updateResourceAssociations(TaskModel task, ObservableList<ResourceModel> newResources) {
-        DatabaseManager.executeTransaction(() -> {
-            try {
-                // 使用DAO处理关联
-                TaskDAO.clearTaskResources(task.getId());
-                TaskDAO.addTaskResources(task.getId(), newResources);
-            } catch (SQLException e) {
-                throw new RuntimeException("关联更新失败", e);
-            }
-        });
-    }
-
-
 
 
     private void showErrorAlert(Exception e) {

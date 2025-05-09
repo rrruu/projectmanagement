@@ -25,7 +25,7 @@ public class LinkTaskController {
         taskListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         // 选中已关联任务
-        taskListView.getSelectionModel().selectAll();
+//        taskListView.getSelectionModel().selectAll();
         currentResource.getAssignedTasks().forEach(task ->
                 taskListView.getSelectionModel().select(task)
         );
@@ -52,7 +52,10 @@ public class LinkTaskController {
             }
         });
 
+        //将当前资源的关联任务替换为列表中选中的关联任务
         currentResource.getAssignedTasks().setAll(selected);
+
+
         taskListView.getScene().getWindow().hide();
 
 

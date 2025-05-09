@@ -39,10 +39,7 @@
                 <TextArea fx:id="commentField" wrapText="true"/>
             </ScrollPane>
 
-            <Label text="关联任务:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-            <ListView fx:id="taskListView" GridPane.rowIndex="7" GridPane.columnIndex="1"
-                      prefHeight="150" prefWidth="300">
-            </ListView>
+
 
         </GridPane>
 

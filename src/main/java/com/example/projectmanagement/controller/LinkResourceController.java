@@ -24,7 +24,7 @@ public class LinkResourceController {
         resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         // 选中已关联资源
-        resourceListView.getSelectionModel().selectAll();
+//        resourceListView.getSelectionModel().selectAll();
         currentTask.getAssignedResources().forEach(res ->
                 resourceListView.getSelectionModel().select(res)
         );
@@ -51,7 +51,10 @@ public class LinkResourceController {
             }
         });
 
+        //将当前任务的关联资源替换为列表中选中的关联资源
         currentTask.getAssignedResources().setAll(selected);
+
+
         resourceListView.getScene().getWindow().hide();
 
         // 强制刷新资源表
