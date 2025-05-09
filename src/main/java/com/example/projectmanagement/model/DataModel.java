@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 public class DataModel {
@@ -74,6 +75,7 @@ public class DataModel {
                 TaskModel task = findTaskById(taskId);
                 ResourceModel res = findResourceById(resourceId);
                 if (task != null && res != null) {
+                    //双向添加关联
                     task.getAssignedResources().add(res);
                     res.getAssignedTasks().add(task);
                 }
@@ -81,6 +83,10 @@ public class DataModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // 触发列表更新
+        FXCollections.sort(tasks, Comparator.comparing(TaskModel::getId));
+        FXCollections.sort(resources, Comparator.comparing(ResourceModel::getId));
     }
 
     public ObservableList<TaskModel> getTasks() {

@@ -35,8 +35,32 @@ public class LinkTaskController {
     private void handleConfirm() {
         ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
         updateTaskAssociations(currentResource, selected);
+
+
+        // 更新双向关联
+        selected.forEach(task -> {
+            if (!task.getAssignedResources().contains(currentResource)) {
+                task.getAssignedResources().add(currentResource);
+            }
+        });
+
+
+        // 移除未选中的关联
+        DataModel.getInstance().getTasks().forEach(task -> {
+            if (!selected.contains(task)) {
+                task.getAssignedResources().remove(currentResource);
+            }
+        });
+
         currentResource.getAssignedTasks().setAll(selected);
         taskListView.getScene().getWindow().hide();
+
+
+        // 强制刷新任务表
+        DataModel.getInstance().getTasks().forEach(t -> {
+            int index = DataModel.getInstance().getTasks().indexOf(t);
+            DataModel.getInstance().getTasks().set(index, t);
+        });
     }
 
     @FXML

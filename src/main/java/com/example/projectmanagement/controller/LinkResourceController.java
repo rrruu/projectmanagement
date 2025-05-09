@@ -34,8 +34,31 @@ public class LinkResourceController {
     private void handleConfirm() {
         ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
         updateResourceAssociations(currentTask, selected);
+
+
+        // 更新双向关联
+        selected.forEach(res -> {
+            if (!res.getAssignedTasks().contains(currentTask)) {
+                res.getAssignedTasks().add(currentTask);
+            }
+        });
+
+
+        // 移除未选中的关联
+        DataModel.getInstance().getResources().forEach(res -> {
+            if (!selected.contains(res)) {
+                res.getAssignedTasks().remove(currentTask);
+            }
+        });
+
         currentTask.getAssignedResources().setAll(selected);
         resourceListView.getScene().getWindow().hide();
+
+        // 强制刷新资源表
+        DataModel.getInstance().getResources().forEach(r -> {
+            int index = DataModel.getInstance().getResources().indexOf(r);
+            DataModel.getInstance().getResources().set(index, r);
+        });
     }
 
     @FXML
