@@ -13,10 +13,14 @@
 
 
     <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
-        <Label text="选择要关联的任务:"/>
-        <ListView fx:id="taskListView" prefHeight="400"/>
+        <Label text="选择要关联的任务:" style="-fx-font-weight: bold;"/>
+        <HBox spacing="10">
+            <Button text="全选" onAction="#handleSelectAll"/>
+            <Button text="取消全选" onAction="#handleDeselectAll"/>
+        </HBox>
+        <ListView fx:id="taskListView" prefHeight="400" prefWidth="680"/>
         <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button text="确认" onAction="#handleConfirm"/>
+            <Button text="确认关联" onAction="#handleConfirm" style="-fx-font-weight: bold;"/>
             <Button text="取消" onAction="#handleCancel"/>
         </HBox>
     </VBox>

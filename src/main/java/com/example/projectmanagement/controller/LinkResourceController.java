@@ -7,8 +7,11 @@ import com.example.projectmanagement.model.TaskModel;
 import com.example.projectmanagement.db.TaskDAO;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.util.Callback;
 
 import java.sql.SQLException;
 
@@ -21,47 +24,90 @@ public class LinkResourceController {
     public void setCurrentTask(TaskModel task) {
         this.currentTask = task;
         resourceListView.setItems(DataModel.getInstance().getResources());
-        resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//        resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+
+        // 设置自定义的CellFactory
+        resourceListView.setCellFactory(new Callback<ListView<ResourceModel>, ListCell<ResourceModel>>() {
+            @Override
+            public ListCell<ResourceModel> call(ListView<ResourceModel> param) {
+                return new ListCell<ResourceModel>() {
+                    private final CheckBox checkBox = new CheckBox();
+
+                    {
+                        checkBox.setOnAction(event -> {
+                            ResourceModel item = getItem();
+                            if (item != null) {
+                                if (checkBox.isSelected()) {
+                                    resourceListView.getSelectionModel().select(item);
+                                } else {
+                                    resourceListView.getSelectionModel().clearSelection(resourceListView.getItems().indexOf(item));
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(ResourceModel item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            checkBox.setText(item.getName() + " (" + item.getId() + ")");
+                            checkBox.setSelected(resourceListView.getSelectionModel().getSelectedItems().contains(item));
+                            setGraphic(checkBox);
+                        }
+                    }
+                };
+            }
+        });
+
+        resourceListView.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
 
         // 选中已关联资源
-//        resourceListView.getSelectionModel().selectAll();
         currentTask.getAssignedResources().forEach(res ->
                 resourceListView.getSelectionModel().select(res)
         );
     }
 
+
+    @FXML
+    private void handleSelectAll() {
+        resourceListView.getSelectionModel().selectAll();
+    }
+
+    @FXML
+    private void handleDeselectAll() {
+        resourceListView.getSelectionModel().clearSelection();
+    }
+
+
     @FXML
     private void handleConfirm() {
         ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
+
+
+
+        //更新数据库关联
         updateResourceAssociations(currentTask, selected);
 
 
         // 更新双向关联
-        selected.forEach(res -> {
-            if (!res.getAssignedTasks().contains(currentTask)) {
-                res.getAssignedTasks().add(currentTask);
-            }
-        });
+        updateBidirectionalAssociations(selected);
 
 
-        // 移除未选中的关联
-        DataModel.getInstance().getResources().forEach(res -> {
-            if (!selected.contains(res)) {
-                res.getAssignedTasks().remove(currentTask);
-            }
-        });
-
-        //将当前任务的关联资源替换为列表中选中的关联资源
-        currentTask.getAssignedResources().setAll(selected);
-
-
+        //关闭窗口
         resourceListView.getScene().getWindow().hide();
 
-        // 强制刷新资源表
-        DataModel.getInstance().getResources().forEach(r -> {
-            int index = DataModel.getInstance().getResources().indexOf(r);
-            DataModel.getInstance().getResources().set(index, r);
-        });
+//        // 强制刷新资源表
+//        DataModel.getInstance().getResources().forEach(r -> {
+//            int index = DataModel.getInstance().getResources().indexOf(r);
+//            DataModel.getInstance().getResources().set(index, r);
+//        });
+
+        // 刷新UI
+        refreshUI();
     }
 
     @FXML
@@ -83,4 +129,42 @@ public class LinkResourceController {
             }
         });
     }
+
+
+
+    private void updateBidirectionalAssociations(ObservableList<ResourceModel> selectedResources) {
+        // 1. 从所有资源中移除当前任务（如果存在）
+        DataModel.getInstance().getResources().forEach(res -> {
+            res.getAssignedTasks().remove(currentTask);
+        });
+
+        // 2. 将当前任务添加到选中的资源中
+        selectedResources.forEach(res -> {
+            if (!res.getAssignedTasks().contains(currentTask)) {
+                res.getAssignedTasks().add(currentTask);
+            }
+        });
+
+        // 3. 更新当前任务的关联资源
+        currentTask.getAssignedResources().setAll(selectedResources);
+    }
+
+
+
+    private void refreshUI() {
+        // 强制刷新资源表
+        DataModel.getInstance().getResources().forEach(r -> {
+            int index = DataModel.getInstance().getResources().indexOf(r);
+            DataModel.getInstance().getResources().set(index, r);
+        });
+
+        // 强制刷新任务表
+        DataModel.getInstance().getTasks().forEach(t -> {
+            int index = DataModel.getInstance().getTasks().indexOf(t);
+            DataModel.getInstance().getTasks().set(index, t);
+        });
+    }
+
+
+
 }
