@@ -24,7 +24,7 @@ public class LinkResourceController {
     public void setCurrentTask(TaskModel task) {
         this.currentTask = task;
         resourceListView.setItems(DataModel.getInstance().getResources());
-//        resourceListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
 
 
         // 设置自定义的CellFactory
@@ -101,12 +101,6 @@ public class LinkResourceController {
         //关闭窗口
         resourceListView.getScene().getWindow().hide();
 
-//        // 强制刷新资源表
-//        DataModel.getInstance().getResources().forEach(r -> {
-//            int index = DataModel.getInstance().getResources().indexOf(r);
-//            DataModel.getInstance().getResources().set(index, r);
-//        });
-
         // 刷新UI
         refreshUI();
     }
@@ -167,15 +161,6 @@ public class LinkResourceController {
     }
 
 
-    private void updateResourceList() {
-        if (showAvailableOnly) {
-            resourceListView.setItems(getAvailableResources());
-        } else {
-            resourceListView.setItems(DataModel.getInstance().getResources());
-        }
-    }
-
-
 
 
 
@@ -191,6 +176,8 @@ public class LinkResourceController {
         return availableResources;
     }
 
+
+
     private boolean isResourceAvailable(ResourceModel resource) {
         // 获取该资源所有已关联任务
         for (TaskModel associatedTask : resource.getAssignedTasks()) {
@@ -202,13 +189,26 @@ public class LinkResourceController {
         return true;
     }
 
+
+
+
+
     @FXML
-    private void handleToggleAvailabilityFilter() {
-        showAvailableOnly = !showAvailableOnly;
-        updateResourceList();
-        // 更新按钮文本
-        Button btn = (Button) resourceListView.getScene().lookup("#toggleAvailabilityBtn");
-        btn.setText(showAvailableOnly ? "显示所有资源" : "显示可用资源");
+    private void showAllResources(){
+        resourceListView.setItems(DataModel.getInstance().getResources());
+        // 选中已关联资源
+        currentTask.getAssignedResources().forEach(res ->
+                resourceListView.getSelectionModel().select(res)
+        );
+    }
+
+    @FXML
+    private void showAvailableResoreces(){
+        resourceListView.setItems(getAvailableResources());
+        // 选中已关联资源
+        currentTask.getAssignedResources().forEach(res ->
+                resourceListView.getSelectionModel().select(res)
+        );
     }
 
 

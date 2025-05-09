@@ -15,8 +15,8 @@
         <HBox spacing="10">
             <Button text="全选" onAction="#handleSelectAll"/>
             <Button text="取消全选" onAction="#handleDeselectAll"/>
-            <Button fx:id="toggleAvailabilityBtn" text="显示可用资源"
-                    onAction="#handleToggleAvailabilityFilter"/>
+            <Button text="显示可用资源" onAction="#showAvailableResoreces"/>
+            <Button text="显示全部资源" onAction="#showAllResources"/>
         </HBox>
         <ListView fx:id="resourceListView" prefHeight="400" prefWidth="680"/>
         <HBox spacing="10" alignment="CENTER_RIGHT">

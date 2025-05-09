@@ -167,15 +167,6 @@ public class LinkTaskController {
     }
 
 
-
-    private void updateTaskList() {
-        if (showAvailableOnly) {
-            taskListView.setItems(getAvailableTasks());
-        } else {
-            taskListView.setItems(DataModel.getInstance().getTasks());
-        }
-    }
-
     private ObservableList<TaskModel> getAvailableTasks() {
         ObservableList<TaskModel> availableTasks = FXCollections.observableArrayList();
 
@@ -198,13 +189,25 @@ public class LinkTaskController {
         return true;
     }
 
+
+
+
     @FXML
-    private void handleToggleAvailabilityFilter() {
-        showAvailableOnly = !showAvailableOnly;
-        updateTaskList();
-        // 更新按钮文本
-        Button btn = (Button) taskListView.getScene().lookup("#toggleAvailabilityBtn");
-        btn.setText(showAvailableOnly ? "显示所有任务" : "显示可用任务");
+    private void showAllTasks(){
+        taskListView.setItems(DataModel.getInstance().getTasks());
+        // 选中已关联任务
+        currentResource.getAssignedTasks().forEach(task ->
+                taskListView.getSelectionModel().select(task)
+        );
+    }
+
+    @FXML
+    private void showAvailableTasks(){
+        taskListView.setItems(getAvailableTasks());
+        // 选中已关联任务
+        currentResource.getAssignedTasks().forEach(task ->
+                taskListView.getSelectionModel().select(task)
+        );
     }
 
 
