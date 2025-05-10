@@ -23,6 +23,10 @@ public class DataModel {
     private ObservableList<TaskModel> tasks = FXCollections.observableArrayList();
     private ObservableList<ResourceModel> resources = FXCollections.observableArrayList();
 
+
+    //资源分析界面图表3和4 时间选择器默认值
+    private LocalDate analysisStartDate = LocalDate.of(2025, 1, 1);
+    private LocalDate analysisEndDate = LocalDate.of(2025, 12, 31);
     private DataModel() {
         loadAllData();
     } // 私有构造器
@@ -184,4 +188,19 @@ public class DataModel {
     }
 
 
+    public LocalDate getAnalysisStartDate() {
+        return analysisStartDate;
+    }
+
+    public void setAnalysisStartDate(LocalDate analysisStartDate) {
+        this.analysisStartDate = analysisStartDate;
+    }
+
+    public LocalDate getAnalysisEndDate() {
+        return analysisEndDate;
+    }
+
+    public void setAnalysisEndDate(LocalDate analysisEndDate) {
+        this.analysisEndDate = analysisEndDate;
+    }
 }

@@ -69,7 +69,7 @@
             <!-- 图表4：资源类型占比 -->
             <AnchorPane style="-fx-border-color: #eee; -fx-padding: 10;">
                 <Label text="资源类型分布" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
-                <StackPane fx:id="pieChartContainer" prefHeight="500" prefWidth="800"/>
+                <StackPane fx:id="pieChartContainer" prefHeight="500" prefWidth="800" styleClass="pie-chart-container"/>
             </AnchorPane>
         </VBox>
     </content>

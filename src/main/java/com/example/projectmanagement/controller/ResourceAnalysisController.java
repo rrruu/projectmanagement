@@ -31,13 +31,27 @@ public class ResourceAnalysisController {
 
     @FXML
     private void initialize() {
-        // 设置默认日期（确保不为空）
-        if (startDatePicker.getValue() == null) {
-            startDatePicker.setValue(LocalDate.of(2025, 01, 01));
-        }
-        if (endDatePicker.getValue() == null) {
-            endDatePicker.setValue(LocalDate.of(2025, 12, 31));
-        }
+//        // 设置默认日期（确保不为空）
+//        if (startDatePicker.getValue() == null) {
+//            startDatePicker.setValue(LocalDate.of(2025, 01, 01));
+//        }
+//        if (endDatePicker.getValue() == null) {
+//            endDatePicker.setValue(LocalDate.of(2025, 12, 31));
+//        }
+
+        // 从DataModel读取日期
+        startDatePicker.setValue(dataModel.getAnalysisStartDate());
+        endDatePicker.setValue(dataModel.getAnalysisEndDate());
+
+
+        // 添加日期变更监听
+        startDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+            dataModel.setAnalysisStartDate(newVal);
+        });
+
+        endDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+            dataModel.setAnalysisEndDate(newVal);
+        });
 
 //        startDatePicker.setValue(LocalDate.of(2025, 01, 01));
 //
@@ -47,8 +61,10 @@ public class ResourceAnalysisController {
         // 初始化双层饼图
         outerPieChart = new PieChart();
         innerPieChart = new PieChart();
-        innerPieChart.setLabelsVisible(false); // 隐藏内层标签
-        innerPieChart.setMaxSize(300, 300);    // 调整内层大小
+        innerPieChart.setLabelsVisible(true); // 显示内层标签
+        innerPieChart.setMaxSize(250, 250);    // 调整内层大小
+//        innerPieChart.setTranslateX(25);      // X轴偏移
+//        innerPieChart.setTranslateY(25);      // Y轴偏移
         pieChartContainer.getChildren().addAll(outerPieChart, innerPieChart);
 
         configureCharts();
@@ -123,12 +139,16 @@ public class ResourceAnalysisController {
         if (start == null || end == null || start.isAfter(end)) {
             return; // 处理无效日期
         }
+
         long periodDays = ChronoUnit.DAYS.between(start, end) + 1;
+        periodDays = periodDays > 0 ? periodDays : 1; // 强制最小1天
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
+        long finalPeriodDays = periodDays;
         dataModel.getResources().forEach(res -> {
             long usedDays = calculateUsedDays(res, start, end);
-            double usageRate = (usedDays * 100.0) / periodDays;
+            double usageRate = (usedDays * 100.0) / finalPeriodDays;
+            usageRate = Math.max(0, usageRate); // 强制归零负值
             series.getData().add(new XYChart.Data<>(res.getName(), usageRate));
         });
         usageRateChart.getData().setAll(series);
@@ -150,18 +170,26 @@ public class ResourceAnalysisController {
 
         // 统计类型数据
         dataModel.getResources().forEach(res -> {
+
+            // 检查资源是否在时间段内有任务
             boolean hasTaskInPeriod = res.getAssignedTasks().stream()
                     .anyMatch(task -> isTaskInPeriod(task, start, end));
             if (!hasTaskInPeriod) return;
 
 
             String type = res.getType();
+            // 统计类型数量
             typeCount.put(type, typeCount.getOrDefault(type, 0) + 1);
 
+
+            // 计算该资源的使用率
             long usedDays = calculateUsedDays(res, start, end);
 //            double usageRate = (usedDays * 100.0) / periodDays;
             long periodDays = ChronoUnit.DAYS.between(start, end) + 1;
             double usageRate = (usedDays * 100.0) / periodDays;
+
+
+            // 累加类型使用率
             typeUsageSum.put(type, typeUsageSum.getOrDefault(type, 0.0) + usageRate);
 
 //            typeUsage.put(type, typeUsage.getOrDefault(type, 0.0) + usageRate);
@@ -185,29 +213,59 @@ public class ResourceAnalysisController {
 
 
 
-        // 更新外层饼图（类型占比）
+        // 构建外层饼图（类型占比）
         ObservableList<PieChart.Data> outerData = FXCollections.observableArrayList();
         typeCount.forEach((type, count) -> {
             outerData.add(new PieChart.Data(type + " (" + count + ")", count));
         });
+        //外层饼图数据
         outerPieChart.setData(outerData);
 
-        // 更新内层饼图（平均使用率）
+        // 构建内层饼图（平均使用率）
         ObservableList<PieChart.Data> innerData = FXCollections.observableArrayList();
         typeCount.forEach((type, count) -> {
+            //计算平均使用率
             double avgUsage = typeUsageSum.getOrDefault(type, 0.0) / count;
-            innerData.add(new PieChart.Data(type, avgUsage));
+//            innerData.add(new PieChart.Data(type, avgUsage));
+
+            PieChart.Data data = new PieChart.Data(type, avgUsage);
+
+            // 绑定标签显示格式 (示例："Human\n25.0%")
+            data.nameProperty().bind(
+                    Bindings.concat(
+                            type, "\n",
+                            String.format("%.1f", avgUsage), "%"
+                    )
+            );
+            innerData.add(data);
         });
+
+        // 应用内层数据并设置标签样式
         innerPieChart.setData(innerData);
+        innerPieChart.getData().forEach(data ->
+                data.getNode().getStyleClass().add("inner-pie-label")
+        );
+
+
+        // 第四阶段：调整图表布局
+        outerPieChart.setLegendVisible(true);  // 隐藏图例避免重复
+        innerPieChart.setLabelsVisible(true);   // 强制显示标签
+
+//        // 设置内层标签偏移（避免与外层重叠）
+//        innerPieChart.setTranslateX(25);
+//        innerPieChart.setTranslateY(25);
     }
 
     // 计算资源在时间段内的使用天数
     private long calculateUsedDays(ResourceModel res, LocalDate start, LocalDate end) {
         return res.getAssignedTasks().stream()
+                .filter(task -> isTaskInPeriod(task, start, end)) // 过滤无效任务
                 .mapToLong(t -> {
                     LocalDate taskStart = t.getStartDate().isBefore(start) ? start : t.getStartDate();
                     LocalDate taskEnd = t.getEndDate().isAfter(end) ? end : t.getEndDate();
-                    return ChronoUnit.DAYS.between(taskStart, taskEnd) + 1;
+                    // 双重保护：确保天数非负
+                    long daysBetween = ChronoUnit.DAYS.between(taskStart, taskEnd);
+                    return daysBetween >= 0 ? daysBetween + 1 : 0;
                 })
                 .sum();
     }

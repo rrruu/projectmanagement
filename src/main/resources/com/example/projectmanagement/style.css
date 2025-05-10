@@ -245,6 +245,33 @@
 
 
 
+/* 新增饼图标签样式 */
+.inner-pie-label {
+    -fx-font-size: 10px;
+    -fx-fill: #444;
+}
+
+.outer-pie-label {
+    -fx-font-size: 12px;
+    -fx-fill: #222;
+}
+
+/* 应用到饼图 */
+.pie-chart .chart-pie-label {
+    -fx-font-weight: bold;
+}
+
+#innerPieChart .chart-pie-label {
+    -fx-fill: #444;
+    -fx-font-size: 10px;
+}
+
+#outerPieChart .chart-pie-label {
+    -fx-fill: #222;
+    -fx-font-size: 12px;
+}
+
+
 
 
 
