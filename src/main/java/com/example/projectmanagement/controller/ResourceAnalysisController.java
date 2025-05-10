@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.StackPane;
 
@@ -99,6 +100,20 @@ public class ResourceAnalysisController {
 
     @FXML
     private void updateUsageChart() {
+
+        LocalDate start = startDatePicker.getValue();
+        LocalDate end = endDatePicker.getValue();
+
+        // 有效性检查（包含三种无效情况）
+        if (start == null || end == null) {
+            showAlert("日期未选择", "请先选择开始日期和结束日期");
+            return;
+        }
+        if (start.isAfter(end)) {
+            showAlert("日期顺序错误", "结束日期不能早于开始日期");
+            return;
+        }
+
         loadUsageRateChart();
         loadTypeDistributionChart();
     }
@@ -136,9 +151,7 @@ public class ResourceAnalysisController {
     private void loadUsageRateChart() {
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
-        if (start == null || end == null || start.isAfter(end)) {
-            return; // 处理无效日期
-        }
+
 
         long periodDays = ChronoUnit.DAYS.between(start, end) + 1;
         periodDays = periodDays > 0 ? periodDays : 1; // 强制最小1天
@@ -160,9 +173,7 @@ public class ResourceAnalysisController {
 
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
-        if (start == null || end == null || start.isAfter(end)) {
-            return;
-        }
+
 //        long periodDays = ChronoUnit.DAYS.between(start, end) + 1;
 
         Map<String, Integer> typeCount = new HashMap<>();
@@ -295,5 +306,15 @@ public class ResourceAnalysisController {
                 .sum();
 
         return totalDays == 0 ? 0 : (usedDays * 100.0) / totalDays;
+    }
+
+
+    // 新增提示框方法
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("输入验证");
+        alert.setHeaderText(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
