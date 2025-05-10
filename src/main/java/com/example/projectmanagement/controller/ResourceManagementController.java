@@ -3,21 +3,40 @@ package com.example.projectmanagement.controller;
 import com.example.projectmanagement.Main;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
+import com.example.projectmanagement.model.TaskModel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 
 public class ResourceManagementController {
+
+
+
+    // 甘特图常量
+    private static final double BASE_DAY_WIDTH = 40.0;
+    private static final double ROW_HEIGHT = 30.0;
+    private static final double TIME_AXIS_HEIGHT = 80.0;
+    private static final double WEEK_SECTION_HEIGHT = 40.0;
 
     @FXML private TableView<ResourceModel> resourceTable;
     @FXML private TableColumn<ResourceModel,String> nameColumn;
@@ -28,6 +47,8 @@ public class ResourceManagementController {
     @FXML private TableColumn<ResourceModel,Number> rateColumn;
     @FXML private TableColumn<ResourceModel,String> commentColumn;
     @FXML private TableColumn<ResourceModel, String> statusColumn;
+    @FXML private Canvas resourceGanttCanvas;
+    @FXML private ScrollPane resourceGanttScrollPane;
 
 
 //    private final ObservableList<ResourceModel> resources = FXCollections.observableArrayList();
@@ -100,18 +121,13 @@ public class ResourceManagementController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
         resourceTable.setItems(dataModel.getResources());
+
+
+        // 新增数据监听
+        dataModel.getResources().addListener((ListChangeListener<? super ResourceModel>) (change) -> drawResourceGantt());
+        dataModel.getTasks().addListener((ListChangeListener<? super TaskModel>) (change) -> drawResourceGantt());
+        drawResourceGantt();
     }
 
 
@@ -275,82 +291,6 @@ public class ResourceManagementController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-//    private void showResourceDialog(ResourceModel resource){
-//        try {
-//            //加载对话框FXML
-//            FXMLLoader loader = new FXMLLoader(
-//                    getClass().getResource("/com/example/projectmanagement/resourceadd.fxml")
-//            );
-//
-//            AnchorPane root = loader.load();
-//            ResourceAddController controller = loader.getController();
-//
-//
-//            //初始化对话框
-//            Stage dialogStage = new Stage();
-//            Scene scene = new Scene(root);
-//            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-//            dialogStage.setScene(scene);
-//
-//            dialogStage.setScene(scene);
-//            dialogStage.initModality(Modality.APPLICATION_MODAL);
-////            Dialog<ButtonType> dialog = new Dialog<>();
-////            dialog.setDialogPane(root);
-////            dialog.initModality(Modality.APPLICATION_MODAL);
-//
-//
-//            if(resource != null){
-//                controller.setResource(resource);
-//            }
-//
-//            dialogStage.showAndWait();
-//            if(controller.isConfirmed()){
-//                ResourceModel newResource = controller.getResource();
-//                    if(resource == null){
-//                        resources.add(newResource);
-//                    }else {
-//                        resource.setName(newResource.getName());
-//                        resource.setId(newResource.getId());
-//                        resource.setPhone(newResource.getPhone());
-//                        resource.setEmail(newResource.getEmail());
-//                        resource.setType(newResource.getType());
-//                        resource.setDailyRate(newResource.getDailyRate());
-//                    }
-//            }
-//
-////        ifPresent(result -> {
-////                if (result == ButtonType.OK){
-////                    ResourceModel newResource = controller.getResource();
-////                    if(resource == null){
-////                        resources.add(newResource);
-////                    }else {
-////                        resource.setName(newResource.getName());
-////                        resource.setId(newResource.getId());
-////                        resource.setPhone(newResource.getPhone());
-////                        resource.setEmail(newResource.getEmail());
-////                        resource.setType(newResource.getType());
-////                        resource.setDailyRate(newResource.getDailyRate());
-////                    }
-////                }
-////            });
-//
-//
-//        } catch (IOException e) {
-//            new Alert(Alert.AlertType.ERROR,"加载资源对话框失败").show();
-//        }
-//    }
-
-
     // 获取资源列表（后续用于绑定）
     public ObservableList<ResourceModel> getResources() {
         return dataModel.getResources();
@@ -358,6 +298,109 @@ public class ResourceManagementController {
 
 
 
+    private void drawResourceGantt() {
+        if (resourceGanttCanvas == null) return;
+
+        GraphicsContext gc = resourceGanttCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
+
+        // 计算所有资源的时间范围
+        LocalDate minDate = dataModel.getResources().stream()
+                .flatMap(r -> r.getAssignedTasks().stream())
+                .map(TaskModel::getStartDate)
+                .min(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+
+        LocalDate maxDate = dataModel.getResources().stream()
+                .flatMap(r -> r.getAssignedTasks().stream())
+                .map(TaskModel::getEndDate)
+                .max(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+
+        if (minDate == null || maxDate == null) return;
+
+        // 调整到完整周
+        LocalDate adjustedStart = minDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate adjustedEnd = maxDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+        // 计算画布尺寸
+        long totalDays = ChronoUnit.DAYS.between(adjustedStart, adjustedEnd) + 1;
+        double canvasWidth = 100 + totalDays * BASE_DAY_WIDTH;
+        double canvasHeight = TIME_AXIS_HEIGHT + dataModel.getResources().size() * ROW_HEIGHT + 50;
+
+        resourceGanttCanvas.setWidth(canvasWidth);
+        resourceGanttCanvas.setHeight(canvasHeight);
+        resourceGanttScrollPane.layout();
+
+        // 绘制时间轴
+        drawResourceTimeAxis(gc, adjustedStart, adjustedEnd, canvasWidth);
+
+        // 绘制资源任务条
+        double yPos = TIME_AXIS_HEIGHT + 20;
+        for (ResourceModel resource : dataModel.getResources()) {
+            for (TaskModel task : resource.getAssignedTasks()) {
+                long startOffset = ChronoUnit.DAYS.between(adjustedStart, task.getStartDate());
+                long duration = ChronoUnit.DAYS.between(task.getStartDate(), task.getEndDate()) + 1;
+
+                double x = 50 + startOffset * BASE_DAY_WIDTH;
+                double width = duration * BASE_DAY_WIDTH;
+
+                gc.setFill(Color.rgb(70, 130, 180)); // 钢蓝色
+                gc.fillRect(x, yPos, width, 20);
+
+                gc.setFill(Color.WHITE);
+                gc.fillText(task.getTaskName(), x + 5, yPos + 15);
+            }
+            yPos += ROW_HEIGHT;
+        }
+    }
+
+    private void drawResourceTimeAxis(GraphicsContext gc, LocalDate start, LocalDate end, double canvasWidth) {
+        gc.setStroke(Color.BLACK);
+        gc.setFill(Color.BLACK);
+
+        // 绘制周信息
+        LocalDate currentMonday = start;
+        int weekNumber = 1;
+        while (!currentMonday.isAfter(end)) {
+            long daysFromStart = ChronoUnit.DAYS.between(start, currentMonday);
+            double xPos = 50 + daysFromStart * BASE_DAY_WIDTH;
+
+            // 周分割线
+            gc.strokeLine(xPos, 20, xPos, WEEK_SECTION_HEIGHT);
+
+            // 周标签
+            String weekInfo = "第" + weekNumber + "周 " + currentMonday.format(DateTimeFormatter.ofPattern("MM/dd"));
+            gc.fillText(weekInfo, xPos + BASE_DAY_WIDTH/4, 35);
+
+            currentMonday = currentMonday.plusWeeks(1);
+            weekNumber++;
+        }
+
+        // 绘制日期轴
+        LocalDate currentDay = start;
+        while (!currentDay.isAfter(end)) {
+            long daysFromStart = ChronoUnit.DAYS.between(start, currentDay);
+            double xPos = 50 + daysFromStart * BASE_DAY_WIDTH;
+
+            // 每日分割线
+            gc.setStroke(Color.LIGHTGRAY);
+            gc.setLineWidth(0.5);
+            gc.strokeLine(xPos, 20, xPos, WEEK_SECTION_HEIGHT + 30);
+
+            // 日期标签
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText(String.valueOf(currentDay.getDayOfMonth()),
+                    xPos + BASE_DAY_WIDTH/2,
+                    WEEK_SECTION_HEIGHT + 25);
+
+            currentDay = currentDay.plusDays(1);
+        }
+
+        // 边框
+        gc.setStroke(Color.BLACK);
+        gc.strokeRect(50, 20, canvasWidth - 100, TIME_AXIS_HEIGHT - 30);
+    }
 
 
 

@@ -6,6 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.canvas.Canvas?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ResourceManagementController"
@@ -33,6 +34,19 @@
                 <TableColumn fx:id="commentColumn" text="备注" prefWidth="150"/>
             </columns>
         </TableView>
+
+        <!-- 新增资源甘特图区域 -->
+        <Label text="资源使用情况甘特图" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
+        <ScrollPane fx:id="resourceGanttScrollPane"
+                    fitToWidth="true"
+                    hvalue="1.0"
+                    vvalue="1.0"
+                    style="-fx-border-color: #cccccc;">
+            <content>
+                <Canvas fx:id="resourceGanttCanvas"/>
+            </content>
+        </ScrollPane>
+
 
     </VBox>
 </AnchorPane>

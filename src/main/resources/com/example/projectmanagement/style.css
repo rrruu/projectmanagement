@@ -196,6 +196,22 @@
 
 
 
+/* 资源甘特图样式 */
+.resource-gantt-bar {
+    -fx-fill: #4682B4;
+}
+
+.resource-gantt-text {
+    -fx-fill: white;
+    -fx-font-size: 12px;
+}
+
+.resource-time-axis {
+    -fx-stroke: #666;
+    -fx-stroke-width: 0.8;
+}
+
+
 
 
 

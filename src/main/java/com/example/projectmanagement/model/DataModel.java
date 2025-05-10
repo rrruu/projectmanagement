@@ -4,6 +4,7 @@ package com.example.projectmanagement.model;
 import com.example.projectmanagement.db.DatabaseManager;
 import com.example.projectmanagement.db.ResourceDAO;
 import com.example.projectmanagement.db.TaskDAO;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -87,6 +88,12 @@ public class DataModel {
         // 触发列表更新
         FXCollections.sort(tasks, Comparator.comparing(TaskModel::getId));
         FXCollections.sort(resources, Comparator.comparing(ResourceModel::getId));
+
+        // 触发界面刷新
+        Platform.runLater(() -> {
+            getResources().forEach(r -> r.getAssignedTasks().size());
+            getTasks().forEach(t -> t.getAssignedResources().size());
+        });
     }
 
     public ObservableList<TaskModel> getTasks() {
