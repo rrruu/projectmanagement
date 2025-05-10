@@ -18,6 +18,7 @@
             <Button text="甘特图生成" onAction="#loadGanttModule" styleClass="navButton" style="-fx-background-color:#FFB6C1"/>
             <Button text="资源管理" onAction="#loadResourceModule" styleClass="navButton"/>
             <Button text="个人日程" onAction="#loadScheduleModule" styleClass="navButton"/>
+            <Button text="资源分析" onAction="#loadResourceAnalysisModule" styleClass="navButton"/>
         </VBox>
     </left>
 

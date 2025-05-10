@@ -215,6 +215,36 @@
 
 
 
+/*资源分析模块*/
+/* 图表样式 */
+.chart-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.axis-label {
+    -fx-font-size: 12px;
+}
+
+.chart-legend {
+    -fx-font-size: 12px;
+}
+
+/* 饼图标签样式 */
+.pie-label {
+    -fx-font-size: 10px;
+    -fx-fill: #333;
+}
+
+/* 饼图标签换行显示 */
+.pie-label .chart-pie-label {
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-font-size: 10px;
+}
+
+
+
 
 
 

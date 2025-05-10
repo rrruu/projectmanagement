@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DataModel {
     private static DataModel instance = new DataModel();
@@ -153,6 +155,32 @@ public class DataModel {
             }
         });
         return allResources;
+    }
+
+
+
+    // 添加资源类型统计方法
+    public Map<String, Long> getResourceTypeCount() {
+        return resources.stream()
+                .collect(Collectors.groupingBy(
+                        ResourceModel::getType,
+                        Collectors.counting()
+                ));
+    }
+
+    // 添加任务时间范围获取方法
+    public LocalDate getEarliestTaskDate() {
+        return tasks.stream()
+                .map(TaskModel::getStartDate)
+                .min(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+    }
+
+    public LocalDate getLatestTaskDate() {
+        return tasks.stream()
+                .map(TaskModel::getEndDate)
+                .max(LocalDate::compareTo)
+                .orElse(LocalDate.now());
     }
 
 

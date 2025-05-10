@@ -37,6 +37,9 @@ public class MainFrameController {
     }
 
     @FXML
+    private void loadResourceAnalysisModule() { loadModule("/com/example/projectmanagement/resourceanalysis.fxml");}
+
+    @FXML
     private void loadScheduleModule() {
         loadModule("/com/example/projectmanagement/schedule.fxml");
     }
