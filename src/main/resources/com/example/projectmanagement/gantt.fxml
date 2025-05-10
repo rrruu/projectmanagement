@@ -11,7 +11,8 @@
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.GanttController"
-            fx:id="mainContent">
+            fx:id="mainContent"
+            style="-fx-padding: 20;">
 
 
     <children>
@@ -46,8 +47,10 @@
                     </columns>
                 </TableView>
 
-                <ScrollPane fx:id="ganttScrollPane" fitToHeight="true" fitToWidth="true" hvalue="1.0" vvalue="1.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120">
+
+                <Label text="任务甘特图" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
+                <ScrollPane fx:id="ganttScrollPane" fitToHeight="true" fitToWidth="true" hvalue="0.0" vvalue="0.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120" style="-fx-border-color: #cccccc;">
                     <content>
                         <Canvas fx:id="ganttCanvas" />
                     </content>

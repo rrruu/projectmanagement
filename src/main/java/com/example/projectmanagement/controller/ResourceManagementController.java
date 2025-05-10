@@ -84,6 +84,8 @@ public class ResourceManagementController {
         tasksColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getAssignedTasksInfo())
         );
+        //设置关联任务列宽
+        tasksColumn.setPrefWidth(200);
         resourceTable.getColumns().add(tasksColumn);
 
 
@@ -348,6 +350,7 @@ public class ResourceManagementController {
                 gc.setFill(Color.rgb(70, 130, 180)); // 钢蓝色
                 gc.fillRect(x, yPos, width, 20);
 
+                //绘制任务名称
                 gc.setFill(Color.WHITE);
                 gc.fillText(task.getTaskName(), x + 5, yPos + 15);
             }
@@ -377,6 +380,10 @@ public class ResourceManagementController {
             weekNumber++;
         }
 
+        // ========== 添加水平分割线 ==========
+        gc.strokeLine(50, WEEK_SECTION_HEIGHT, canvasWidth - 50, WEEK_SECTION_HEIGHT);
+
+
         // 绘制日期轴
         LocalDate currentDay = start;
         while (!currentDay.isAfter(end)) {
@@ -386,14 +393,29 @@ public class ResourceManagementController {
             // 每日分割线
             gc.setStroke(Color.LIGHTGRAY);
             gc.setLineWidth(0.5);
+
+            // 绘制从时间轴顶部到底部的分割线
             gc.strokeLine(xPos, 20, xPos, WEEK_SECTION_HEIGHT + 30);
+
+            // 恢复默认样式
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(1.0);
+
 
             // 日期标签
             gc.setTextAlign(TextAlignment.CENTER);
             gc.fillText(String.valueOf(currentDay.getDayOfMonth()),
                     xPos + BASE_DAY_WIDTH/2,
                     WEEK_SECTION_HEIGHT + 25);
-
+            gc.setTextAlign(TextAlignment.LEFT);
+            // 每周日绘制分隔线（延长到分割线下方）
+            if (currentDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                gc.strokeLine(xPos + BASE_DAY_WIDTH,
+                        WEEK_SECTION_HEIGHT,//从分割线开始
+                        xPos + BASE_DAY_WIDTH,
+                        WEEK_SECTION_HEIGHT + 30
+                );
+            }
             currentDay = currentDay.plusDays(1);
         }
 

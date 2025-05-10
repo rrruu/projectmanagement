@@ -121,6 +121,8 @@ public class GanttController {
         resourcesColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getAssignedResourcesInfo())
         );
+        //设置关联资源列宽
+        resourcesColumn.setPrefWidth(200);
         taskTable.getColumns().add(resourcesColumn);
 
 
@@ -573,36 +575,6 @@ public class GanttController {
         if(dataModel.getTasks().isEmpty())return;
 
 
-        // 动态计算画布尺寸（基于父容器 ScrollPane）
-//        ScrollPane scrollPane = (ScrollPane) ganttCanvas.getParent().getParent();
-//        double availableWidth = ganttScrollPane.getWidth() - 20;
-//        double availableHeight = ganttScrollPane.getHeight() - 20;
-//
-//        ganttCanvas.setWidth(availableWidth);
-//        ganttCanvas.setHeight(availableHeight);
-
-
-
-//        // 动态监听窗口尺寸变化（仅在第一次调用时注册）
-//        if (!isWindowSizeListenerAdded) {
-//            taskTable.sceneProperty().addListener((obsScene, oldScene, newScene) -> {
-//                if (newScene != null) {
-//                    newScene.windowProperty().addListener((obsWin, oldWin, newWin) -> {
-//                        if (newWin != null) {
-//                            newWin.widthProperty().addListener((obsWidth, oldWidth, newWidth) -> {
-//                                drawGanttChart();
-//                            });
-//                            newWin.heightProperty().addListener((obsHeight, oldHeight, newHeight) -> {
-//                                drawGanttChart();
-//                            });
-//                        }
-//                    });
-//                }
-//            });
-//            isWindowSizeListenerAdded = true;
-//        }
-
-
         // 计算调整后的时间范围（以周为单位）
         LocalDate minTaskStart = dataModel.getTasks().stream()
                 .map(TaskModel::getStartDate)
@@ -624,12 +596,6 @@ public class GanttController {
         double canvasWidth = 100 + totalDays * BASE_DAY_WIDTH; // 左右边距各50
         double canvasHeight = TIME_AXIS_HEIGHT + dataModel.getTasks().size() * ROW_HEIGHT + 50;
 
-
-//        // 获取主窗口的当前高度（扣除顶部按钮区域和表格高度）
-//        double windowAvailableHeight = taskTable.getScene().getHeight()
-//                - taskTable.getHeight() // 表格高度
-//                - 120; // 顶部按钮区域和边距
-//        double timeAxisHeight = 50; // 时间轴高度
 
 
 
@@ -757,8 +723,7 @@ public class GanttController {
             // 绘制日期
             // 日期文本（居中显示）
             gc.setTextAlign(TextAlignment.CENTER);
-            gc.fillText(
-                    String.valueOf(currentDay.getDayOfMonth()),
+            gc.fillText(String.valueOf(currentDay.getDayOfMonth()),
                     xPos + BASE_DAY_WIDTH/2,
                     WEEK_SECTION_HEIGHT + 25);
             gc.setTextAlign(TextAlignment.LEFT);
@@ -776,6 +741,7 @@ public class GanttController {
 
 
         // 绘制时间轴边框
+        gc.setStroke(Color.BLACK);
         gc.strokeRect(50, 20, canvasWidth - 100, TIME_AXIS_HEIGHT - 30);
     }
 

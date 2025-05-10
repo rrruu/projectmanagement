@@ -54,10 +54,11 @@
 }
 
 
+/*任务甘特图已完成部分颜色*/
 .gantt-completed {
     -fx-background-color: #000080; /* 已完成颜色 */
 }
-
+/*任务甘特图未完成部分颜色*/
 .gantt-uncompleted {
     -fx-background-color: #6495ED; /* 未完成颜色 */
 }
@@ -166,7 +167,7 @@
 
 
 
-/* 添加不可用状态样式 */
+/* 关联窗口内添加不可用状态样式 */
 .list-cell:disabled {
     -fx-opacity: 0.8;
     -fx-background-color: #f5f5f5;
