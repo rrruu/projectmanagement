@@ -32,7 +32,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-        primaryStage.setTitle("项目管理系统");
+        primaryStage.setTitle("Project Management Tool");
         primaryStage.setMaximized(true); // 窗口最大化
         primaryStage.setScene(scene);
         primaryStage.show();

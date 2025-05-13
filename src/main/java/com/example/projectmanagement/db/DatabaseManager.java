@@ -45,6 +45,15 @@ public class DatabaseManager {
                     "PRIMARY KEY (task_id, resource_id)," +
                     "FOREIGN KEY (task_id) REFERENCES tasks(id)," +
                     "FOREIGN KEY (resource_id) REFERENCES resources(id))");
+
+
+            //日程安排表
+            stmt.execute("CREATE TABLE IF NOT EXISTS schedules (" +
+                    "id TEXT PRIMARY KEY," +
+                    "title TEXT NOT NULL," +
+                    "start_date TEXT NOT NULL," +
+                    "end_date TEXT NOT NULL," +
+                    "content TEXT NOT NULL)");
         }
     }
 

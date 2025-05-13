@@ -10,5 +10,18 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ScheduleController"
             style="-fx-padding: 20;">
-    <Label text="个人日程模块（开发中）" style="-fx-font-size: 24;"/>
+
+<!--    <VBox spacing="10">-->
+<!--        <HBox spacing="10" alignment="CENTER_LEFT">-->
+<!--            <Button text="新建日程安排" fx:id="btnNew"/>-->
+<!--            <Button text="删除日程安排" fx:id="btnDelete"/>-->
+<!--            <Button text="编辑日程安排" fx:id="btnEdit"/>-->
+<!--        </HBox>-->
+
+<!--        &lt;!&ndash; 日历占位 &ndash;&gt;-->
+<!--        <Label text="日历区域（待实现）" style="-fx-border-color: #ccc; -fx-padding: 20;"/>-->
+
+<!--        &lt;!&ndash; 日程卡片容器 &ndash;&gt;-->
+<!--        <VBox fx:id="scheduleContainer" spacing="5"/>-->
+<!--    </VBox>-->
 </AnchorPane>
