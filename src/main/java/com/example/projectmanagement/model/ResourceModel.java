@@ -14,7 +14,7 @@ public class ResourceModel {
     private final SimpleStringProperty email = new SimpleStringProperty();
     private final SimpleStringProperty type = new SimpleStringProperty("人力"); // 默认类型为人力
     private final SimpleDoubleProperty dailyRate = new SimpleDoubleProperty();
-    private final SimpleStringProperty status = new SimpleStringProperty("可用"); // 新增状态属性
+//    private final SimpleStringProperty status = new SimpleStringProperty("可用"); // 新增状态属性
     private final SimpleStringProperty comment = new SimpleStringProperty();
 
     //新增任务列表属性
@@ -120,17 +120,17 @@ public class ResourceModel {
         this.comment.set(comment);
     }
 
-    //用于后续资源调度
-    @SerializedName("status")
-    public String getStatus() {
-        return status.get();
-    }
-    public SimpleStringProperty statusProperty() {
-        return status;
-    }
-    public void setStatus(String status) {
-        this.status.set(status);
-    }
+//    //用于后续资源调度
+//    @SerializedName("status")
+//    public String getStatus() {
+//        return status.get();
+//    }
+//    public SimpleStringProperty statusProperty() {
+//        return status;
+//    }
+//    public void setStatus(String status) {
+//        this.status.set(status);
+//    }
 
     @SerializedName("assignedTasks")
     public ObservableList<TaskModel> getAssignedTasks() {

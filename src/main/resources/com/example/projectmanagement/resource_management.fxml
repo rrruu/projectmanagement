@@ -30,7 +30,7 @@
                 <TableColumn fx:id="emailColumn" text="邮箱" prefWidth="150"/>
                 <TableColumn fx:id="typeColumn" text="类型" prefWidth="100"/>
                 <TableColumn fx:id="rateColumn" text="单价/天" prefWidth="150"/>
-                <TableColumn fx:id="statusColumn" text="状态" prefWidth="150"/>
+<!--                <TableColumn fx:id="statusColumn" text="状态" prefWidth="150"/>-->
                 <TableColumn fx:id="commentColumn" text="备注" prefWidth="150"/>
             </columns>
         </TableView>

@@ -46,7 +46,7 @@ public class ResourceManagementController {
     @FXML private TableColumn<ResourceModel,String> typeColumn;
     @FXML private TableColumn<ResourceModel,Number> rateColumn;
     @FXML private TableColumn<ResourceModel,String> commentColumn;
-    @FXML private TableColumn<ResourceModel, String> statusColumn;
+//    @FXML private TableColumn<ResourceModel, String> statusColumn;
     @FXML private Canvas resourceGanttCanvas;
     @FXML private ScrollPane resourceGanttScrollPane;
 
@@ -73,7 +73,7 @@ public class ResourceManagementController {
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         rateColumn.setCellValueFactory(new PropertyValueFactory<>("dailyRate"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+//        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
 
 

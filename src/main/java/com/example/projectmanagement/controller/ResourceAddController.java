@@ -144,8 +144,8 @@ public class ResourceAddController {
     }
 
     private void saveResourceToDatabase(ResourceModel resource) throws SQLException {
-        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, status, comment) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, comment) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setString(1, resource.getId());
             stmt.setString(2, resource.getName());
@@ -153,8 +153,8 @@ public class ResourceAddController {
             stmt.setString(4, resource.getEmail());
             stmt.setString(5, resource.getType());
             stmt.setDouble(6, resource.getDailyRate());
-            stmt.setString(7, resource.getStatus());
-            stmt.setString(8, resource.getComment());
+//            stmt.setString(7, resource.getStatus());
+            stmt.setString(7, resource.getComment());
             stmt.executeUpdate();
         }
     }

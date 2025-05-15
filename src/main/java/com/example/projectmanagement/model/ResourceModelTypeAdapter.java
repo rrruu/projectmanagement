@@ -20,7 +20,7 @@ public class ResourceModelTypeAdapter implements JsonSerializer<ResourceModel>, 
         obj.addProperty("email", resource.getEmail());
         obj.addProperty("type", resource.getType());
         obj.addProperty("dailyRate", resource.getDailyRate());
-        obj.addProperty("status", resource.getStatus());
+//        obj.addProperty("status", resource.getStatus());
         obj.addProperty("comment", resource.getComment());
 
         // 序列化关联任务（仅存储任务ID）
@@ -47,7 +47,7 @@ public class ResourceModelTypeAdapter implements JsonSerializer<ResourceModel>, 
         res.setEmail(obj.get("email").getAsString());
         res.setType(obj.get("type").getAsString());
         res.setDailyRate(obj.get("dailyRate").getAsDouble());
-        res.setStatus(obj.get("status").getAsString());
+//        res.setStatus(obj.get("status").getAsString());
         res.setComment(obj.get("comment").getAsString());
 
         // 反序列化关联任务（在后续rebuildAssociations中处理）

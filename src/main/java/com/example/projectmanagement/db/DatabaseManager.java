@@ -35,7 +35,7 @@ public class DatabaseManager {
                     "email TEXT," +
                     "type TEXT NOT NULL," +
                     "daily_rate REAL NOT NULL," +
-                    "status TEXT," +
+//                    "status TEXT," +
                     "comment TEXT)");
 
             // 任务资源关联表

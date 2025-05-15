@@ -13,8 +13,8 @@ import java.util.List;
 public class ResourceDAO {
 
     public static void create(ResourceModel resource) throws SQLException {
-        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, status, comment) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, comment) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             bindResourceParametersForCreate(stmt, resource);
             stmt.executeUpdate();
@@ -23,7 +23,7 @@ public class ResourceDAO {
 
 
     public static void update(ResourceModel resource) throws SQLException {
-        String sql = "UPDATE resources SET name=?, phone=?, email=?, type=?, daily_rate=?, status=?, comment=? "
+        String sql = "UPDATE resources SET name=?, phone=?, email=?, type=?, daily_rate=?, comment=? "
                 + "WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             bindResourceParametersForUpdate(stmt, resource);
@@ -41,8 +41,8 @@ public class ResourceDAO {
         stmt.setString(4, resource.getEmail());
         stmt.setString(5, resource.getType());
         stmt.setDouble(6, resource.getDailyRate());
-        stmt.setString(7, resource.getStatus());
-        stmt.setString(8, resource.getComment());
+//        stmt.setString(7, resource.getStatus());
+        stmt.setString(7, resource.getComment());
 
     }
 
@@ -55,9 +55,9 @@ public class ResourceDAO {
         stmt.setString(3, resource.getEmail());
         stmt.setString(4, resource.getType());
         stmt.setDouble(5, resource.getDailyRate());
-        stmt.setString(6, resource.getStatus());
-        stmt.setString(7, resource.getComment());
-        stmt.setString(8, resource.getId());
+//        stmt.setString(6, resource.getStatus());
+        stmt.setString(6, resource.getComment());
+        stmt.setString(7, resource.getId());
 
     }
 
