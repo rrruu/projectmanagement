@@ -18,20 +18,22 @@
         <!-- 导航栏 -->
         <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f0f0f0;">
 <!--图片需要插入到这里-->
-            <ImageView fx:id="navIcon">
-                <image>
-<!--                    <Image url="@images/navIcon.png"/>-->
-                    <Image url="@/com/example/projectmanagement/images/navIcon.png"/>
-                </image>
-            </ImageView>
-            <Button text="甘特图生成" onAction="#loadGanttModule" styleClass="navButton" style="-fx-background-color:#FFB6C1">
+<!--            <ImageView fx:id="navIcon">-->
+<!--                <image>-->
+<!--&lt;!&ndash;                    <Image url="@images/navIcon.png"/>&ndash;&gt;-->
+<!--                    <Image url="@/com/example/projectmanagement/images/navIcon.png"/>-->
+<!--                </image>-->
+<!--            </ImageView>-->
+
+            <Label text="项目管理工具" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+            <Button text="任务管理" onAction="#loadGanttModule" styleClass="navButton" style="-fx-background-color: #1177BB;">
                 <VBox.margin>
                     <Insets top="50"/>
                 </VBox.margin>
             </Button>
-            <Button text="资源管理" onAction="#loadResourceModule" styleClass="navButton"/>
-            <Button text="资源分析" onAction="#loadResourceAnalysisModule" styleClass="navButton"/>
-            <Button text="个人日程" onAction="#loadScheduleModule" styleClass="navButton"/>
+            <Button text="资源管理" onAction="#loadResourceModule" styleClass="navButton" style="-fx-background-color: #1177BB;"/>
+            <Button text="资源分析" onAction="#loadResourceAnalysisModule" styleClass="navButton" style="-fx-background-color: #1177BB;"/>
+            <Button text="个人日程" onAction="#loadScheduleModule" styleClass="navButton" style="-fx-background-color: #1177BB;"/>
         </VBox>
     </left>
 

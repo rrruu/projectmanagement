@@ -660,7 +660,7 @@ public class GanttController {
 
 
             // 绘制任务名称
-            gc.setFill(Color.BLACK);
+            gc.setFill(Color.WHITE);
             gc.fillText(task.getTaskName(), x + 5, yPos + 15);
 
             yPos += ROW_HEIGHT;
