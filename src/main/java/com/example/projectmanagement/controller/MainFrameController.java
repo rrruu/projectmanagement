@@ -6,8 +6,12 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.util.Optional;
 
 public class MainFrameController {
     private Stage primaryStage; // 添加成员变量
@@ -24,6 +28,27 @@ public class MainFrameController {
     // 新增设置primaryStage的方法
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        setupCloseHandler(); // 设置关闭事件处理器
+    }
+
+
+    // 新增：关闭事件处理逻辑
+    private void setupCloseHandler() {
+        primaryStage.setOnCloseRequest(event -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("关闭提示");
+            alert.setHeaderText("正在关闭，请注意保存项目文件！");
+            alert.setContentText("是否确定退出？");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                // 清空数据模型
+                DataModel.getInstance().getTasks().clear();
+                DataModel.getInstance().getResources().clear();
+            } else {
+                event.consume(); // 取消关闭操作
+            }
+        });
     }
 
     @FXML

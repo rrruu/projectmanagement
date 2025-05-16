@@ -9,16 +9,33 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * 主应用类，负责启动JavaFX应用
  */
 
 public class Main extends Application {
+
+
+    @Override
+    public void init() throws Exception {
+        // 初始化数据库并清空项目相关表
+        DatabaseManager.initialize();
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                DatabaseManager.clearProjectTables(); // 清空任务和资源表
+            } catch (SQLException e) {
+                throw new RuntimeException("初始化清空数据库失败", e);
+            }
+        });
+    }
+
+
     @Override
     public void start(Stage primaryStage) throws IOException {
-        // 初始化数据库
-        DatabaseManager.initialize();
+//        // 初始化数据库
+//        DatabaseManager.initialize();
         FXMLLoader loader = new FXMLLoader(
                 Main.class.getResource("/com/example/projectmanagement/MainFrame.fxml")
         );
@@ -40,6 +57,14 @@ public class Main extends Application {
 
     @Override
     public void stop() {
+        // 关闭时清空项目相关表（保留日程表）
+        DatabaseManager.executeTransaction(() -> {
+            try {
+                DatabaseManager.clearProjectTables();
+            } catch (SQLException e) {
+                throw new RuntimeException("关闭时清空数据库失败", e);
+            }
+        });
         DatabaseManager.close();
     }
 
