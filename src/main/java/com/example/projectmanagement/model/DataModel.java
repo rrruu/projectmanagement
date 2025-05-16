@@ -82,23 +82,29 @@ public class DataModel {
                 TaskModel task = findTaskById(taskId);
                 ResourceModel res = findResourceById(resourceId);
                 if (task != null && res != null) {
-                    //双向添加关联
-                    task.getAssignedResources().add(res);
-                    res.getAssignedTasks().add(task);
+                    // 双向关联
+                    if (!task.getAssignedResources().contains(res)) {
+                        task.getAssignedResources().add(res);
+                    }
+                    if (!res.getAssignedTasks().contains(task)) {
+                        res.getAssignedTasks().add(task);
+                    }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        // 触发列表更新
-        FXCollections.sort(tasks, Comparator.comparing(TaskModel::getId));
-        FXCollections.sort(resources, Comparator.comparing(ResourceModel::getId));
+//        // 触发列表更新
+//        FXCollections.sort(tasks, Comparator.comparing(TaskModel::getId));
+//        FXCollections.sort(resources, Comparator.comparing(ResourceModel::getId));
 
         // 触发界面刷新
         Platform.runLater(() -> {
-            getResources().forEach(r -> r.getAssignedTasks().size());
-            getTasks().forEach(t -> t.getAssignedResources().size());
+//            getResources().forEach(r -> r.getAssignedTasks().size());
+//            getTasks().forEach(t -> t.getAssignedResources().size());
+            tasks.forEach(t -> t.getAssignedResources().size());
+            resources.forEach(r -> r.getAssignedTasks().size());
         });
     }
 

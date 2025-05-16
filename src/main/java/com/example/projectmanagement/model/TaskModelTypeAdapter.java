@@ -33,6 +33,7 @@ public class TaskModelTypeAdapter implements JsonSerializer<TaskModel>, JsonDese
     public TaskModel deserialize(JsonElement json, Type type, JsonDeserializationContext context)
             throws JsonParseException {
 
+
         JsonObject obj = json.getAsJsonObject();
         TaskModel task = new TaskModel();
 
@@ -77,12 +78,13 @@ public class TaskModelTypeAdapter implements JsonSerializer<TaskModel>, JsonDese
 
         // 处理关联资源（仅存储ID，后续重建）
         JsonArray resources = obj.getAsJsonArray("resources");
+        DataModel dataModel = DataModel.getInstance();
         resources.forEach(elem -> {
             String resId = elem.getAsString();
-            // 创建临时资源对象仅存储ID
-            ResourceModel tempRes = new ResourceModel();
-            tempRes.setId(resId);
-            task.getAssignedResources().add(tempRes);
+            ResourceModel realRes = dataModel.findResourceById(resId); // 关键修改：从数据模型获取
+            if (realRes != null) {
+                task.getAssignedResources().add(realRes);
+            }
         });
 
         // 手动触发验证和监听器初始化

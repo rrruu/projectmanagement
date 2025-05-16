@@ -1,4 +1,5 @@
 package com.example.projectmanagement.db;
+import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
 
@@ -118,7 +119,20 @@ public class TaskDAO {
     }
 
 
-
+    public static List<ResourceModel> getResourcesForTask(String taskId) throws SQLException {
+        String sql = "SELECT resource_id FROM task_resources WHERE task_id = ?";
+        List<ResourceModel> resources = new ArrayList<>();
+        try (PreparedStatement pstmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            pstmt.setString(1, taskId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String resId = rs.getString("resource_id");
+                ResourceModel res = DataModel.getInstance().findResourceById(resId);
+                if (res != null) resources.add(res);
+            }
+        }
+        return resources;
+    }
 
 
 

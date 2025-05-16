@@ -451,7 +451,11 @@ public class GanttController {
                         ResourceDAO.create(res);
                     }
 
-                    // 3. 导入任务（包含关联资源）
+                    // 3. 立即刷新资源列表到数据模型
+                    DataModel.getInstance().loadResources(); // 新增：确保资源加载到数据模型
+
+
+                    // 4. 导入任务（包含关联资源）
                     List<TaskModel> importedTasks = gson.fromJson(
                             project.get("tasks"),
                             new TypeToken<List<TaskModel>>(){}.getType()
@@ -471,8 +475,8 @@ public class GanttController {
                 }
             });
 
-            // 4. 刷新数据模型
-            DataModel.getInstance().loadAllData();
+            // 5. 刷新数据模型
+            DataModel.getInstance().loadAllData();//确保重新加载所有数据
             rebuildAssociations();//重建双向关联
             drawGanttChart();
             new Alert(Alert.AlertType.INFORMATION, "项目导入成功！").show();
@@ -506,6 +510,10 @@ public class GanttController {
         dataModel.getResources().forEach(res -> res.getAssignedTasks().clear());
         dataModel.getTasks().forEach(task -> task.getAssignedResources().clear());
 
+
+        // 从数据库重新加载关联
+        dataModel.loadAssociations();
+
 //        // 重建任务到资源的关联
 //        for (TaskModel task : dataModel.getTasks()) {
 //            for (ResourceModel res : task.getAssignedResources()) {
@@ -518,22 +526,35 @@ public class GanttController {
 //        }
 
 
-        // 建立新关联
-        dataModel.getTasks().forEach(task -> {
-            task.getAssignedResources().replaceAll(tempRes -> {
-                // 通过ID查找真实的资源对象
-                ResourceModel realRes = dataModel.findResourceById(tempRes.getId());
-                if (realRes != null) {
-                    // 建立双向关联
-                    realRes.getAssignedTasks().add(task);
-                    return realRes;
-                }
-                return null; // 无效资源将被过滤
-            });
+//        // 建立新关联
+//        dataModel.getTasks().forEach(task -> {
+//            task.getAssignedResources().replaceAll(tempRes -> {
+//                // 通过ID查找真实的资源对象
+//                ResourceModel realRes = dataModel.findResourceById(tempRes.getId());
+//                if (realRes != null) {
+//                    // 建立双向关联
+//                    realRes.getAssignedTasks().add(task);
+//                    return realRes;
+//                }
+//                return null; // 无效资源将被过滤
+//            });
+//
+//            // 过滤掉无效的null值
+//            task.getAssignedResources().removeIf(Objects::isNull);
+//        });
 
-            // 过滤掉无效的null值
-            task.getAssignedResources().removeIf(Objects::isNull);
-        });
+
+
+
+//        // 重建关联（确保双向更新）
+//        dataModel.getTasks().forEach(task -> {
+//            List<ResourceModel> realResources = task.getAssignedResources().stream()
+//                    .map(tempRes -> dataModel.findResourceById(tempRes.getId()))
+//                    .filter(Objects::nonNull)
+//                    .collect(Collectors.toList());
+//            task.getAssignedResources().setAll(realResources);
+//            realResources.forEach(res -> res.getAssignedTasks().add(task));
+//        });
     }
 
 
