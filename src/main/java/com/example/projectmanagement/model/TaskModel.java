@@ -72,7 +72,7 @@ public class TaskModel {
         this.duration = new ReadOnlyIntegerWrapper(0);
         this.cost = new ReadOnlyDoubleWrapper(0);
 
-        initListeners(); // 初始化监听器
+//        initListeners(); // 初始化监听器
         calculateCost(); // 初始计算成本
     }
 
@@ -140,7 +140,10 @@ public class TaskModel {
         return startDate;
     }
     public void setStartDate(LocalDate startDate) {
-        if (endDate != null && startDate.isAfter(endDate.get())) {
+        if (startDate == null) {
+            throw new IllegalArgumentException("开始日期不能为空");
+        }
+        if (endDate.get() != null && startDate.isAfter(endDate.get())) {
             throw new IllegalArgumentException("开始日期不能晚于结束日期");
         }
         this.startDate.set(startDate);
@@ -155,7 +158,10 @@ public class TaskModel {
         return endDate;
     }
     public void setEndDate(LocalDate endDate) {
-        if (startDate != null && endDate.isBefore(startDate.get())) {
+        if (endDate == null) {
+            throw new IllegalArgumentException("结束日期不能为空");
+        }
+        if (startDate.get() != null && endDate.isBefore(startDate.get())) {
             throw new IllegalArgumentException("结束日期不能早于开始日期");
         }
         this.endDate.set(endDate);
@@ -251,6 +257,10 @@ public class TaskModel {
 //                .sum() * getDuration();
 //    }
 
-
+    // 新增方法：手动初始化监听器（供反序列化后调用）
+    public void initListenersAfterDeserialization() {
+        initListeners();
+        calculateCost(); // 重新计算
+    }
 
 }

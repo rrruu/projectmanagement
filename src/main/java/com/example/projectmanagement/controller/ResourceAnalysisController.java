@@ -140,6 +140,7 @@ public class ResourceAnalysisController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         dataModel.getResources().forEach(res -> {
             long totalDuration = res.getAssignedTasks().stream()
+                    .filter(task -> task.getStartDate() != null && task.getEndDate() != null)
                     .mapToLong(t -> ChronoUnit.DAYS.between(t.getStartDate(), t.getEndDate()) + 1)
                     .sum();
             series.getData().add(new XYChart.Data<>(res.getName(), totalDuration));

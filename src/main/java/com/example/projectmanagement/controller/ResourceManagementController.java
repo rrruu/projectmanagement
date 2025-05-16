@@ -27,6 +27,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ResourceManagementController {
 
@@ -296,25 +298,59 @@ public class ResourceManagementController {
 
 
     private void drawResourceGantt() {
-        if (resourceGanttCanvas == null) return;
+        if (resourceGanttCanvas == null || dataModel.getResources().isEmpty()) return;
 
         GraphicsContext gc = resourceGanttCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
 
-        // 计算所有资源的时间范围
-        LocalDate minDate = dataModel.getResources().stream()
-                .flatMap(r -> r.getAssignedTasks().stream())
+
+
+        // 过滤无效任务（确保日期不为空）
+        List<TaskModel> validTasks = dataModel.getResources().stream()
+                .flatMap(res -> res.getAssignedTasks().stream())
+                .filter(task -> task.getStartDate() != null && task.getEndDate() != null)
+                .collect(Collectors.toList());
+
+        if (validTasks.isEmpty()) {
+            resourceGanttCanvas.getGraphicsContext2D().clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
+            return;
+        }
+
+
+        // 计算时间范围（基于有效任务）
+        LocalDate minDate = validTasks.stream()
                 .map(TaskModel::getStartDate)
                 .min(LocalDate::compareTo)
                 .orElse(LocalDate.now());
 
-        LocalDate maxDate = dataModel.getResources().stream()
-                .flatMap(r -> r.getAssignedTasks().stream())
+        LocalDate maxDate = validTasks.stream()
                 .map(TaskModel::getEndDate)
                 .max(LocalDate::compareTo)
                 .orElse(LocalDate.now());
 
-        if (minDate == null || maxDate == null) return;
+
+
+//        // 计算所有资源的时间范围
+//        LocalDate minDate = dataModel.getResources().stream()
+//                .flatMap(r -> r.getAssignedTasks().stream())
+//                .filter(task -> task.getStartDate() != null && task.getEndDate() != null)
+//                .map(TaskModel::getStartDate)
+//                .min(LocalDate::compareTo)
+//                .orElse(LocalDate.now());
+//
+//        LocalDate maxDate = dataModel.getResources().stream()
+//                .flatMap(r -> r.getAssignedTasks().stream())
+//                .filter(task -> task.getStartDate() != null && task.getEndDate() != null)
+//                .map(TaskModel::getEndDate)
+//                .max(LocalDate::compareTo)
+//                .orElse(LocalDate.now());
+
+//        // 如果无有效任务，清空画布
+//        if (minDate == null || maxDate == null) {
+//            GraphicsContext gc2 = resourceGanttCanvas.getGraphicsContext2D();
+//            gc2.clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
+//            return;
+//        }
 
         // 调整到完整周
         LocalDate adjustedStart = minDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));

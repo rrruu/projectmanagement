@@ -1,6 +1,9 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.Main;
+import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.ResourceDAO;
+import com.example.projectmanagement.db.TaskDAO;
 import com.example.projectmanagement.model.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -33,6 +36,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +45,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 主界面控制器
@@ -205,13 +211,6 @@ public class GanttController {
 
             // 显示窗口并等待
             dialogStage.showAndWait();
-
-
-//            // 获取新任务（如果有）
-//            TaskModel newTask = controller.getNewTask();
-//            if (newTask != null) {
-//                dataModel.getTasks().add(newTask);
-//            }
 
 
 
@@ -426,48 +425,55 @@ public class GanttController {
         if (file == null) return;
 
         try (FileReader reader = new FileReader(file)) {
+
+
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter()) // 添加TaskModel适配器
+                    .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
                     .registerTypeAdapter(ResourceModel.class, new ResourceModelTypeAdapter())
                     .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                     .create();
-////            // 直接反序列化为 ObservableList
-////            Type taskListType = new TypeToken<ObservableList<TaskModel>>(){}.getType();
-////            ObservableList<TaskModel> importedTasks = gson.fromJson(reader, taskListType);
-//            // 改为反序列化为普通List
-//            Type taskListType = new TypeToken<List<TaskModel>>(){}.getType();
-//            List<TaskModel> importedTasks = gson.fromJson(reader, taskListType);
-//
-//
-////            tasks.clear();
-//
-//            //使用 setAll 为直接导入（会清空原有内容）
-//            dataModel.getTasks().setAll(importedTasks);
 
             // 解析完整项目数据
             JsonObject project = gson.fromJson(reader, JsonObject.class);
 
-            // 先导入资源（因为任务需要引用资源）
-            Type resourceListType = new TypeToken<List<ResourceModel>>(){}.getType();
-            List<ResourceModel> importedResourcesList = gson.fromJson(
-                    project.get("resources"),
-                    resourceListType
-            );
-            ObservableList<ResourceModel> importedResources = FXCollections.observableArrayList(importedResourcesList);
-            dataModel.getResources().setAll(importedResources);
+            // 在事务中操作数据库
+            DatabaseManager.executeTransaction(() -> {
+                try {
+                    // 1. 清空所有表（注意顺序）
+                    clearDatabaseTables();
 
-            // 再导入任务（包含资源关联）
-            Type taskListType = new TypeToken<List<TaskModel>>(){}.getType();
-            List<TaskModel> importedTasksList = gson.fromJson(
-                    project.get("tasks"),
-                    taskListType
-            );
-            ObservableList<TaskModel> importedTasks = FXCollections.observableArrayList(importedTasksList);
-            dataModel.getTasks().setAll(importedTasks);
+                    // 2. 导入资源（先导入资源，因为任务依赖资源）
+                    List<ResourceModel> importedResources = gson.fromJson(
+                            project.get("resources"),
+                            new TypeToken<List<ResourceModel>>(){}.getType()
+                    );
+                    for (ResourceModel res : importedResources) {
+                        ResourceDAO.create(res);
+                    }
 
-            // 重建双向关联
-            rebuildAssociations();
+                    // 3. 导入任务（包含关联资源）
+                    List<TaskModel> importedTasks = gson.fromJson(
+                            project.get("tasks"),
+                            new TypeToken<List<TaskModel>>(){}.getType()
+                    );
+                    for (TaskModel task : importedTasks) {
+                        TaskDAO.create(task);
+                        // 插入关联关系（通过ID关联）
+                        List<ResourceModel> realResources = task.getAssignedResources().stream()
+                                .map(tempRes -> DataModel.getInstance().findResourceById(tempRes.getId()))
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList());
+                        TaskDAO.addTaskResources(task.getId(), realResources);
+                    }
 
+                } catch (SQLException e) {
+                    throw new RuntimeException("数据库操作失败", e);
+                }
+            });
+
+            // 4. 刷新数据模型
+            DataModel.getInstance().loadAllData();
+            rebuildAssociations();//重建双向关联
             drawGanttChart();
             new Alert(Alert.AlertType.INFORMATION, "项目导入成功！").show();
         } catch (IOException e) {
@@ -476,6 +482,23 @@ public class GanttController {
             new Alert(Alert.AlertType.ERROR, "文件格式错误").show();
         }
     }
+
+
+
+
+
+
+    // 清空数据库表（按外键依赖顺序）
+    private void clearDatabaseTables() throws SQLException {
+        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
+            stmt.executeUpdate("DELETE FROM task_resources");
+            stmt.executeUpdate("DELETE FROM tasks");
+            stmt.executeUpdate("DELETE FROM resources");
+        }
+    }
+
+
+
 
     // 新增方法：重建资源与任务的关联关系
     private void rebuildAssociations() {
@@ -513,39 +536,6 @@ public class GanttController {
         });
     }
 
-
-    @FXML
-    private void handleAdditionalImportProject() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("选择项目文件");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON 文件", "*.json"));
-
-        File file = fileChooser.showOpenDialog(taskTable.getScene().getWindow());
-        if (file == null) return;
-
-        try (FileReader reader = new FileReader(file)) {
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter()) // 添加TaskModel适配器
-                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                    .create();
-
-            // 改为反序列化为普通List
-            Type taskListType = new TypeToken<List<TaskModel>>(){}.getType();
-            List<TaskModel> importedTasks = gson.fromJson(reader, taskListType);
-
-
-
-
-            //使用 addAll 为追加导入，会保留原有内容
-            dataModel.getTasks().addAll(importedTasks);
-            drawGanttChart();
-            new Alert(Alert.AlertType.INFORMATION, "项目导入成功！").show();
-        } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR, "文件读取失败：" + e.getMessage()).show();
-        } catch (JsonSyntaxException e) {
-            new Alert(Alert.AlertType.ERROR, "文件格式错误").show();
-        }
-    }
 
     // 新增 LocalDate 序列化适配器
     private static class LocalDateAdapter extends TypeAdapter<LocalDate> {

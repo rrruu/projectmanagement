@@ -80,9 +80,10 @@ public class DatabaseManager {
             conn.setAutoCommit(originalAutoCommit); // 恢复auto-commit原始状态
         } catch (Exception e) {
             try {
+                System.err.println("事务回滚，原因：" + e.getMessage());
                 conn.rollback();//如果出错，回滚事务
             } catch (SQLException ex) {
-                ex.printStackTrace();//打印回滚失败日志
+                System.err.println("回滚失败：" + ex.getMessage());
             }
             throw new RuntimeException("Transaction failed", e);//抛出原始异常，供外部捕获或记录
         }
