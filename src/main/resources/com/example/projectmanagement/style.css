@@ -272,6 +272,11 @@
 }
 
 
+/* 文件选择器样式 */
+.file-chooser {
+    -fx-font-size: 14px;
+}
+
 
 
 

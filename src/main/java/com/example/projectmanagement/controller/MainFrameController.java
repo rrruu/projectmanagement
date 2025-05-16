@@ -77,11 +77,6 @@ public class MainFrameController {
 
             contentPane.getChildren().setAll(node);
 
-//            // 传递primaryStage给需要它的控制器  如果加载的是甘特图模块，传递primaryStage参数
-//            if (fxmlPath.contains("welcome.fxml") && primaryStage != null) {
-//                GanttController mainController = loader.getController();
-//                mainController.setPrimaryStage(primaryStage);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

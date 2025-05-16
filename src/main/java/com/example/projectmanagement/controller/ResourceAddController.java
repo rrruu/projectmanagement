@@ -4,11 +4,9 @@ import com.example.projectmanagement.db.DatabaseManager;
 import com.example.projectmanagement.db.ResourceDAO;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
-import com.example.projectmanagement.model.TaskModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ResourceAddController {
@@ -34,33 +32,6 @@ public class ResourceAddController {
     private void initialize() {
         typeCombo.getItems().addAll("人力", "设备", "场地");
     }
-
-//    public void setResource(ResourceModel resource) {
-//        this.resource = resource;
-//        nameField.setText(resource.getName());
-//        idField.setText(resource.getId());
-//        phoneField.setText(resource.getPhone());
-//        emailField.setText(resource.getEmail());
-//        typeCombo.setValue(resource.getType());
-//        rateField.setText(String.valueOf(resource.getDailyRate()));
-//    }
-//
-//    public ResourceModel getResource() {
-//        if (resource == null) {
-//            resource = new ResourceModel();
-//        }
-//        resource.setName(nameField.getText());
-//        resource.setId(idField.getText());
-//        resource.setPhone(phoneField.getText());
-//        resource.setEmail(emailField.getText());
-//        resource.setType(typeCombo.getValue());
-//        try {
-//            resource.setDailyRate(Double.parseDouble(rateField.getText()));
-//        } catch (NumberFormatException e) {
-//            resource.setDailyRate(0.0);
-//        }
-//        return resource;
-//    }
 
     @FXML
     private void handleConfirm() {
@@ -143,21 +114,21 @@ public class ResourceAddController {
 
     }
 
-    private void saveResourceToDatabase(ResourceModel resource) throws SQLException {
-        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, comment) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, resource.getId());
-            stmt.setString(2, resource.getName());
-            stmt.setString(3, resource.getPhone());
-            stmt.setString(4, resource.getEmail());
-            stmt.setString(5, resource.getType());
-            stmt.setDouble(6, resource.getDailyRate());
-//            stmt.setString(7, resource.getStatus());
-            stmt.setString(7, resource.getComment());
-            stmt.executeUpdate();
-        }
-    }
+//    private void saveResourceToDatabase(ResourceModel resource) throws SQLException {
+//        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, comment) " +
+//                "VALUES(?, ?, ?, ?, ?, ?, ?)";
+//        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, resource.getId());
+//            stmt.setString(2, resource.getName());
+//            stmt.setString(3, resource.getPhone());
+//            stmt.setString(4, resource.getEmail());
+//            stmt.setString(5, resource.getType());
+//            stmt.setDouble(6, resource.getDailyRate());
+////            stmt.setString(7, resource.getStatus());
+//            stmt.setString(7, resource.getComment());
+//            stmt.executeUpdate();
+//        }
+//    }
 
 
 
@@ -179,9 +150,7 @@ public class ResourceAddController {
         }
     }
 
-//    public boolean isConfirmed() {
-//        return confirmed;
-//    }
+
 
 
 }

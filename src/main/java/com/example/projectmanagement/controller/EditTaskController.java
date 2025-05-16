@@ -3,13 +3,10 @@ package com.example.projectmanagement.controller;
 import com.example.projectmanagement.db.DatabaseManager;
 import com.example.projectmanagement.db.TaskDAO;
 import com.example.projectmanagement.model.DataModel;
-import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 

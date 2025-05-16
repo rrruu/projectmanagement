@@ -1,17 +1,16 @@
 package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.db.DatabaseManager;
+import com.example.projectmanagement.db.TaskDAO;
 import com.example.projectmanagement.model.DataModel;
 import com.example.projectmanagement.model.ResourceModel;
 import com.example.projectmanagement.model.TaskModel;
-import com.example.projectmanagement.db.TaskDAO;
 import com.example.projectmanagement.util.TimeConflictChecker;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
-import javafx.util.Duration;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -165,19 +164,19 @@ public class LinkResourceController {
 
 
     private void updateBidirectionalAssociations(ObservableList<ResourceModel> selectedResources) {
-        // 1. 从所有资源中移除当前任务（如果存在）
+        //从所有资源中移除当前任务（如果存在）
         DataModel.getInstance().getResources().forEach(res -> {
             res.getAssignedTasks().remove(currentTask);
         });
 
-        // 2. 将当前任务添加到选中的资源中
+        //将当前任务添加到选中的资源中
         selectedResources.forEach(res -> {
             if (!res.getAssignedTasks().contains(currentTask)) {
                 res.getAssignedTasks().add(currentTask);
             }
         });
 
-        // 3. 更新当前任务的关联资源
+        //更新当前任务的关联资源
         currentTask.getAssignedResources().setAll(selectedResources);
     }
 

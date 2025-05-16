@@ -27,7 +27,7 @@ public class DeleteTaskController {
     private void handleConfirm() {
         DatabaseManager.executeTransaction(() -> {
             try {
-                // 先删除关联关系
+                // 删除关联关系
                 TaskDAO.clearTaskResources(taskToDelete.getId());
                 // 使用DAO删除任务
                 TaskDAO.delete(taskToDelete.getId());

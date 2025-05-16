@@ -79,7 +79,7 @@ public class ResourceManagementController {
 
 
 
-        //新增关联任务列
+        //关联任务列
         TableColumn<ResourceModel, String> tasksColumn = new TableColumn<>("关联任务");
         tasksColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getAssignedTasksInfo())
@@ -158,12 +158,7 @@ public class ResourceManagementController {
             // 显示窗口并等待
             dialogStage.showAndWait();
 
-//
-//            //获取新资源（如果有）
-//            ResourceModel newResource = controller.getNewResource();
-//            if(newResource != null){
-//                dataModel.getResources().add(newResource);
-//            }
+
 
 
         } catch (IOException e) {
@@ -293,7 +288,7 @@ public class ResourceManagementController {
 
 
 
-    // 获取资源列表（后续用于绑定）
+    // 获取资源列表
     public ObservableList<ResourceModel> getResources() {
         return dataModel.getResources();
     }

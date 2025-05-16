@@ -207,21 +207,6 @@ public class ResourceAnalysisController {
 
         });
 
-//        // 创建饼图数据
-//        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
-//        typeCount.forEach((type, count) -> {
-//            double avgUsage = typeUsage.getOrDefault(type, 0.0) / count;
-//            // 在名称中直接包含统计信息
-//            String name = String.format("%s (%d个)\n平均使用率:%.1f%%", type, count, avgUsage);
-//            pieData.add(new PieChart.Data(name, count));
-//        });
-//        typePieChart.setData(pieData);
-//
-//        // 添加样式类便于自定义样式
-//        pieData.forEach(data ->
-//                data.getNode().getStyleClass().add("pie-label")
-//        );
-
 
 
         // 构建外层饼图（类型占比）
