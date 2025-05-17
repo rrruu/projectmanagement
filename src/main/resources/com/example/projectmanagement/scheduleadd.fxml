@@ -6,9 +6,39 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ScheduleAddController"
             prefHeight="400.0" prefWidth="600.0">
 
+    <children>
+        <GridPane hgap="10" vgap="10">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+            <Label text="标题:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="titleField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="开始时间:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="结束时间:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="内容:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <TextArea fx:id="contentArea" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+            <Label text="内容:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <ScrollPane prefHeight="80" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <TextArea fx:id="contentField" wrapText="true"/>
+            </ScrollPane>
+
+        </GridPane>
+
+
+        <HBox spacing="10" layoutX="20" layoutY="350" AnchorPane.rightAnchor="20">
+            <Button text="确定" styleClass="button1"/>
+            <Button text="取消" styleClass="button1"/>
+        </HBox>
+    </children>
 </AnchorPane>

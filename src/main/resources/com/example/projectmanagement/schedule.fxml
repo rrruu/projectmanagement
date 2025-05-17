@@ -6,22 +6,65 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.canvas.Canvas?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ScheduleController"
             style="-fx-padding: 20;">
 
-<!--    <VBox spacing="10">-->
-<!--        <HBox spacing="10" alignment="CENTER_LEFT">-->
-<!--            <Button text="新建日程安排" fx:id="btnNew"/>-->
-<!--            <Button text="删除日程安排" fx:id="btnDelete"/>-->
-<!--            <Button text="编辑日程安排" fx:id="btnEdit"/>-->
-<!--        </HBox>-->
+    <VBox spacing="10">
+        <!-- 按钮栏 -->
+        <HBox spacing="10">
+            <Button text="添加日程" />
+            <Button text="删除日程" />
+            <Button text="编辑日程" />
+            <Button text="显示详情" />
+            <Button text="本周日程" />
+        </HBox>
 
-<!--        &lt;!&ndash; 日历占位 &ndash;&gt;-->
-<!--        <Label text="日历区域（待实现）" style="-fx-border-color: #ccc; -fx-padding: 20;"/>-->
 
-<!--        &lt;!&ndash; 日程卡片容器 &ndash;&gt;-->
-<!--        <VBox fx:id="scheduleContainer" spacing="5"/>-->
-<!--    </VBox>-->
+        <HBox alignment="CENTER">
+            <!-- 日历区域 -->
+            <VBox spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;">
+                <!-- 月份切换栏 -->
+                <HBox spacing="20" alignment="CENTER">
+                    <Button fx:id="prevMonthButton" text="◀ 上一月"/>
+                    <Label fx:id="monthLabel" style="-fx-font-size: 18px;"/>
+                    <Button fx:id="nextMonthButton" text="下一月 ▶"/>
+                </HBox>
+
+                <!-- 日历主体 -->
+                <GridPane fx:id="calendarGrid" hgap="5" vgap="5">
+                    <!-- 列标题（周几） -->
+                    <Label text="一" GridPane.columnIndex="0"/>
+                    <Label text="二" GridPane.columnIndex="1"/>
+                    <Label text="三" GridPane.columnIndex="2"/>
+                    <Label text="四" GridPane.columnIndex="3"/>
+                    <Label text="五" GridPane.columnIndex="4"/>
+                    <Label text="六" GridPane.columnIndex="5"/>
+                    <Label text="日" GridPane.columnIndex="6"/>
+                </GridPane>
+            </VBox>
+
+        </HBox>
+
+
+        <!-- 日程卡片区域 -->
+        <ScrollPane fitToWidth="true" style="-fx-max-height: 200;">
+            <FlowPane fx:id="cardsContainer" />
+        </ScrollPane>
+
+        <!-- 甘特图区域 -->
+        <Label text="日程情况" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
+        <ScrollPane fx:id="scheduleGanttScrollPane"
+                    fitToWidth="true"
+                    fitToHeight="true"
+                    hvalue="0.0"
+                    vvalue="0.0"
+                    style="-fx-border-color: #cccccc;">
+            <content>
+                <Canvas fx:id="scheduleGanttCanvas"/>
+            </content>
+        </ScrollPane>
+    </VBox>
 </AnchorPane>
