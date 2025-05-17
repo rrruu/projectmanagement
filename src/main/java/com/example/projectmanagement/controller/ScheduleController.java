@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class ScheduleController {
@@ -49,6 +50,8 @@ public class ScheduleController {
     private ObservableList<ScheduleModel> schedules = FXCollections.observableArrayList();
 
     private YearMonth currentYearMonth;
+
+    private boolean isRefreshing = false; // 添加标志位
 
 
     // 添加currentYearMonth的属性支持
@@ -84,7 +87,7 @@ public class ScheduleController {
         refreshAll();
     }
 
-    private void refreshCalendar() {
+    void refreshCalendar() {
         calendarGrid.getChildren().removeIf(node ->
                 GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) > 0
         );
@@ -121,10 +124,8 @@ public class ScheduleController {
             refreshAll();
         });
 
-        // 监听日程列表变化时更新界面
-        schedules.addListener((ListChangeListener.Change<? extends ScheduleModel> change) -> {
-            refreshAll();
-        });
+        // 监听日程列表变化（使用单独方法）
+        schedules.addListener(this::handleScheduleListChange);
     }
 
 
@@ -143,15 +144,29 @@ public class ScheduleController {
 
     private void loadSchedules() {
         try {
+            // 临时移除监听器避免触发 refreshAll
+            schedules.removeListener(this::handleScheduleListChange);
             schedules.setAll(ScheduleDAO.findAll());
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            schedules.addListener(this::handleScheduleListChange);
+        }
+    }
+
+    private void handleScheduleListChange(ListChangeListener.Change<? extends ScheduleModel> change) {
+        if (!isRefreshing) {
+            refreshAll();
         }
     }
 
     public void refreshAll() {
+        if (isRefreshing) return; // 防止重复刷新
+        isRefreshing = true;
+        loadSchedules();  // 新增：每次刷新前重新加载数据库数据
         refreshCalendar();
         refreshCards();
+        isRefreshing = false;
     }
 
     private void refreshCards() {

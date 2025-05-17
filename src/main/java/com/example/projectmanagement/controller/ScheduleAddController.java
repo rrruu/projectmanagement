@@ -2,6 +2,7 @@ package com.example.projectmanagement.controller;
 
 import com.example.projectmanagement.db.ScheduleDAO;
 import com.example.projectmanagement.model.ScheduleModel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -41,7 +42,12 @@ public class ScheduleAddController {
             }
 
             ScheduleDAO.create(schedule);
-            mainController.refreshAll();
+//            mainController.refreshAll();
+
+            // 仅调用一次刷新，且确保在主线程
+            Platform.runLater(() -> {
+                mainController.refreshAll();
+            });
             closeWindow();
         } catch (Exception e) {
             showAlert("错误", "保存失败: " + e.getMessage());

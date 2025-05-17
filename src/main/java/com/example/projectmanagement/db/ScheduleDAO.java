@@ -23,7 +23,7 @@ public class ScheduleDAO {
 
     public static List<ScheduleModel> findAll() throws SQLException {
         List<ScheduleModel> schedules = new ArrayList<>();
-        String sql = "SELECT * FROM schedules";
+        String sql = "SELECT * FROM schedules ORDER BY start_date";// 添加排序避免潜在问题
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
