@@ -291,6 +291,16 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);
 }
 
+/* 日程甘特图样式 */
+.schedule-gantt-bar {
+    -fx-fill: #4682B4;
+}
+
+.schedule-time-axis {
+    -fx-stroke: #666;
+    -fx-stroke-width: 0.8;
+}
+
 
 
 

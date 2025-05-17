@@ -7,12 +7,13 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.canvas.Canvas?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
+            fitToHeight="false"
             fx:controller="com.example.projectmanagement.controller.ScheduleController"
             style="-fx-padding: 20;">
 
-    <VBox spacing="10">
+    <VBox spacing="15" style="-fx-min-width: 1200;">
         <!-- 按钮栏 -->
         <HBox spacing="10">
             <Button text="添加日程" onAction="#handleAddSchedule"/>
@@ -23,7 +24,7 @@
         </HBox>
 
 
-        <HBox alignment="CENTER">
+        <HBox spacing="10" alignment="CENTER" VBox.vgrow="NEVER">
             <!-- 日历区域 -->
             <VBox spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;">
                 <!-- 月份切换栏 -->
@@ -34,7 +35,7 @@
                 </HBox>
 
                 <!-- 日历主体 -->
-                <GridPane fx:id="calendarGrid" hgap="5" vgap="5">
+                <GridPane fx:id="calendarGrid" hgap="5" vgap="5" VBox.vgrow="ALWAYS">
                     <!-- 列标题（周几） -->
                     <Label text="一" GridPane.columnIndex="0"/>
                     <Label text="二" GridPane.columnIndex="1"/>
@@ -50,21 +51,22 @@
 
 
         <!-- 日程卡片区域 -->
-        <ScrollPane fitToWidth="true" style="-fx-max-height: 200;">
-            <FlowPane fx:id="cardsContainer" />
-        </ScrollPane>
+
+            <FlowPane fx:id="cardsContainer" style="-fx-padding: 5;"/>
+
 
         <!-- 甘特图区域 -->
         <Label text="日程情况" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
         <ScrollPane fx:id="scheduleGanttScrollPane"
                     fitToWidth="true"
-                    fitToHeight="true"
+                    fitToHeight="false"
                     hvalue="0.0"
                     vvalue="0.0"
-                    style="-fx-border-color: #cccccc;">
+                    VBox.vgrow="ALWAYS"
+                    style="-fx-border-color: #cccccc; -fx-min-height: 200;">
             <content>
                 <Canvas fx:id="scheduleGanttCanvas"/>
             </content>
         </ScrollPane>
     </VBox>
-</AnchorPane>
+</ScrollPane>

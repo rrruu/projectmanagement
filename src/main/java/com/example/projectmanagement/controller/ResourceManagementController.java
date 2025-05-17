@@ -330,28 +330,6 @@ public class ResourceManagementController {
 
 
 
-//        // 计算所有资源的时间范围
-//        LocalDate minDate = dataModel.getResources().stream()
-//                .flatMap(r -> r.getAssignedTasks().stream())
-//                .filter(task -> task.getStartDate() != null && task.getEndDate() != null)
-//                .map(TaskModel::getStartDate)
-//                .min(LocalDate::compareTo)
-//                .orElse(LocalDate.now());
-//
-//        LocalDate maxDate = dataModel.getResources().stream()
-//                .flatMap(r -> r.getAssignedTasks().stream())
-//                .filter(task -> task.getStartDate() != null && task.getEndDate() != null)
-//                .map(TaskModel::getEndDate)
-//                .max(LocalDate::compareTo)
-//                .orElse(LocalDate.now());
-
-//        // 如果无有效任务，清空画布
-//        if (minDate == null || maxDate == null) {
-//            GraphicsContext gc2 = resourceGanttCanvas.getGraphicsContext2D();
-//            gc2.clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
-//            return;
-//        }
-
         // 调整到完整周
         LocalDate adjustedStart = minDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate adjustedEnd = maxDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));

@@ -12,8 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -21,13 +24,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,12 +55,22 @@ public class ScheduleController {
 
     @FXML private FlowPane cardsContainer;
 
+    // 新增甘特图相关变量
+    @FXML private Canvas scheduleGanttCanvas;
+    @FXML private ScrollPane scheduleGanttScrollPane;
+
     private ObservableList<ScheduleModel> schedules = FXCollections.observableArrayList();
 
     private YearMonth currentYearMonth;
 
     private boolean isRefreshing = false; // 添加标志位
 
+
+    // 甘特图常量
+    private static final double BASE_DAY_WIDTH = 40.0;
+    private static final double ROW_HEIGHT = 30.0;
+    private static final double TIME_AXIS_HEIGHT = 80.0;
+    private static final double WEEK_SECTION_HEIGHT = 40.0;
 
     // 添加currentYearMonth的属性支持
     private final ObjectProperty<YearMonth> currentYearMonthProperty = new SimpleObjectProperty<>(YearMonth.now());
@@ -69,22 +87,12 @@ public class ScheduleController {
     public void initialize() {
         currentYearMonth = YearMonth.now();
 
-//        prevMonthButton.setOnAction(e -> {
-//            currentYearMonth = currentYearMonth.minusMonths(1);
-//            refreshCalendar();
-//        });
-//
-//        nextMonthButton.setOnAction(e -> {
-//            currentYearMonth = currentYearMonth.plusMonths(1);
-//            refreshCalendar();
-//        });
-//
-//        refreshCalendar();
-
-
         loadSchedules();
         setupCalendarListeners();
         refreshAll();
+
+        schedules.addListener((ListChangeListener<? super ScheduleModel>) change -> drawScheduleGantt());
+        drawScheduleGantt(); // 初始化时绘制
     }
 
     void refreshCalendar() {
@@ -215,6 +223,129 @@ public class ScheduleController {
         stage.setScene(new Scene(root));
         stage.setTitle("添加日程");
         stage.show();
+    }
+
+
+    // 新增甘特图绘制方法
+    private void drawScheduleGantt() {
+        if (scheduleGanttCanvas == null || schedules.isEmpty()) return;
+
+        GraphicsContext gc = scheduleGanttCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, scheduleGanttCanvas.getWidth(), scheduleGanttCanvas.getHeight());
+
+        // 计算时间范围
+        LocalDate minDate = schedules.stream()
+                .map(ScheduleModel::getStartDate)
+                .min(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+
+        LocalDate maxDate = schedules.stream()
+                .map(ScheduleModel::getEndDate)
+                .max(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+
+        // 调整到完整周
+        LocalDate adjustedStart = minDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate adjustedEnd = maxDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+        // 计算画布尺寸
+        long totalDays = ChronoUnit.DAYS.between(adjustedStart, adjustedEnd) + 1;
+        double canvasWidth = 100 + totalDays * BASE_DAY_WIDTH;
+        double canvasHeight = TIME_AXIS_HEIGHT + schedules.size() * ROW_HEIGHT + 50;
+
+        scheduleGanttCanvas.setWidth(canvasWidth);
+        scheduleGanttCanvas.setHeight(canvasHeight);
+        scheduleGanttScrollPane.layout();
+
+        // 绘制时间轴
+        drawScheduleTimeAxis(gc, adjustedStart, adjustedEnd, canvasWidth);
+
+        // 绘制日程条
+        double yPos = TIME_AXIS_HEIGHT + 20;
+        for (ScheduleModel schedule : schedules) {
+            long startOffset = ChronoUnit.DAYS.between(adjustedStart, schedule.getStartDate());
+            long duration = ChronoUnit.DAYS.between(schedule.getStartDate(), schedule.getEndDate()) + 1;
+
+            double x = 50 + startOffset * BASE_DAY_WIDTH;
+            double width = duration * BASE_DAY_WIDTH;
+
+            gc.setFill(Color.rgb(70, 130, 180)); // 钢蓝色
+            gc.fillRect(x, yPos, width, 20);
+
+            // 绘制日程标题
+            gc.setFill(Color.WHITE);
+            gc.fillText(schedule.getTitle(), x + 5, yPos + 15);
+            yPos += ROW_HEIGHT;
+        }
+    }
+
+    // 时间轴绘制方法
+    private void drawScheduleTimeAxis(GraphicsContext gc, LocalDate start, LocalDate end, double canvasWidth) {
+        gc.setStroke(Color.BLACK);
+        gc.setFill(Color.BLACK);
+
+        // 绘制周信息
+        LocalDate currentMonday = start;
+        int weekNumber = 1;
+        while (!currentMonday.isAfter(end)) {
+            long daysFromStart = ChronoUnit.DAYS.between(start, currentMonday);
+            double xPos = 50 + daysFromStart * BASE_DAY_WIDTH;
+
+            // 周分割线
+            gc.strokeLine(xPos, 20, xPos, WEEK_SECTION_HEIGHT);
+
+            // 周标签
+            String weekInfo = "第" + weekNumber + "周 " + currentMonday.format(DateTimeFormatter.ofPattern("MM/dd"));
+            gc.fillText(weekInfo, xPos + BASE_DAY_WIDTH/4, 35);
+            currentMonday = currentMonday.plusWeeks(1);
+            weekNumber++;
+        }
+
+        // ========== 添加水平分割线 ==========
+        gc.strokeLine(50, WEEK_SECTION_HEIGHT, canvasWidth - 50, WEEK_SECTION_HEIGHT);
+
+
+
+        // 绘制每日分割线
+        LocalDate currentDay = start;
+        while (!currentDay.isAfter(end)) {
+            long daysFromStart = ChronoUnit.DAYS.between(start, currentDay);
+            double xPos = 50 + daysFromStart * BASE_DAY_WIDTH;
+
+            // 每日分割线
+            gc.setStroke(Color.LIGHTGRAY);
+            gc.setLineWidth(0.5);
+
+            // 绘制从时间轴顶部到底部的分割线
+            gc.strokeLine(xPos, 20, xPos, WEEK_SECTION_HEIGHT + 30);
+
+            // 恢复默认样式
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(1.0);
+
+            // 日期标签
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText(String.valueOf(currentDay.getDayOfMonth()),
+                    xPos + BASE_DAY_WIDTH/2, WEEK_SECTION_HEIGHT + 25);
+
+
+            //使日程名称位于任务条左侧
+            gc.setTextAlign(TextAlignment.LEFT);
+            // 每周日绘制分隔线（延长到分割线下方）
+            if (currentDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                gc.strokeLine(xPos + BASE_DAY_WIDTH,
+                        WEEK_SECTION_HEIGHT,//从分割线开始
+                        xPos + BASE_DAY_WIDTH,
+                        WEEK_SECTION_HEIGHT + 30
+                );
+            }
+            currentDay = currentDay.plusDays(1);
+        }
+
+
+        // 边框
+        gc.setStroke(Color.BLACK);
+        gc.strokeRect(50, 20, canvasWidth - 100, TIME_AXIS_HEIGHT - 30);
     }
 
 
