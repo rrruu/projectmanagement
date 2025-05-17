@@ -1,4 +1,73 @@
 package com.example.projectmanagement.controller;
 
+import com.example.projectmanagement.db.ScheduleDAO;
+import com.example.projectmanagement.model.ScheduleModel;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+
 public class ScheduleEditController {
+    @FXML private TextField titleField;
+    @FXML private DatePicker startDatePicker;
+    @FXML private DatePicker endDatePicker;
+    @FXML private TextArea contentField;
+
+    private ScheduleModel selectedSchedule;
+    private ScheduleController mainController;
+
+    // 初始化表单数据
+    public void setScheduleToEdit(ScheduleModel schedule) {
+        this.selectedSchedule = schedule;
+        titleField.setText(schedule.getTitle());
+        startDatePicker.setValue(schedule.getStartDate());
+        endDatePicker.setValue(schedule.getEndDate());
+        contentField.setText(schedule.getContent());
+    }
+
+    @FXML
+    private void handleConfirm() {
+        try {
+            // 验证数据
+            if (startDatePicker.getValue().isAfter(endDatePicker.getValue())) {
+                showAlert("错误", "开始时间不能晚于结束时间");
+                return;
+            }
+
+            // 更新模型
+            selectedSchedule.setTitle(titleField.getText());
+            selectedSchedule.setStartDate(startDatePicker.getValue());
+            selectedSchedule.setEndDate(endDatePicker.getValue());
+            selectedSchedule.setContent(contentField.getText());
+
+            // 更新数据库
+            ScheduleDAO.update(selectedSchedule);
+
+            // 刷新主界面
+            mainController.refreshAll();
+            closeWindow();
+        } catch (Exception e) {
+            showAlert("错误", "更新失败: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleCancel() {
+        closeWindow();
+    }
+
+    private void closeWindow() {
+        ((Stage) titleField.getScene().getWindow()).close();
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    public void setMainController(ScheduleController controller) {
+        this.mainController = controller;
+    }
 }

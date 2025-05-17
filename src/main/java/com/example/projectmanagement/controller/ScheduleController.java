@@ -258,6 +258,27 @@ public class ScheduleController {
         }
     }
 
+    @FXML
+    private void handleEditSchedule() throws IOException {
+        if (selectedSchedule == null) {
+            new Alert(Alert.AlertType.WARNING, "请先选择要编辑的日程").show();
+            return;
+        }
+
+        // 加载编辑窗口
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectmanagement/scheduleedit.fxml"));
+        Parent root = loader.load();
+
+        ScheduleEditController controller = loader.getController();
+        controller.setScheduleToEdit(selectedSchedule); // 传递待编辑数据
+        controller.setMainController(this);
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("编辑日程");
+        stage.show();
+    }
+
 
     // 新增甘特图绘制方法
     private void drawScheduleGantt() {

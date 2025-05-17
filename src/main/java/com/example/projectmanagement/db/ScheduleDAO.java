@@ -46,4 +46,18 @@ public class ScheduleDAO {
             stmt.executeUpdate();
         }
     }
+
+
+    // ScheduleDAO.java 新增方法
+    public static void update(ScheduleModel schedule) throws SQLException {
+        String sql = "UPDATE schedules SET title=?, start_date=?, end_date=?, content=? WHERE id=?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, schedule.getTitle());
+            stmt.setString(2, schedule.getStartDate().toString());
+            stmt.setString(3, schedule.getEndDate().toString());
+            stmt.setString(4, schedule.getContent());
+            stmt.setString(5, schedule.getId());
+            stmt.executeUpdate();
+        }
+    }
 }

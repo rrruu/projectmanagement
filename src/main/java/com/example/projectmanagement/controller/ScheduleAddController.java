@@ -20,12 +20,13 @@ public class ScheduleAddController {
 
     private ScheduleController mainController;
 
-    @FXML
-    private void initialize() {
-        confirmButton.setOnAction(e -> handleConfirm());
-        cancelButton.setOnAction(e -> handleCancel());
-    }
+//    @FXML
+//    private void initialize() {
+//        confirmButton.setOnAction(e -> handleConfirm());
+//        cancelButton.setOnAction(e -> handleCancel());
+//    }
 
+    @FXML
     private void handleConfirm() {
         try {
             ScheduleModel schedule = new ScheduleModel(
@@ -54,6 +55,7 @@ public class ScheduleAddController {
         }
     }
 
+    @FXML
     private void handleCancel() {
         closeWindow();
     }

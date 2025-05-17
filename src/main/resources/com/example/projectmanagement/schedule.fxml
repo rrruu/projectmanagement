@@ -18,7 +18,7 @@
         <HBox spacing="10">
             <Button text="添加日程" onAction="#handleAddSchedule"/>
             <Button text="删除日程" onAction="#handleDeleteSchedule"/>
-            <Button text="编辑日程" />
+            <Button text="编辑日程" onAction="#handleEditSchedule"/>
             <Button text="显示详情" />
             <Button text="本周日程" />
         </HBox>
