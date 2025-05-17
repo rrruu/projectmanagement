@@ -9,23 +9,23 @@ import java.util.List;
 import java.util.UUID;
 
 public class ScheduleDAO {
-    public static void addSchedule(ScheduleModel schedule) throws SQLException {
+    public static void create(ScheduleModel schedule) throws SQLException {
         String sql = "INSERT INTO schedules(id, title, start_date, end_date, content) VALUES(?,?,?,?,?)";
-        try (PreparedStatement pstmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            pstmt.setString(1, schedule.getId());
-            pstmt.setString(2, schedule.getTitle());
-            pstmt.setString(3, schedule.getStartDate().toString());
-            pstmt.setString(4, schedule.getEndDate().toString());
-            pstmt.setString(5, schedule.getContent());
-            pstmt.executeUpdate();
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, schedule.getId());
+            stmt.setString(2, schedule.getTitle());
+            stmt.setString(3, schedule.getStartDate().toString());
+            stmt.setString(4, schedule.getEndDate().toString());
+            stmt.setString(5, schedule.getContent());
+            stmt.executeUpdate();
         }
     }
 
-    public static List<ScheduleModel> getAllSchedules() throws SQLException {
+    public static List<ScheduleModel> findAll() throws SQLException {
         List<ScheduleModel> schedules = new ArrayList<>();
         String sql = "SELECT * FROM schedules";
-        try (Statement stmt = DatabaseManager.getConnection().createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 schedules.add(new ScheduleModel(
                         rs.getString("id"),
@@ -39,5 +39,11 @@ public class ScheduleDAO {
         return schedules;
     }
 
-    // 其他删除、更新方法...
+    public static void delete(String id) throws SQLException {
+        String sql = "DELETE FROM schedules WHERE id = ?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+        }
+    }
 }

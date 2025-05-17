@@ -65,12 +65,14 @@
         </dependency>
 
 
+
         <!--为了绘制双层饼图，添加JFreeChart依赖-->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>11.1.2</version>
         </dependency>
+
 
     </dependencies>
 

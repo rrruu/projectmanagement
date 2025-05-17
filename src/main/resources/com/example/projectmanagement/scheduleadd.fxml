@@ -25,8 +25,6 @@
             <Label text="结束时间:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
             <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-            <Label text="内容:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <TextArea fx:id="contentArea" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
             <Label text="内容:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
             <ScrollPane prefHeight="80" GridPane.columnIndex="1" GridPane.rowIndex="3">
@@ -37,8 +35,8 @@
 
 
         <HBox spacing="10" layoutX="20" layoutY="350" AnchorPane.rightAnchor="20">
-            <Button text="确定" styleClass="button1"/>
-            <Button text="取消" styleClass="button1"/>
+            <Button text="确定" fx:id="confirmButton" styleClass="button1" />
+            <Button text="取消" fx:id="cancelButton" styleClass="button1" />
         </HBox>
     </children>
 </AnchorPane>

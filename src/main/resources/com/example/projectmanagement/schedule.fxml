@@ -15,7 +15,7 @@
     <VBox spacing="10">
         <!-- 按钮栏 -->
         <HBox spacing="10">
-            <Button text="添加日程" />
+            <Button text="添加日程" onAction="#handleAddSchedule"/>
             <Button text="删除日程" />
             <Button text="编辑日程" />
             <Button text="显示详情" />
@@ -28,9 +28,9 @@
             <VBox spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;">
                 <!-- 月份切换栏 -->
                 <HBox spacing="20" alignment="CENTER">
-                    <Button fx:id="prevMonthButton" text="◀ 上一月"/>
+                    <Button fx:id="prevMonthButton" text="◀ 上一月" onAction="#handlePrevMonth"/>
                     <Label fx:id="monthLabel" style="-fx-font-size: 18px;"/>
-                    <Button fx:id="nextMonthButton" text="下一月 ▶"/>
+                    <Button fx:id="nextMonthButton" text="下一月 ▶" onAction="#handleNextMonth"/>
                 </HBox>
 
                 <!-- 日历主体 -->
