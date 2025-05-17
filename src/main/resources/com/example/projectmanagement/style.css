@@ -301,6 +301,13 @@
     -fx-stroke-width: 0.8;
 }
 
+/* 新增选中卡片样式 */
+.selected-card {
+    -fx-border-color: #ff4444;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+}
+
 
 
 

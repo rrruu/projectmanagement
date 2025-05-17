@@ -14,9 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -38,6 +36,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class ScheduleController {
 
@@ -65,6 +64,8 @@ public class ScheduleController {
 
     private boolean isRefreshing = false; // 添加标志位
 
+    // 新增成员变量：当前选中的日程
+    private ScheduleModel selectedSchedule;
 
     // 甘特图常量
     private static final double BASE_DAY_WIDTH = 40.0;
@@ -100,9 +101,6 @@ public class ScheduleController {
                 GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) > 0
         );
 
-//        // 设置月份标签
-//        monthLabel.setText(currentYearMonth.getYear() + "年 " +
-//                currentYearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.CHINA));
         YearMonth yearMonth = getCurrentYearMonth(); // 使用属性获取当前年月
         monthLabel.setText(yearMonth.getYear() + "年 " +
                 yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.CHINA));
@@ -184,6 +182,19 @@ public class ScheduleController {
             card.getStyleClass().add("schedule-card");
             card.setPrefSize(200, 100);
 
+
+            // 添加点击事件监听
+            card.setOnMouseClicked(event -> {
+                // 清除所有卡片的选中样式
+                cardsContainer.getChildren().forEach(node ->
+                        node.getStyleClass().remove("selected-card")
+                );
+                // 设置当前选中卡片样式
+                card.getStyleClass().add("selected-card");
+                selectedSchedule = schedule;
+            });
+
+
             Label title = new Label(schedule.getTitle());
             Label dates = new Label(schedule.getStartDate() + " - " + schedule.getEndDate());
             Text content = new Text(schedule.getContent());
@@ -223,6 +234,28 @@ public class ScheduleController {
         stage.setScene(new Scene(root));
         stage.setTitle("添加日程");
         stage.show();
+    }
+
+
+    // 新增删除处理方法
+    @FXML
+    private void handleDeleteSchedule() throws SQLException {
+        if (selectedSchedule == null) {
+            new Alert(Alert.AlertType.WARNING, "请先选择要删除的日程").show();
+            return;
+        }
+
+        // 确认对话框
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("确认删除");
+        confirmDialog.setHeaderText("确定要删除此日程吗？");
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            ScheduleDAO.delete(selectedSchedule.getId()); // 调用DAO删除
+            refreshAll(); // 刷新所有界面组件
+            selectedSchedule = null; // 清空选中状态
+        }
     }
 
 
