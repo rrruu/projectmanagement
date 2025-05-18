@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -18,6 +19,15 @@ public class MainFrameController {
 
     @FXML
     private StackPane contentPane;
+
+
+    // 注入按钮
+    @FXML private Button taskButton;
+    @FXML private Button resourceButton;
+    @FXML private Button resourceAnalysisButton;
+    @FXML private Button scheduleButton;
+
+    private Button selectedButton; // 当前选中的按钮
 
     @FXML
     private void initialize() {
@@ -53,24 +63,33 @@ public class MainFrameController {
 
     @FXML
     private void loadGanttModule() {
+        updateSelectedButton(taskButton);
         loadModule("/com/example/projectmanagement/task.fxml");
     }
 
     @FXML
     private void loadResourceModule() {
+        updateSelectedButton(resourceButton);
         loadModule("/com/example/projectmanagement/resource.fxml");
     }
 
     @FXML
-    private void loadResourceAnalysisModule() { loadModule("/com/example/projectmanagement/resourceanalysis.fxml");}
+    private void loadResourceAnalysisModule() {
+        updateSelectedButton(resourceAnalysisButton);
+        loadModule("/com/example/projectmanagement/resourceanalysis.fxml");
+    }
 
     @FXML
     private void loadScheduleModule() {
+        updateSelectedButton(scheduleButton);
         loadModule("/com/example/projectmanagement/schedule.fxml");
     }
 
     @FXML
-    private void loadWelcomeModule() { loadModule("/com/example/projectmanagement/welcome.fxml"); }
+    private void loadWelcomeModule() {
+
+        loadModule("/com/example/projectmanagement/welcome.fxml");
+    }
 
 
 
@@ -105,5 +124,17 @@ public class MainFrameController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    // 更新选中按钮的样式
+    private void updateSelectedButton(Button newButton) {
+        if (selectedButton != null) {
+            selectedButton.getStyleClass().remove("navButtonMain-selected");
+            selectedButton.getStyleClass().add("navButtonMain");
+        }
+        selectedButton = newButton;
+        selectedButton.getStyleClass().remove("navButtonMain");
+        selectedButton.getStyleClass().add("navButtonMain-selected");
     }
 }

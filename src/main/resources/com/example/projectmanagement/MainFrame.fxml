@@ -20,14 +20,14 @@
             <children>
    
                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="项目管理工具" />
-               <Button onAction="#loadGanttModule" styleClass="navButtonMain" style="-fx-background-color: #ECF1F5;-fx-text-fill: #52708c;-fx-pref-height: 50;-fx-background-radius: 0px;-fx-font-size: 15px;" text="任务管理" maxWidth="Infinity">
+               <Button fx:id="taskButton" onAction="#loadGanttModule" styleClass="navButtonMain" text="任务管理" maxWidth="Infinity">
                    <VBox.margin>
                        <Insets top="50" />
                    </VBox.margin>
                </Button>
-               <Button onAction="#loadResourceModule" styleClass="navButtonMain" text="资源管理" maxWidth="Infinity"/>
-               <Button onAction="#loadResourceAnalysisModule" styleClass="navButtonMain" text="资源统计分析" maxWidth="Infinity"/>
-               <Button onAction="#loadScheduleModule" styleClass="navButtonMain" text="个人日程安排" maxWidth="Infinity"/>
+               <Button fx:id="resourceButton" onAction="#loadResourceModule" styleClass="navButtonMain" text="资源管理" maxWidth="Infinity"/>
+               <Button fx:id="resourceAnalysisButton" onAction="#loadResourceAnalysisModule" styleClass="navButtonMain" text="资源统计分析" maxWidth="Infinity"/>
+               <Button fx:id="scheduleButton" onAction="#loadScheduleModule" styleClass="navButtonMain" text="个人日程安排" maxWidth="Infinity"/>
            </children>
         </VBox>
     </left>

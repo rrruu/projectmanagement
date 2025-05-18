@@ -303,6 +303,45 @@
 
 
 
+
+
+
+
+/* 统一图表容器样式 */
+.chart-container {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+}
+
+/* 图表标题 */
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2d3436;
+    -fx-font-weight: bold;
+}
+
+/* 轴标签 */
+.axis-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #636e72;
+}
+
+/* 饼图标签样式 */
+.inner-pie-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-fill: #2d3436;
+}
+
+
+
+
+
+
+
+
 /*---------------------------------------------------------------------*/
 /*---------------------------------------------------------------------*/
 /*---------------------------------------------------------------------*/
@@ -320,7 +359,13 @@
     -fx-background-radius: 0px;
     -fx-font-size: 16px;
 }
-
+.navButtonMain-selected {
+    -fx-background-color: #A3B8C9; /* 选中时的颜色 */
+    -fx-text-fill: #2C3E50;
+    -fx-pref-height: 50;
+    -fx-background-radius: 0px;
+    -fx-font-size: 16px;
+}
 
 
 /*task.fxml和schedule.fxml和schedule.fxml中导航栏的button样式*/

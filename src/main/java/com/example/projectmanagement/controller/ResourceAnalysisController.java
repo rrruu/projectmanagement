@@ -21,7 +21,7 @@ public class ResourceAnalysisController {
     @FXML private BarChart<String, Number> taskCountChart;
     @FXML private BarChart<String, Number> durationChart;
     @FXML private BarChart<String, Number> usageRateChart;
-//    @FXML private PieChart typePieChart;
+    //    @FXML private PieChart typePieChart;
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
     @FXML private StackPane pieChartContainer;
