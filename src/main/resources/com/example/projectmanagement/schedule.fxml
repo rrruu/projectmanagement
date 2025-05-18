@@ -1,82 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.canvas.Canvas?>
-<ScrollPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fitToHeight="false"
-            fx:controller="com.example.projectmanagement.controller.ScheduleController"
-            style="-fx-padding: 20;">
 
-    <VBox spacing="15" style="-fx-min-width: 1200;">
-        <!-- 按钮栏 -->
-        <HBox spacing="10">
-            <Button text="添加日程" onAction="#handleAddSchedule"/>
-            <Button text="删除日程" onAction="#handleDeleteSchedule"/>
-            <Button text="编辑日程" onAction="#handleEditSchedule"/>
-            <Button text="显示详情" onAction="#handleShowDetail"/>
-<!--            <Button text="本周日程" onAction="#handleShowThisWeek"/>-->
-            <!-- 将原按钮替换为带下拉菜单的 MenuButton -->
-            <MenuButton fx:id="filterMenuButton" text="本周日程">
-                <items>
-                    <MenuItem text="开始-结束" onAction="#handleFilterStartEnd"/>
-                    <MenuItem text="开始时间" onAction="#handleFilterStartOnly"/>
-                    <MenuItem text="结束时间" onAction="#handleFilterEndOnly"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="显示全部" onAction="#handleShowAll"/>
-                </items>
-            </MenuButton>
-        </HBox>
+<ScrollPane fitToHeight="false" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectmanagement.controller.ScheduleController">
+   <content>
+   
+       <VBox spacing="10" style="-fx-min-width: 1200;">
+      <children>
+              <!-- 按钮栏 -->
+              <HBox spacing="10" style="-fx-padding: 10;">
+                 <children>
+                     <Button onAction="#handleAddSchedule" styleClass="navButton" text="添加日程" />
+                     <Button onAction="#handleDeleteSchedule" styleClass="navButton" text="删除日程" />
+                     <Button onAction="#handleEditSchedule" styleClass="navButton" text="编辑日程" />
+                     <Button onAction="#handleShowDetail" styleClass="navButton" text="显示详情" />
+         <!--            <Button text="本周日程" onAction="#handleShowThisWeek"/>-->
+<!--                     &lt;!&ndash; 将原按钮替换为带下拉菜单的 MenuButton &ndash;&gt;-->
+<!--                     <MenuButton fx:id="filterMenuButton" styleClass="menu-button" text="本周日程">-->
+<!--                         <items>-->
+<!--                             <MenuItem onAction="#handleFilterStartEnd" text="开始-结束" />-->
+<!--                             <MenuItem onAction="#handleFilterStartOnly" text="开始时间" />-->
+<!--                             <MenuItem onAction="#handleFilterEndOnly" text="结束时间" />-->
+<!--                             <SeparatorMenuItem />-->
+<!--                             <MenuItem onAction="#handleShowAll" text="显示全部" />-->
+<!--                         </items>-->
+<!--                     </MenuButton>-->
+                 </children>
+              </HBox>
+      
+      
+              <HBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
+                <children>
+                     <!-- 日历区域 -->
+                     <VBox alignment="TOP_CENTER" spacing="10" style="-fx-padding: 20;">
+                        <children>
+                            <!-- 月份切换栏 -->
+                            <HBox alignment="CENTER" spacing="20">
+                               <children>
+                                   <Button fx:id="prevMonthButton" onAction="#handlePrevMonth" text="◀ 上一月" />
+                                   <Label fx:id="monthLabel" style="-fx-font-size: 18px;" />
+                                   <Button fx:id="nextMonthButton" onAction="#handleNextMonth" text="下一月 ▶" />
+                               </children>
+                            </HBox>
+            
+                            <!-- 日历主体 -->
+                            <GridPane fx:id="calendarGrid" hgap="5" vgap="5" VBox.vgrow="ALWAYS">
+                                <children>
+                                   <!-- 列标题（周几） -->
+                                   <Label text="一" GridPane.columnIndex="0" />
+                                   <Label text="二" GridPane.columnIndex="1" />
+                                   <Label text="三" GridPane.columnIndex="2" />
+                                   <Label text="四" GridPane.columnIndex="3" />
+                                   <Label text="五" GridPane.columnIndex="4" />
+                                   <Label text="六" GridPane.columnIndex="5" />
+                                   <Label text="日" GridPane.columnIndex="6" />
+                                </children>
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                            </GridPane>
+                        </children>
+                     </VBox>
+                </children>
+      
+              </HBox>
+      
+      
+              <!-- 日程卡片区域 -->
 
 
-        <HBox spacing="10" alignment="CENTER" VBox.vgrow="NEVER">
-            <!-- 日历区域 -->
-            <VBox spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;">
-                <!-- 月份切换栏 -->
-                <HBox spacing="20" alignment="CENTER">
-                    <Button fx:id="prevMonthButton" text="◀ 上一月" onAction="#handlePrevMonth"/>
-                    <Label fx:id="monthLabel" style="-fx-font-size: 18px;"/>
-                    <Button fx:id="nextMonthButton" text="下一月 ▶" onAction="#handleNextMonth"/>
-                </HBox>
+                  <!-- 将原按钮替换为带下拉菜单的 MenuButton -->
+                  <MenuButton fx:id="filterMenuButton" styleClass="menu-button" text="本周日程">
+                      <items>
+                          <MenuItem onAction="#handleFilterStartEnd" text="开始-结束" />
+                          <MenuItem onAction="#handleFilterStartOnly" text="开始时间" />
+                          <MenuItem onAction="#handleFilterEndOnly" text="结束时间" />
+                          <SeparatorMenuItem />
+                          <MenuItem onAction="#handleShowAll" text="显示全部" />
+                      </items>
+                  </MenuButton>
 
-                <!-- 日历主体 -->
-                <GridPane fx:id="calendarGrid" hgap="5" vgap="5" VBox.vgrow="ALWAYS">
-                    <!-- 列标题（周几） -->
-                    <Label text="一" GridPane.columnIndex="0"/>
-                    <Label text="二" GridPane.columnIndex="1"/>
-                    <Label text="三" GridPane.columnIndex="2"/>
-                    <Label text="四" GridPane.columnIndex="3"/>
-                    <Label text="五" GridPane.columnIndex="4"/>
-                    <Label text="六" GridPane.columnIndex="5"/>
-                    <Label text="日" GridPane.columnIndex="6"/>
-                </GridPane>
-            </VBox>
-
-        </HBox>
-
-
-        <!-- 日程卡片区域 -->
-
-            <FlowPane fx:id="cardsContainer" style="-fx-padding: 5;"/>
-
-
-        <!-- 甘特图区域 -->
-        <Label text="日程情况" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
-        <ScrollPane fx:id="scheduleGanttScrollPane"
-                    fitToWidth="true"
-                    fitToHeight="false"
-                    hvalue="0.0"
-                    vvalue="0.0"
-                    VBox.vgrow="ALWAYS"
-                    style="-fx-border-color: #cccccc; -fx-min-height: 200;">
-            <content>
-                <Canvas fx:id="scheduleGanttCanvas"/>
-            </content>
-        </ScrollPane>
-    </VBox>
+      
+                  <FlowPane fx:id="cardsContainer" style="-fx-padding: 5;" />
+      
+      
+              <!-- 甘特图区域 -->
+              <Label style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;" text="日程情况" />
+              <ScrollPane fx:id="scheduleGanttScrollPane" fitToHeight="false" fitToWidth="true" hvalue="0.0" style="-fx-border-color: #cccccc; -fx-min-height: 400;" vvalue="0.0" VBox.vgrow="ALWAYS">
+                  <content>
+                      <Canvas fx:id="scheduleGanttCanvas" />
+                  </content>
+              </ScrollPane>
+      </children>
+       </VBox>
+   </content>
 </ScrollPane>

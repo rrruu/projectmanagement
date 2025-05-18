@@ -355,7 +355,7 @@ public class ResourceController {
                 double x = 50 + startOffset * BASE_DAY_WIDTH;
                 double width = duration * BASE_DAY_WIDTH;
 
-                gc.setFill(Color.rgb(70, 130, 180)); // 钢蓝色
+                gc.setFill(Color.rgb(111, 146, 175)); // 钢蓝色
                 gc.fillRect(x, yPos, width, 20);
 
                 //绘制任务名称

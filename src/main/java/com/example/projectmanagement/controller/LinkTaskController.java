@@ -27,7 +27,7 @@ public class LinkTaskController {
     public void setCurrentResource(ResourceModel resource) {
         this.currentResource = resource;
         taskListView.setItems(DataModel.getInstance().getTasks());
-//        taskListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
 
         // 设置自定义的CellFactory
         taskListView.setCellFactory(new Callback<ListView<TaskModel>, ListCell<TaskModel>>() {
@@ -55,11 +55,11 @@ public class LinkTaskController {
                         if (empty || item == null) {
                             setGraphic(null);
                             setText(null);
-//                            setTooltip(null);
+
                         } else {
                             boolean isAvailable = isTaskAvailable(item);
 
-                            checkBox.setText(item.getTaskName() + " (" + item.getId() + ")");
+                            checkBox.setText(item.getTaskName() + " (" + item.getId() + "  " + item.getStartDate() + "-" + item.getEndDate() + ")");
                             checkBox.setSelected(taskListView.getSelectionModel().getSelectedItems().contains(item));
 
 
@@ -68,14 +68,10 @@ public class LinkTaskController {
                             setDisable(!isAvailable);
                             if (!isAvailable) {
                                 setStyle("-fx-opacity: 0.6; -fx-background-color: #ffeeee;");
-//                                Tooltip tooltip = new Tooltip("该任务存在时间冲突");
-//
-//                                checkBox.setTooltip(tooltip);
-//                                setTooltip(tooltip);
+
                             } else {
                                 setStyle("");
-//                                checkBox.setTooltip(null);//清除提示
-//                                setTooltip(null);
+
                             }
 
 
@@ -132,26 +128,15 @@ public class LinkTaskController {
             return;
         }
 
-//        if (!invalidTasks.isEmpty()) {
-//            showConflictAlert(invalidTasks);
-//            return;
-//        }
-
 
         //更新数据库关联
         updateTaskAssociations(currentResource, selected);
 
-
         // 更新双向关联
         updateBidirectionalAssociations(selected);
 
-
-
-
-
         //关闭窗口
         taskListView.getScene().getWindow().hide();
-
 
         // 刷新UI
         refreshUI();
@@ -256,24 +241,10 @@ public class LinkTaskController {
 
 
 
-//    // 新增冲突提示方法
-//    private void showConflictAlert(List<TaskModel> invalidTasks) {
-//        StringBuilder message = new StringBuilder("以下任务存在时间冲突：\n");
-//        for (TaskModel task : invalidTasks) {
-//            message.append("• ").append(task.getTaskName()).append(" (").append(task.getId()).append(")\n");
-//        }
-//        message.append("\n请切换到'可用任务'视图选择可用任务");
-//
-//        Alert alert = new Alert(Alert.AlertType.WARNING);
-//        alert.setTitle("时间冲突警告");
-//        alert.setHeaderText("存在不可用的任务选择");
-//        alert.setContentText(message.toString());
-//        alert.showAndWait();
-//    }
 
 
 
-    // 修改冲突提示方法，支持两种类型的冲突
+    // 冲突提示方法，支持两种类型的冲突
     private void showConflictAlert(List<TaskModel> conflictTasks, String header) {
         StringBuilder message = new StringBuilder(header + "\n");
         for (TaskModel task : conflictTasks) {

@@ -55,7 +55,7 @@ public class LinkResourceController {
                         if (empty || item == null) {
                             setGraphic(null);
                             setText(null);
-//                            setTooltip(null);
+
                         } else {
                             boolean isAvailable = isResourceAvailable(item);
 
@@ -69,14 +69,9 @@ public class LinkResourceController {
 
                             if (!isAvailable) {
                                 setStyle("-fx-opacity: 0.6; -fx-background-color: #ffeeee;");
-//                                Tooltip tooltip = new Tooltip("该资源存在时间冲突");
-//
-//                                checkBox.setTooltip(tooltip);
-//                                setTooltip(tooltip);//附加整行到ListCell
+
 
                             } else {
-//                                checkBox.setTooltip(null);//清除提示
-//                                setTooltip(null); // 清除 tooltip，防止复用 cell 时错误提示
                                 setStyle("");
                             }
 

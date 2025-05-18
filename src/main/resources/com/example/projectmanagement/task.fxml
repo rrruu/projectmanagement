@@ -18,22 +18,22 @@
     <children>
 
 
-        <VBox spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" style="-fx-background-color: #BCD1DC">
+        <VBox spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
             <children>
                 <HBox spacing="10" style="-fx-padding: 10;">
                     <children>
-                        <Button onAction="#handleAddTask" text="添加任务" styleClass="mainButton" style="-fx-background-color: #EBF0F4;-fx-text-fill: #000000;"/>
-                        <Button onAction="#handleEditTask" text="编辑任务" styleClass="mainButton"/>
-                        <Button onAction="#handleDeleteTask" text="删除任务" styleClass="mainButton"/>
-                        <Button onAction="#handleExport" text="导出图片" styleClass="mainButton"/>
-                        <Button onAction="#handleImportProject" text="导入项目" styleClass="mainButton"/>
+                        <Button onAction="#handleAddTask" text="添加任务" styleClass="navButton"/>
+                        <Button onAction="#handleEditTask" text="编辑任务" styleClass="navButton"/>
+                        <Button onAction="#handleDeleteTask" text="删除任务" styleClass="navButton"/>
+                        <Button onAction="#handleExport" text="导出图片" styleClass="navButton"/>
+                        <Button onAction="#handleImportProject" text="导入项目" styleClass="navButton"/>
 <!--                        <Button onAction="#handleAdditionalImportProject" text="追加导入" styleClass="mainButton"/>-->
-                        <Button onAction="#handleExportProject" text="导出项目" styleClass="mainButton"/>
-                        <Button onAction="#handleLinkResources" text="关联资源" styleClass="mainButton"/>
+                        <Button onAction="#handleExportProject" text="导出项目" styleClass="navButton"/>
+                        <Button onAction="#handleLinkResources" text="关联资源" styleClass="navButton"/>
                     </children>
                 </HBox>
 
-                <TableView fx:id="taskTable" prefHeight="200">
+                <TableView fx:id="taskTable" style="-fx-pref-height: 250;">
                     <columns>
                         <TableColumn fx:id="taskNameColumn" prefWidth="150" text="任务名称" />
                         <TableColumn fx:id="idColumn" prefWidth="150" text="ID" />
@@ -48,13 +48,17 @@
                 </TableView>
 
 
-                <Label text="任务甘特图" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
-                <ScrollPane fx:id="ganttScrollPane" fitToHeight="true" fitToWidth="true" hvalue="0.0" vvalue="0.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120" style="-fx-border-color: #cccccc;">
-                    <content>
-                        <Canvas fx:id="ganttCanvas" />
-                    </content>
-                </ScrollPane>
+
+<!--                <VBox style="-fx-background-color: #F9F9F9;-fx-padding:10 0 0 0;">-->
+                    <Label text="任务甘特图" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
+                    <ScrollPane fx:id="ganttScrollPane" fitToHeight="true" fitToWidth="true" hvalue="0.0" vvalue="0.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120" style="-fx-border-color: #cccccc;-fx-pref-height: 400;">
+                        <content>
+                            <Canvas fx:id="ganttCanvas" />
+                        </content>
+                    </ScrollPane>
+<!--                </VBox>-->
+
             </children>
 
 

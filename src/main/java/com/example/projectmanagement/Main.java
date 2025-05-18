@@ -34,8 +34,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-//        // 初始化数据库
-//        DatabaseManager.initialize();
+
         FXMLLoader loader = new FXMLLoader(
                 Main.class.getResource("/com/example/projectmanagement/MainFrame.fxml")
         );

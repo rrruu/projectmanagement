@@ -54,14 +54,7 @@
 }
 
 
-/*任务甘特图已完成部分颜色*/
-.gantt-completed {
-    -fx-background-color: #000080; /* 已完成颜色 */
-}
-/*任务甘特图未完成部分颜色*/
-.gantt-uncompleted {
-    -fx-background-color: #6495ED; /* 未完成颜色 */
-}
+
 
 
 
@@ -83,12 +76,7 @@
 /*}*/
 
 
-/*main.fxml中的button样式*/
-.mainButton{
-    -fx-background-color: #3c3f41;
-    -fx-text-fill: white;
-    -fx-padding: 5 15;
-}
+
 
 /* 在style.css中添加 */
 .time-axis-week {
@@ -139,20 +127,6 @@
 }
 
 
-
-/* 新增导航按钮样式 */
-.navButton {
-    -fx-pref-width: 150px;
-    -fx-pref-height: 40px;
-    -fx-font-size: 14px;
-    -fx-background-color: #3c3f41;
-    -fx-text-fill: white;
-    -fx-background-radius: 5px;
-}
-
-.navButton:hover {
-    -fx-background-color: #2b2b2b;
-}
 
 /* 调整主内容区域边距 */
 .stack-pane {
@@ -323,9 +297,70 @@
 
 /*下拉菜单按钮样式*/
 .menu-button {
-    -fx-pref-width: 120px;
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+
+    -fx-background-color: #52708c;
+    -fx-text-fill: white;
+    -fx-mark-color: white;
+}
+/*!* 导航栏按钮样式 *!*/
+/*.navButton {*/
+/*    -fx-pref-width: 150px;*/
+/*    -fx-pref-height: 40px;*/
+/*    -fx-font-size: 14px;*/
+/*    -fx-background-color: #3c3f41;*/
+/*    -fx-text-fill: white;*/
+/*    -fx-background-radius: 5px;*/
+/*}*/
+
+
+
+/*---------------------------------------------------------------------*/
+/*---------------------------------------------------------------------*/
+/*---------------------------------------------------------------------*/
+/*---------------------------------------------------------------------*/
+/*---------------------------------------------------------------------*/
+/*---------------------------------------------------------------------*/
+
+
+/* MainFrame左侧导航栏按钮样式 */
+.navButtonMain {
+
+    -fx-background-color: #ECF1F5;
+    -fx-text-fill: #52708c;
+    -fx-pref-height: 50;
+    -fx-background-radius: 0px;
+    -fx-font-size: 15px;
+}
+
+
+
+/*task.fxml和schedule.fxml中导航栏的button样式*/
+.navButton{
+    -fx-padding: 5 15;
+    -fx-background-color: #52708c;
+    -fx-text-fill: #ECF1F5;
     -fx-font-size: 14px;
 }
+
+/*task.fxml和schedule.fxml中导航栏的button鼠标触碰样式*/
+.navButton:hover {
+    -fx-background-color: #2b2b2b;
+}
+
+
+/*task.fxml中任务甘特图已完成部分颜色*/
+.gantt-completed {
+    -fx-background-color: #52708c; /* 已完成颜色 */
+}
+/*task.fxml中任务甘特图未完成部分颜色*/
+.gantt-uncompleted {
+    -fx-background-color: #BDD0DE; /* 未完成颜色 */
+}
+
+
+
 
 
 

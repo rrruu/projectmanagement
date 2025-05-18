@@ -1,45 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.projectmanagement.controller.MainFrameController"
-            stylesheets="@style.css">
+
+<BorderPane style="-fx-background-color: #ECF1F5" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectmanagement.controller.MainFrameController">
 
     <left>
         <!-- 导航栏 -->
-        <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #BCCFDD">
-<!--图片需要插入到这里-->
-<!--            <ImageView fx:id="navIcon">-->
-<!--                <image>-->
-<!--&lt;!&ndash;                    <Image url="@images/navIcon.png"/>&ndash;&gt;-->
-<!--                    <Image url="@/com/example/projectmanagement/images/navIcon.png"/>-->
-<!--                </image>-->
-<!--            </ImageView>-->
+        <VBox spacing="20" style="-fx-padding: 20 0 20 0; -fx-background-color: #BDD0DE;-fx-pref-width: 200;">
 
-            <Label text="项目管理工具" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
-            <Button text="任务管理" onAction="#loadGanttModule" styleClass="navButton" style="-fx-background-color: #1177BB;">
-                <VBox.margin>
-                    <Insets top="50"/>
-                </VBox.margin>
-            </Button>
-            <Button text="资源管理" onAction="#loadResourceModule" styleClass="navButton" style="-fx-background-color: #1177BB;"/>
-            <Button text="资源分析" onAction="#loadResourceAnalysisModule" styleClass="navButton" style="-fx-background-color: #1177BB;"/>
-            <Button text="个人日程" onAction="#loadScheduleModule" styleClass="navButton" style="-fx-background-color: #1177BB;"/>
+            <children>
+   
+               <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="项目管理工具" />
+               <Button onAction="#loadGanttModule" styleClass="navButtonMain" style="-fx-background-color: #ECF1F5;-fx-text-fill: #52708c;-fx-pref-height: 50;-fx-background-radius: 0px;-fx-font-size: 15px;" text="任务管理" maxWidth="Infinity">
+                   <VBox.margin>
+                       <Insets top="50" />
+                   </VBox.margin>
+               </Button>
+               <Button onAction="#loadResourceModule" styleClass="navButtonMain" text="资源管理" maxWidth="Infinity"/>
+               <Button onAction="#loadResourceAnalysisModule" styleClass="navButtonMain" text="资源统计分析" maxWidth="Infinity"/>
+               <Button onAction="#loadScheduleModule" styleClass="navButtonMain" text="个人日程安排" maxWidth="Infinity"/>
+           </children>
         </VBox>
     </left>
 
     <center>
         <!-- 内容区域 -->
-        <StackPane fx:id="contentPane"/>
+        <StackPane fx:id="contentPane" />
     </center>
 
 </BorderPane>

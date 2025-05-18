@@ -244,8 +244,8 @@ public class ScheduleController {
         boolean isScheduleEnd = schedules.stream()
                 .anyMatch(s -> s.getEndDate().equals(date));
 
-        bg.setFill(isScheduleEnd ? Color.LIGHTBLUE :
-                date.getMonth().equals(currentYearMonth.getMonth()) ? Color.WHITE : Color.LIGHTGRAY);
+        bg.setFill(isScheduleEnd ? Color.rgb(189,208,222) :
+                date.getMonth().equals(currentYearMonth.getMonth()) ? Color.WHITE : Color.rgb(237,237,237));
 
         Text dayText = new Text(String.valueOf(date.getDayOfMonth()));
         return new StackPane(bg, dayText);

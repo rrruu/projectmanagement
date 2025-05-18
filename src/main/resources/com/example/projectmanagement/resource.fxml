@@ -16,13 +16,13 @@
           AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
         <HBox spacing="10" style="-fx-padding: 10;">
-            <Button text="添加资源" styleClass="mainButton" onAction="#handleAddResource"/>
-            <Button text="编辑资源" styleClass="mainButton" onAction="#handleEditResource"/>
-            <Button text="删除资源" styleClass="mainButton" onAction="#handleDeleteResource"/>
-            <Button text="关联任务" styleClass="mainButton" onAction="#handleLinkTasks"/>
+            <Button text="添加资源" styleClass="navButton" onAction="#handleAddResource"/>
+            <Button text="编辑资源" styleClass="navButton" onAction="#handleEditResource"/>
+            <Button text="删除资源" styleClass="navButton" onAction="#handleDeleteResource"/>
+            <Button text="关联任务" styleClass="navButton" onAction="#handleLinkTasks"/>
         </HBox>
 
-        <TableView fx:id="resourceTable" prefHeight="200">
+        <TableView fx:id="resourceTable" style="-fx-pref-height: 250;">
             <columns>
                 <TableColumn fx:id="nameColumn" text="名称" prefWidth="150"/>
                 <TableColumn fx:id="idColumn" text="ID" prefWidth="150"/>
@@ -42,7 +42,7 @@
                     fitToHeight="true"
                     hvalue="0.0"
                     vvalue="0.0"
-                    style="-fx-border-color: #cccccc;">
+                    style="-fx-border-color: #cccccc;-fx-pref-height: 400;">
             <content>
                 <Canvas fx:id="resourceGanttCanvas"/>
             </content>
