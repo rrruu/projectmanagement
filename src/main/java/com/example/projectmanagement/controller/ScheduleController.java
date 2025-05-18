@@ -280,6 +280,28 @@ public class ScheduleController {
     }
 
 
+    @FXML
+    private void handleShowDetail() throws IOException {
+        if (selectedSchedule == null) {
+            new Alert(Alert.AlertType.WARNING, "请先选择要查看的日程").show();
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/example/projectmanagement/scheduleshow.fxml")
+        );
+        Parent root = loader.load();
+
+        ScheduleShowController controller = loader.getController();
+        controller.setSchedule(selectedSchedule); // 传递选中的日程数据
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("日程详情");
+        stage.show();
+    }
+
+
     // 新增甘特图绘制方法
     private void drawScheduleGantt() {
         if (scheduleGanttCanvas == null || schedules.isEmpty()) return;

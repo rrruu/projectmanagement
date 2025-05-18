@@ -309,5 +309,17 @@
 }
 
 
+/* 详情窗口内容样式 */
+.detail-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.detail-content {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+}
+
+
 
 
