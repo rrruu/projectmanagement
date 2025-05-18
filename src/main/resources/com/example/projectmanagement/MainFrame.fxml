@@ -16,7 +16,7 @@
 
     <left>
         <!-- 导航栏 -->
-        <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f0f0f0;">
+        <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #BCCFDD">
 <!--图片需要插入到这里-->
 <!--            <ImageView fx:id="navIcon">-->
 <!--                <image>-->

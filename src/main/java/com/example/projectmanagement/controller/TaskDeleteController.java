@@ -11,7 +11,7 @@ import com.example.projectmanagement.model.DataModel;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class DeleteTaskController {
+public class TaskDeleteController {
 
     @FXML
     public Label messageLabel;

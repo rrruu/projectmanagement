@@ -112,7 +112,11 @@ public class LinkTaskController {
     private void handleConfirm() {
         ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
 
-
+        // ------------------------ 新增逻辑：检查选中的任务之间是否存在冲突 ------------------------
+        if (TimeConflictChecker.hasTimeConflictInList(selected)) {
+            showConflictAlert(selected, "选中的任务之间存在时间冲突！");
+            return;
+        }
 
         // 验证选中的任务是否全部可用
         List<TaskModel> invalidTasks = new ArrayList<>();
@@ -122,10 +126,16 @@ public class LinkTaskController {
             }
         }
 
+
         if (!invalidTasks.isEmpty()) {
-            showConflictAlert(invalidTasks);
+            showConflictAlert(invalidTasks, "以下任务与资源已有任务冲突：");
             return;
         }
+
+//        if (!invalidTasks.isEmpty()) {
+//            showConflictAlert(invalidTasks);
+//            return;
+//        }
 
 
         //更新数据库关联
@@ -246,20 +256,43 @@ public class LinkTaskController {
 
 
 
-    // 新增冲突提示方法
-    private void showConflictAlert(List<TaskModel> invalidTasks) {
-        StringBuilder message = new StringBuilder("以下任务存在时间冲突：\n");
-        for (TaskModel task : invalidTasks) {
-            message.append("• ").append(task.getTaskName()).append(" (").append(task.getId()).append(")\n");
+//    // 新增冲突提示方法
+//    private void showConflictAlert(List<TaskModel> invalidTasks) {
+//        StringBuilder message = new StringBuilder("以下任务存在时间冲突：\n");
+//        for (TaskModel task : invalidTasks) {
+//            message.append("• ").append(task.getTaskName()).append(" (").append(task.getId()).append(")\n");
+//        }
+//        message.append("\n请切换到'可用任务'视图选择可用任务");
+//
+//        Alert alert = new Alert(Alert.AlertType.WARNING);
+//        alert.setTitle("时间冲突警告");
+//        alert.setHeaderText("存在不可用的任务选择");
+//        alert.setContentText(message.toString());
+//        alert.showAndWait();
+//    }
+
+
+
+    // 修改冲突提示方法，支持两种类型的冲突
+    private void showConflictAlert(List<TaskModel> conflictTasks, String header) {
+        StringBuilder message = new StringBuilder(header + "\n");
+        for (TaskModel task : conflictTasks) {
+            message.append("• ")
+                    .append(task.getTaskName())
+                    .append(" (")
+                    .append(task.getStartDate())
+                    .append(" - ")
+                    .append(task.getEndDate())
+                    .append(")\n");
         }
-        message.append("\n请切换到'可用任务'视图选择可用任务");
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("时间冲突警告");
-        alert.setHeaderText("存在不可用的任务选择");
+        alert.setHeaderText("无法完成关联操作");
         alert.setContentText(message.toString());
         alert.showAndWait();
     }
+
 
 
 }

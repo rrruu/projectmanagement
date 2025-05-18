@@ -9,9 +9,8 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.projectmanagement.controller.EditTaskController"
-            prefHeight="800.0" prefWidth="800.0">
-
+            fx:controller="com.example.projectmanagement.controller.TaskAddController"
+            prefHeight="400.0" prefWidth="600.0">
     <children>
         <GridPane hgap="10" vgap="10">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
@@ -38,15 +37,12 @@
             <ScrollPane prefHeight="80" GridPane.rowIndex="6" GridPane.columnIndex="1">
                 <TextArea fx:id="commentField" wrapText="true"/>
             </ScrollPane>
-
-
         </GridPane>
 
-        <HBox spacing="10" layoutX="20" layoutY="400" AnchorPane.rightAnchor="20">
-            <Button text="确定" onAction="#handleOk"/>
-            <Button text="取消" onAction="#handleCancel"/>
+        <HBox spacing="10" layoutX="20" layoutY="300" AnchorPane.rightAnchor="20">
+            <Button text="确定" onAction="#handleOk" styleClass="button1"/>
+            <Button text="取消" onAction="#handleCancel" styleClass="button1"/>
         </HBox>
+
     </children>
-
-
 </AnchorPane>

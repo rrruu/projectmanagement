@@ -10,9 +10,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,7 +32,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.DayOfWeek;
@@ -51,7 +47,7 @@ import java.util.stream.Collectors;
  * 主界面控制器
  */
 
-public class GanttController {
+public class TaskController {
 
 
     private Stage primaryStage;
@@ -188,11 +184,11 @@ public class GanttController {
         try {
             // 加载新的FXML对话框
             FXMLLoader loader = new FXMLLoader(
-                    Main.class.getResource("/com/example/projectmanagement/addtask.fxml")
+                    Main.class.getResource("/com/example/projectmanagement/taskadd.fxml")
             );
 
             AnchorPane root = loader.load();
-//            AddTaskController controller = loader.getController();
+//            TaskAddController controller = loader.getController();
 
             // 创建并配置对话框
             Stage dialogStage = new Stage();
@@ -233,10 +229,10 @@ public class GanttController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    Main.class.getResource("/com/example/projectmanagement/deletetask.fxml")
+                    Main.class.getResource("/com/example/projectmanagement/taskdelete.fxml")
             );
             AnchorPane root = loader.load();
-            DeleteTaskController controller = loader.getController();
+            TaskDeleteController controller = loader.getController();
             controller.setTaskToDelete(selectedTask);
 
             Stage dialogStage = new Stage();
@@ -265,11 +261,11 @@ public class GanttController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    Main.class.getResource("/com/example/projectmanagement/edittask.fxml")
+                    Main.class.getResource("/com/example/projectmanagement/taskedit.fxml")
             );
 
             AnchorPane root = loader.load();
-            EditTaskController controller = loader.getController();
+            TaskEditController controller = loader.getController();
             controller.setTaskToEdit(selectedTask); // 传递待修改的任务
 
             Stage dialogStage = new Stage();
@@ -514,47 +510,6 @@ public class GanttController {
         // 从数据库重新加载关联
         dataModel.loadAssociations();
 
-//        // 重建任务到资源的关联
-//        for (TaskModel task : dataModel.getTasks()) {
-//            for (ResourceModel res : task.getAssignedResources()) {
-//                ResourceModel actualRes = dataModel.findResourceById(res.getId());
-//                if (actualRes != null && !actualRes.getAssignedTasks().contains(task)) {
-//                    actualRes.getAssignedTasks().add(task);
-//                    task.getAssignedResources().add(actualRes);
-//                }
-//            }
-//        }
-
-
-//        // 建立新关联
-//        dataModel.getTasks().forEach(task -> {
-//            task.getAssignedResources().replaceAll(tempRes -> {
-//                // 通过ID查找真实的资源对象
-//                ResourceModel realRes = dataModel.findResourceById(tempRes.getId());
-//                if (realRes != null) {
-//                    // 建立双向关联
-//                    realRes.getAssignedTasks().add(task);
-//                    return realRes;
-//                }
-//                return null; // 无效资源将被过滤
-//            });
-//
-//            // 过滤掉无效的null值
-//            task.getAssignedResources().removeIf(Objects::isNull);
-//        });
-
-
-
-
-//        // 重建关联（确保双向更新）
-//        dataModel.getTasks().forEach(task -> {
-//            List<ResourceModel> realResources = task.getAssignedResources().stream()
-//                    .map(tempRes -> dataModel.findResourceById(tempRes.getId()))
-//                    .filter(Objects::nonNull)
-//                    .collect(Collectors.toList());
-//            task.getAssignedResources().setAll(realResources);
-//            realResources.forEach(res -> res.getAssignedTasks().add(task));
-//        });
     }
 
 

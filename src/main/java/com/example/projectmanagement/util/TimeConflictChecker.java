@@ -29,6 +29,24 @@ public class TimeConflictChecker {
 
 
 
+    /**
+     * 检查任务列表内是否存在时间冲突
+     */
+    public static boolean hasTimeConflictInList(List<TaskModel> tasks) {
+        for (int i = 0; i < tasks.size(); i++) {
+            TaskModel taskA = tasks.get(i);
+            for (int j = i + 1; j < tasks.size(); j++) {
+                TaskModel taskB = tasks.get(j);
+                if (hasTimeConflict(taskA, taskB)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+
     // 批量检查方法
     public static boolean hasAnyConflict(ResourceModel resource, List<TaskModel> tasks) {
         return tasks.stream().anyMatch(task ->

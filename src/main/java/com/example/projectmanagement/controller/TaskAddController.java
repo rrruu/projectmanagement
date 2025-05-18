@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 //添加新任务
-public class AddTaskController {
+public class TaskAddController {
     @FXML
     public TextField nameField;
     @FXML public TextField idField;

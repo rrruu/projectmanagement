@@ -53,12 +53,12 @@ public class MainFrameController {
 
     @FXML
     private void loadGanttModule() {
-        loadModule("/com/example/projectmanagement/gantt.fxml");
+        loadModule("/com/example/projectmanagement/task.fxml");
     }
 
     @FXML
     private void loadResourceModule() {
-        loadModule("/com/example/projectmanagement/resource_management.fxml");
+        loadModule("/com/example/projectmanagement/resource.fxml");
     }
 
     @FXML
@@ -84,8 +84,8 @@ public class MainFrameController {
 
 
             //如果是甘特图模块，传递DataModel
-            if(fxmlPath.contains("gantt.fxml")){
-                GanttController controller = loader.getController();
+            if(fxmlPath.contains("task.fxml")){
+                TaskController controller = loader.getController();
                 controller.setDataModel(DataModel.getInstance());
                 Platform.runLater(() -> {
                     controller.drawGanttChart();
@@ -93,8 +93,8 @@ public class MainFrameController {
             }
 
             //如果是资源管理模块，传递DataModel
-            if(fxmlPath.contains("resource_management.fxml")){
-                ResourceManagementController controller = loader.getController();
+            if(fxmlPath.contains("resource.fxml")){
+                ResourceController controller = loader.getController();
                 controller.setDataModel(DataModel.getInstance());
 
             }

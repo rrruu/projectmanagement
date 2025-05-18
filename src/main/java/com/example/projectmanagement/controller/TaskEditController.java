@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class EditTaskController {
+public class TaskEditController {
 
     @FXML
     public TextField nameField;
@@ -66,7 +66,7 @@ public class EditTaskController {
     private void validateAndUpdateTask() {
 
         try {
-            // 复用 AddTaskController 的验证逻辑
+            // 复用 TaskAddController 的验证逻辑
             validateRequiredFields();
 
             validateDateRange();
@@ -123,7 +123,7 @@ public class EditTaskController {
 
 
 
-    // 以下方法与 AddTaskController 相同
+    // 以下方法与 TaskAddController 相同
     private void validateRequiredFields() {
         if (nameField.getText().trim().isEmpty()) {
             throw new IllegalArgumentException("任务名称不能为空");
