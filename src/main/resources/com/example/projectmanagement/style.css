@@ -275,12 +275,7 @@
     -fx-stroke-width: 0.8;
 }
 
-/* 新增选中卡片样式 */
-.selected-card {
-    -fx-border-color: #ff4444;
-    -fx-border-width: 2px;
-    -fx-border-radius: 5px;
-}
+
 
 
 /* 详情窗口内容样式 */
@@ -295,15 +290,7 @@
 }
 
 
-/*下拉菜单按钮样式*/
-.menu-button {
-    -fx-pref-width: 200px;
-    -fx-font-size: 14px;
 
-    -fx-background-color: #52708c;
-    -fx-text-fill: white;
-    -fx-mark-color: white;
-}
 /*!* 导航栏按钮样式 *!*/
 /*.navButton {*/
 /*    -fx-pref-width: 150px;*/
@@ -331,12 +318,12 @@
     -fx-text-fill: #52708c;
     -fx-pref-height: 50;
     -fx-background-radius: 0px;
-    -fx-font-size: 15px;
+    -fx-font-size: 16px;
 }
 
 
 
-/*task.fxml和schedule.fxml中导航栏的button样式*/
+/*task.fxml和schedule.fxml和schedule.fxml中导航栏的button样式*/
 .navButton{
     -fx-padding: 5 15;
     -fx-background-color: #52708c;
@@ -344,7 +331,7 @@
     -fx-font-size: 14px;
 }
 
-/*task.fxml和schedule.fxml中导航栏的button鼠标触碰样式*/
+/*task.fxml和schedule.fxml和schedule.fxml中导航栏的button鼠标触碰样式*/
 .navButton:hover {
     -fx-background-color: #2b2b2b;
 }
@@ -359,6 +346,23 @@
     -fx-background-color: #BDD0DE; /* 未完成颜色 */
 }
 
+
+/*schedule.fxml中下拉菜单按钮样式*/
+.menu-button {
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+
+    -fx-background-color: #BDD0DE;
+    -fx-text-fill: #ffffff;
+    -fx-mark-color: white;
+}
+
+/* schedule.fxml中选中卡片样式 */
+.selected-card {
+    -fx-border-color: #52708c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+}
 
 
 
