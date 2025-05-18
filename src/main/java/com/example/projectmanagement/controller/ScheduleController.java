@@ -37,6 +37,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ScheduleController {
 
@@ -64,8 +65,12 @@ public class ScheduleController {
 
     private boolean isRefreshing = false; // 添加标志位
 
+
     // 新增成员变量：当前选中的日程
     private ScheduleModel selectedSchedule;
+
+    // 新增成员变量：是否显示本周日程的标志
+    private boolean showThisWeek = false;
 
     // 甘特图常量
     private static final double BASE_DAY_WIDTH = 40.0;
@@ -177,29 +182,30 @@ public class ScheduleController {
 
     private void refreshCards() {
         cardsContainer.getChildren().clear();
-        schedules.forEach(schedule -> {
+
+        List<ScheduleModel> filteredSchedules = schedules.stream()
+                .filter(schedule -> showThisWeek ? isDateInThisWeek(schedule.getEndDate()) : true)
+                .collect(Collectors.toList());
+
+        filteredSchedules.forEach(schedule -> {
             VBox card = new VBox(5);
             card.getStyleClass().add("schedule-card");
             card.setPrefSize(200, 100);
 
-
-            // 添加点击事件监听
+            // 点击事件（保留原有逻辑）
             card.setOnMouseClicked(event -> {
-                // 清除所有卡片的选中样式
                 cardsContainer.getChildren().forEach(node ->
                         node.getStyleClass().remove("selected-card")
                 );
-                // 设置当前选中卡片样式
                 card.getStyleClass().add("selected-card");
                 selectedSchedule = schedule;
             });
 
-
+            // 卡片内容（保留原有逻辑）
             Label title = new Label(schedule.getTitle());
             Label dates = new Label(schedule.getStartDate() + " - " + schedule.getEndDate());
             Text content = new Text(schedule.getContent());
             content.setWrappingWidth(180);
-
             card.getChildren().addAll(title, dates, content);
             cardsContainer.getChildren().add(card);
         });
@@ -299,6 +305,29 @@ public class ScheduleController {
         stage.setScene(new Scene(root));
         stage.setTitle("日程详情");
         stage.show();
+    }
+
+
+
+    // 新增按钮事件处理方法
+    @FXML
+    private void handleShowThisWeek() {
+        showThisWeek = !showThisWeek; // 切换筛选状态
+        refreshAll(); // 刷新界面
+
+        // 更新按钮文本提示
+        Button button = (Button) cardsContainer.getScene().lookup("#showThisWeekButton");
+        if (button != null) {
+            button.setText(showThisWeek ? "显示全部日程" : "显示本周日程");
+        }
+    }
+
+    // 新增方法：判断日期是否在本周内（周一至周日）
+    private boolean isDateInThisWeek(LocalDate date) {
+        LocalDate now = LocalDate.now();
+        LocalDate monday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate sunday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+        return !date.isBefore(monday) && !date.isAfter(sunday);
     }
 
 

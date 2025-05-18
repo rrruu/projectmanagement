@@ -20,7 +20,7 @@
             <Button text="删除日程" onAction="#handleDeleteSchedule"/>
             <Button text="编辑日程" onAction="#handleEditSchedule"/>
             <Button text="显示详情" onAction="#handleShowDetail"/>
-            <Button text="本周日程" />
+            <Button text="本周日程" onAction="#handleShowThisWeek"/>
         </HBox>
 
 
