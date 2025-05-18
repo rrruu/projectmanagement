@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 public class ScheduleController {
 
+
     @FXML
     private Label monthLabel;
 
@@ -59,6 +60,8 @@ public class ScheduleController {
     @FXML private Canvas scheduleGanttCanvas;
     @FXML private ScrollPane scheduleGanttScrollPane;
 
+    @FXML private MenuButton filterMenuButton;
+
     private ObservableList<ScheduleModel> schedules = FXCollections.observableArrayList();
 
     private YearMonth currentYearMonth;
@@ -71,6 +74,16 @@ public class ScheduleController {
 
     // 新增成员变量：是否显示本周日程的标志
     private boolean showThisWeek = false;
+
+    // 新增枚举类型定义筛选模式
+    private enum FilterMode {
+        ALL,
+        START_END,
+        START_ONLY,
+        END_ONLY
+    }
+    // 修改成员变量
+    private FilterMode currentFilter = FilterMode.ALL;
 
     // 甘特图常量
     private static final double BASE_DAY_WIDTH = 40.0;
@@ -184,7 +197,19 @@ public class ScheduleController {
         cardsContainer.getChildren().clear();
 
         List<ScheduleModel> filteredSchedules = schedules.stream()
-                .filter(schedule -> showThisWeek ? isDateInThisWeek(schedule.getEndDate()) : true)
+                .filter(schedule -> {
+                    switch (currentFilter) {
+                        case START_END:
+                            return isDateInThisWeek(schedule.getStartDate()) &&
+                                    isDateInThisWeek(schedule.getEndDate());
+                        case START_ONLY:
+                            return isDateInThisWeek(schedule.getStartDate());
+                        case END_ONLY:
+                            return isDateInThisWeek(schedule.getEndDate());
+                        default:
+                            return true; // 显示全部
+                    }
+                })
                 .collect(Collectors.toList());
 
         filteredSchedules.forEach(schedule -> {
@@ -309,18 +334,58 @@ public class ScheduleController {
 
 
 
-    // 新增按钮事件处理方法
-    @FXML
-    private void handleShowThisWeek() {
-        showThisWeek = !showThisWeek; // 切换筛选状态
-        refreshAll(); // 刷新界面
 
-        // 更新按钮文本提示
-        Button button = (Button) cardsContainer.getScene().lookup("#showThisWeekButton");
-        if (button != null) {
-            button.setText(showThisWeek ? "显示全部日程" : "显示本周日程");
-        }
+
+
+
+    // 新增事件处理方法
+    @FXML
+    private void handleFilterStartEnd() {
+        currentFilter = FilterMode.START_END;
+        updateFilterButtonText();
+        refreshAll();
     }
+
+    @FXML
+    private void handleFilterStartOnly() {
+        currentFilter = FilterMode.START_ONLY;
+        updateFilterButtonText();
+        refreshAll();
+    }
+
+    @FXML
+    private void handleFilterEndOnly() {
+        currentFilter = FilterMode.END_ONLY;
+        updateFilterButtonText();
+        refreshAll();
+    }
+
+    @FXML
+    private void handleShowAll() {
+        currentFilter = FilterMode.ALL;
+        updateFilterButtonText();
+        refreshAll();
+    }
+
+    // 更新按钮文本
+    private void updateFilterButtonText() {
+        String text = "本周日程";
+        switch (currentFilter) {
+            case START_END:
+                text += " (开始-结束)";
+                break;
+            case START_ONLY:
+                text += " (开始时间)";
+                break;
+            case END_ONLY:
+                text += " (结束时间)";
+                break;
+        }
+        filterMenuButton.setText(text);
+    }
+
+
+
 
     // 新增方法：判断日期是否在本周内（周一至周日）
     private boolean isDateInThisWeek(LocalDate date) {

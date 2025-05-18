@@ -20,7 +20,17 @@
             <Button text="删除日程" onAction="#handleDeleteSchedule"/>
             <Button text="编辑日程" onAction="#handleEditSchedule"/>
             <Button text="显示详情" onAction="#handleShowDetail"/>
-            <Button text="本周日程" onAction="#handleShowThisWeek"/>
+<!--            <Button text="本周日程" onAction="#handleShowThisWeek"/>-->
+            <!-- 将原按钮替换为带下拉菜单的 MenuButton -->
+            <MenuButton fx:id="filterMenuButton" text="本周日程">
+                <items>
+                    <MenuItem text="开始-结束" onAction="#handleFilterStartEnd"/>
+                    <MenuItem text="开始时间" onAction="#handleFilterStartOnly"/>
+                    <MenuItem text="结束时间" onAction="#handleFilterEndOnly"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="显示全部" onAction="#handleShowAll"/>
+                </items>
+            </MenuButton>
         </HBox>
 
 
