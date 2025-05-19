@@ -9,7 +9,8 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ResourceDeleteController"
-            prefHeight="150.0" prefWidth="300.0">
+            prefHeight="150.0" prefWidth="300.0"
+            stylesheets="@style.css">
     <children>
         <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
             <Label fx:id="messageLabel" text="确定要删除任务吗？"/>

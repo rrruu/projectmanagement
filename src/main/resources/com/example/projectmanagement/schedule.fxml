@@ -8,7 +8,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
 
-<ScrollPane fitToHeight="false" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectmanagement.controller.ScheduleController">
+<ScrollPane fitToHeight="false"
+            style="-fx-padding: 20;"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.projectmanagement.controller.ScheduleController"
+            stylesheets="@style.css">
    <content>
    
        <VBox spacing="10" style="-fx-min-width: 1200;">

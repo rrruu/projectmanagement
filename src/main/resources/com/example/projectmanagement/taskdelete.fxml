@@ -9,7 +9,8 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.TaskDeleteController"
-            prefHeight="150.0" prefWidth="300.0">
+            prefHeight="150.0" prefWidth="300.0"
+            stylesheets="@style.css">
 
 
     <children>

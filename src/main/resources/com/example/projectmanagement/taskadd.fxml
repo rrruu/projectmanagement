@@ -10,6 +10,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.TaskAddController"
+            stylesheets="@style.css"
             prefHeight="400.0" prefWidth="600.0">
     <children>
         <GridPane hgap="10" vgap="10">
@@ -34,12 +35,12 @@
             <TextField fx:id="leaderField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
             <Label text="备注:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <ScrollPane prefHeight="80" GridPane.rowIndex="6" GridPane.columnIndex="1">
+            <ScrollPane prefHeight="120" GridPane.rowIndex="6" GridPane.columnIndex="1">
                 <TextArea fx:id="commentField" wrapText="true"/>
             </ScrollPane>
         </GridPane>
 
-        <HBox spacing="10" layoutX="20" layoutY="300" AnchorPane.rightAnchor="20">
+        <HBox spacing="10" layoutX="20" layoutY="350" AnchorPane.rightAnchor="20">
             <Button text="确定" onAction="#handleOk" styleClass="button1"/>
             <Button text="取消" onAction="#handleCancel" styleClass="button1"/>
         </HBox>

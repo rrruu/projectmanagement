@@ -10,7 +10,8 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ResourceController"
-            style="-fx-padding: 20;">
+            style="-fx-padding: 20;"
+            stylesheets="@style.css">
 
     <VBox spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
           AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">

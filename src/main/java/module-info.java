@@ -5,6 +5,8 @@ module com.example.projectmanagement {
     requires javafx.swing;
     requires com.google.gson;
     requires java.sql;
+    requires org.xerial.sqlitejdbc;
+
 
 
     opens com.example.projectmanagement to javafx.fxml,javafx.graphics;

@@ -12,7 +12,8 @@
 <AnchorPane style="-fx-padding: 20;-fx-background-color: #1177BB;"
             xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.projectmanagement.controller.WelcomeController">
+            fx:controller="com.example.projectmanagement.controller.WelcomeController"
+            stylesheets="@style.css">
 
           <Label style="-fx-font-size: 100;-fx-background-color: lightblue;-fx-text-fill: white;" text="WELCOME!"
                  AnchorPane.leftAnchor="0"

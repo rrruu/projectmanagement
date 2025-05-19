@@ -14,7 +14,8 @@
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ResourceAnalysisController"
-            fitToWidth="true">
+            fitToWidth="true"
+            stylesheets="@style.css">
 
 
     <content>

@@ -10,7 +10,8 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.TaskEditController"
-            prefHeight="800.0" prefWidth="800.0">
+            prefHeight="800.0" prefWidth="800.0"
+            stylesheets="@style.css">
 
     <children>
         <GridPane hgap="10" vgap="10">

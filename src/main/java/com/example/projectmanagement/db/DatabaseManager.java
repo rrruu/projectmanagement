@@ -7,10 +7,11 @@ public class DatabaseManager {
 
     public static void initialize() {
         try {
+            Class.forName("org.sqlite.JDBC"); // 显式加载驱动
             connection = DriverManager.getConnection("jdbc:sqlite:project.db");
             connection.setAutoCommit(false); // 初始连接时关闭自动提交
             createTables();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

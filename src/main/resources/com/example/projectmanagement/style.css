@@ -24,17 +24,17 @@
     -fx-fill: #666;
 }
 
-.dialog-pane {
-    -fx-background-color: #f0f0f0;
-}
+/*.dialog-pane {*/
+/*    -fx-background-color: #af0f0f;*/
+/*}*/
 
-.dialog-pane .label {
-    -fx-font-weight: bold;
-}
+/*.dialog-pane .label {*/
+/*    -fx-font-weight: bold;*/
+/*}*/
 
-.dialog-pane .text-field {
-    -fx-pref-width: 200px;
-}
+/*.dialog-pane .text-field {*/
+/*    -fx-pref-width: 200px;*/
+/*}*/
 
 .scroll-pane {
     -fx-background-color: transparent;
@@ -59,13 +59,7 @@
 
 
 
-/*addtask.fxml中的button样式*/
-.button1 {
-    -fx-background-color: #3c3f41; /* 蓝色背景 */
-    -fx-text-fill: #9ea2a4; /* 白色文字 */
-    -fx-background-radius: 5px; /* 圆角 */
-    -fx-font-weight: bold; /* 加粗字体 */
-}
+
 
 
 /*!*使用ID选择器*!*/
@@ -359,6 +353,7 @@
     -fx-background-radius: 0px;
     -fx-font-size: 16px;
 }
+/* MainFrame左侧导航栏按钮被选中后样式 */
 .navButtonMain-selected {
     -fx-background-color: #A3B8C9; /* 选中时的颜色 */
     -fx-text-fill: #2C3E50;
@@ -409,6 +404,14 @@
     -fx-border-radius: 5px;
 }
 
+
+/*taskadd.fxml和resourceadd.fxml和scheduleadd.fxml中的button样式*/
+.button1 {
+    -fx-background-color: #52708c;
+    -fx-text-fill: #ECF1F5;
+    -fx-background-radius: 5px; /* 圆角 */
+    -fx-font-weight: bold; /* 加粗字体 */
+}
 
 
 
