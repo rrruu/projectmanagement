@@ -38,9 +38,9 @@
                             <!-- 月份切换栏 -->
                             <HBox alignment="CENTER" spacing="20">
                                <children>
-                                   <Button fx:id="prevMonthButton" onAction="#handlePrevMonth" text="◀ 上一月" />
+                                   <Button fx:id="prevMonthButton" onAction="#handlePrevMonth" text="◀ 上一月" style="-fx-background-color: #BDD0DE"/>
                                    <Label fx:id="monthLabel" style="-fx-font-size: 18px;" />
-                                   <Button fx:id="nextMonthButton" onAction="#handleNextMonth" text="下一月 ▶" />
+                                   <Button fx:id="nextMonthButton" onAction="#handleNextMonth" text="下一月 ▶" style="-fx-background-color: #BDD0DE"/>
                                </children>
                             </HBox>
             

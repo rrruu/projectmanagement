@@ -228,9 +228,12 @@ public class ScheduleController {
 
             // 卡片内容（保留原有逻辑）
             Label title = new Label(schedule.getTitle());
+            title.getStyleClass().add("card-title"); // 添加标题样式类
             Label dates = new Label(schedule.getStartDate() + " - " + schedule.getEndDate());
+            dates.getStyleClass().add("card-content"); // 添加内容样式类
             Text content = new Text(schedule.getContent());
             content.setWrappingWidth(180);
+            content.getStyleClass().add("card-content"); // 添加内容样式类
             card.getChildren().addAll(title, dates, content);
             cardsContainer.getChildren().add(card);
         });

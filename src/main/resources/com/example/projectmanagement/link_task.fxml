@@ -13,7 +13,7 @@
             stylesheets="@style.css">
 
 
-    <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+    <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="20">
         <Label text="选择要关联的任务:" style="-fx-font-weight: bold;"/>
         <HBox spacing="10">
             <Button text="全选" onAction="#handleSelectAll"/>
@@ -21,9 +21,9 @@
             <Button text="显示可用任务" onAction="#showAvailableTasks"/>
             <Button text="显示全部任务" onAction="#showAllTasks"/>
         </HBox>
-        <ListView fx:id="taskListView" prefHeight="400" prefWidth="680"/>
+        <ListView fx:id="taskListView" prefHeight="400" prefWidth="680" VBox.vgrow="ALWAYS"/>
         <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button text="确认关联" onAction="#handleConfirm" style="-fx-font-weight: bold;"/>
+            <Button text="确认" onAction="#handleConfirm"/>
             <Button text="取消" onAction="#handleCancel"/>
         </HBox>
     </VBox>

@@ -155,13 +155,13 @@
 
 /*关联窗口内提示框样式*/
 
-.tooltip {
-    -fx-font-size: 12px;
-    -fx-background-color: #fff3cd; /* 浅黄色背景 */
-    -fx-text-fill: #856404;        /* 深黄色文字 */
-    -fx-padding: 8px;
-    -fx-border-color: #ffeeba;
-}
+/*.tooltip {*/
+/*    -fx-font-size: 12px;*/
+/*    -fx-background-color: #fff3cd; !* 浅黄色背景 *!*/
+/*    -fx-text-fill: #856404;        !* 深黄色文字 *!*/
+/*    -fx-padding: 8px;*/
+/*    -fx-border-color: #ffeeba;*/
+/*}*/
 
 
 
@@ -246,18 +246,7 @@
 }
 
 
-/* 添加个人日程安排模块中卡片样式 */
-.schedule-card {
-    -fx-background-color: #f8f9fa;
-    -fx-border-color: #dee2e6;
-    -fx-border-radius: 5px;
-    -fx-padding: 10px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
-}
 
-.schedule-card:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);
-}
 
 /* 日程甘特图样式 */
 .schedule-gantt-bar {
@@ -272,16 +261,16 @@
 
 
 
-/* 详情窗口内容样式 */
-.detail-label {
-    -fx-font-weight: bold;
-    -fx-text-fill: #333;
-}
+/*!* 详情窗口内容样式 *!*/
+/*.detail-label {*/
+/*    -fx-font-weight: bold;*/
+/*    -fx-text-fill: #333;*/
+/*}*/
 
-.detail-content {
-    -fx-font-size: 14px;
-    -fx-text-fill: #666;
-}
+/*.detail-content {*/
+/*    -fx-font-size: 14px;*/
+/*    -fx-text-fill: #666;*/
+/*}*/
 
 
 
@@ -399,9 +388,9 @@
 
 /* schedule.fxml中选中卡片样式 */
 .selected-card {
-    -fx-border-color: #52708c;
-    -fx-border-width: 2px;
-    -fx-border-radius: 5px;
+    -fx-border-color: #52708c !important;
+    -fx-border-width: 2px !important;
+    -fx-border-radius: 5px !important;
 }
 
 
@@ -412,6 +401,28 @@
     -fx-background-radius: 5px; /* 圆角 */
     -fx-font-weight: bold; /* 加粗字体 */
 }
+
+
+
+/* schedule.fxml中卡片样式 */
+.schedule-card {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+.schedule-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);
+}
+.schedule-card .card-title {
+    -fx-font-size: 15px;  /* 标题字体比默认大2px */
+    -fx-font-weight: bold;
+}
+.schedule-card .card-content {
+    -fx-font-size: 13px;  /* 内容字体比默认大2px */
+}
+
 
 
 

@@ -28,10 +28,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.DayOfWeek;
@@ -386,7 +384,30 @@ public class TaskController {
         File file = fileChooser.showSaveDialog(taskTable.getScene().getWindow());
         if (file == null) return;
 
-        try (FileWriter writer = new FileWriter(file)) {
+//        try (FileWriter writer = new FileWriter(file)) {
+//            Gson gson = new GsonBuilder()
+//                    .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
+//                    .registerTypeAdapter(ResourceModel.class, new ResourceModelTypeAdapter())
+//                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+//                    .setPrettyPrinting()
+//                    .create();
+//
+//            // 构建包含完整项目数据的JSON对象
+//            JsonObject project = new JsonObject();
+//            project.add("tasks", gson.toJsonTree(dataModel.getTasks()));
+//            project.add("resources", gson.toJsonTree(dataModel.getResources()));
+//
+//            gson.toJson(project, writer);
+//
+//
+//
+////            // 直接序列化 ObservableList
+////            gson.toJson(dataModel.getTasks(), writer);
+//            new Alert(Alert.AlertType.INFORMATION, "项目导出成功！").show();
+//        }
+
+        // 将 FileWriter 替换为 UTF-8 编码的 OutputStreamWriter
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
                     .registerTypeAdapter(ResourceModel.class, new ResourceModelTypeAdapter())
@@ -394,19 +415,15 @@ public class TaskController {
                     .setPrettyPrinting()
                     .create();
 
-            // 构建包含完整项目数据的JSON对象
             JsonObject project = new JsonObject();
             project.add("tasks", gson.toJsonTree(dataModel.getTasks()));
             project.add("resources", gson.toJsonTree(dataModel.getResources()));
 
             gson.toJson(project, writer);
-
-
-
-//            // 直接序列化 ObservableList
-//            gson.toJson(dataModel.getTasks(), writer);
             new Alert(Alert.AlertType.INFORMATION, "项目导出成功！").show();
-        } catch (IOException e) {
+        }
+
+        catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "导出失败：" + e.getMessage()).show();
         }
     }
@@ -420,8 +437,9 @@ public class TaskController {
         File file = fileChooser.showOpenDialog(taskTable.getScene().getWindow());
         if (file == null) return;
 
-        try (FileReader reader = new FileReader(file)) {
-
+//        try (FileReader reader = new FileReader(file)) {
+// 将 FileReader 替换为 UTF-8 编码的 InputStreamReader
+        try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
 
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
