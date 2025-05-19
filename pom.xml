@@ -76,21 +76,7 @@
 
     </dependencies>
 
-    <!--    <repositories>-->
-    <!--        &lt;!&ndash; 阿里云仓库（可选，如果需要保留） &ndash;&gt;-->
-    <!--        <repository>-->
-    <!--            <id>aliyun</id>-->
-    <!--            <url>https://maven.aliyun.com/repository/public</url>-->
-    <!--        </repository>-->
-    <!--        &lt;!&ndash; Maven 中央仓库 &ndash;&gt;-->
-    <!--        <repository>-->
-    <!--            <id>central</id>-->
-    <!--            <url>https://repo.maven.apache.org/maven2/</url>-->
-    <!--            <snapshots>-->
-    <!--                <enabled>false</enabled>-->
-    <!--            </snapshots>-->
-    <!--        </repository>-->
-    <!--    </repositories>-->
+
 
     <build>
         <plugins>
@@ -112,9 +98,9 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.projectmanagement/com.example.projectmanagement.Main
+                            <mainClass>${module}/com.example.projectmanagement.Main
                             </mainClass>
-                            <launcher>app</launcher>
+<!--                            <launcher>app</launcher>-->
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
                             <noManPages>true</noManPages>
@@ -124,7 +110,37 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.example.projectmanagement.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
+
+
 
 
         <resources>
