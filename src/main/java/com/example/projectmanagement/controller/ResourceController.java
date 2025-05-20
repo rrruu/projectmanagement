@@ -34,10 +34,10 @@ public class ResourceController {
 
 
     // 甘特图常量
-    private static final double BASE_DAY_WIDTH = 40.0;
-    private static final double ROW_HEIGHT = 30.0;
-    private static final double TIME_AXIS_HEIGHT = 80.0;
-    private static final double WEEK_SECTION_HEIGHT = 40.0;
+    private static final double BASE_DAY_WIDTH = 40.0;// 每天基础宽度
+    private static final double ROW_HEIGHT = 30.0;    // 每行高度
+    private static final double TIME_AXIS_HEIGHT = 80.0;  // 每行高度
+    private static final double WEEK_SECTION_HEIGHT = 40.0; // 周信息区域高度
 
     @FXML private TableView<ResourceModel> resourceTable;
     @FXML private TableColumn<ResourceModel,String> nameColumn;
@@ -47,7 +47,6 @@ public class ResourceController {
     @FXML private TableColumn<ResourceModel,String> typeColumn;
     @FXML private TableColumn<ResourceModel,Number> rateColumn;
     @FXML private TableColumn<ResourceModel,String> commentColumn;
-//    @FXML private TableColumn<ResourceModel, String> statusColumn;
     @FXML private Canvas resourceGanttCanvas;
     @FXML private ScrollPane resourceGanttScrollPane;
 
@@ -61,9 +60,6 @@ public class ResourceController {
 
 
 
-
-
-
     @FXML
     private void initialize(){
         //初始化表格绑定
@@ -74,9 +70,6 @@ public class ResourceController {
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         rateColumn.setCellValueFactory(new PropertyValueFactory<>("dailyRate"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
-//        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-
 
 
 
@@ -142,7 +135,8 @@ public class ResourceController {
                     getClass().getResource("/com/example/projectmanagement/resourceadd.fxml")
             );
             AnchorPane root = loader.load();
-//            ResourceAddController controller = loader.getController();
+
+
             //创建并配置对话框
             Stage dialogStage = new Stage();
             dialogStage.setTitle("添加新资源");
@@ -297,21 +291,24 @@ public class ResourceController {
 
 
     private void drawResourceGantt() {
-        if (resourceGanttCanvas == null || dataModel.getResources().isEmpty()) return;
+        if (resourceGanttCanvas == null || dataModel.getResources().isEmpty()) {
+            // 清空画布并直接返回
+            GraphicsContext gc = resourceGanttCanvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
+            return;
+        }
 
         GraphicsContext gc = resourceGanttCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
-
-
-
         // 过滤无效任务（确保日期不为空）
         List<TaskModel> validTasks = dataModel.getResources().stream()
                 .flatMap(res -> res.getAssignedTasks().stream())
                 .filter(task -> task.getStartDate() != null && task.getEndDate() != null)
                 .collect(Collectors.toList());
 
+        // 如果所有资源都没有关联任务，直接清空画布
         if (validTasks.isEmpty()) {
-            resourceGanttCanvas.getGraphicsContext2D().clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
+            gc.clearRect(0, 0, resourceGanttCanvas.getWidth(), resourceGanttCanvas.getHeight());
             return;
         }
 
@@ -355,7 +352,7 @@ public class ResourceController {
                 double x = 50 + startOffset * BASE_DAY_WIDTH;
                 double width = duration * BASE_DAY_WIDTH;
 
-                gc.setFill(Color.rgb(111, 146, 175)); // 钢蓝色
+                gc.setFill(Color.rgb(111, 146, 175));
                 gc.fillRect(x, yPos, width, 20);
 
                 //绘制任务名称

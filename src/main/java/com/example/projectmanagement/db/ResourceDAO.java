@@ -41,7 +41,6 @@ public class ResourceDAO {
         stmt.setString(4, resource.getEmail());
         stmt.setString(5, resource.getType());
         stmt.setDouble(6, resource.getDailyRate());
-//        stmt.setString(7, resource.getStatus());
         stmt.setString(7, resource.getComment());
 
     }
@@ -55,7 +54,6 @@ public class ResourceDAO {
         stmt.setString(3, resource.getEmail());
         stmt.setString(4, resource.getType());
         stmt.setDouble(5, resource.getDailyRate());
-//        stmt.setString(6, resource.getStatus());
         stmt.setString(6, resource.getComment());
         stmt.setString(7, resource.getId());
 

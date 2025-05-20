@@ -50,20 +50,16 @@ public class TaskController {
 
     private Stage primaryStage;
 
-    // 常量
+    // 甘特图常量
     private static final double BASE_DAY_WIDTH = 40.0;  // 每天基础宽度
     private static final double ROW_HEIGHT = 30.0;     // 每行高度
-    private static final double TIME_AXIS_HEIGHT = 80.0; // 时间轴总高度
-    private static final double WEEK_SECTION_HEIGHT = 40.0; // 新增：周信息区域高度
+    private static final double TIME_AXIS_HEIGHT = 80.0; // 每行高度
+    private static final double WEEK_SECTION_HEIGHT = 40.0; // 周信息区域高度
 
 
-    private boolean isWindowSizeListenerAdded = false; // 新增标记变量，避免绘制画布时重复注册监听器
+//    private boolean isWindowSizeListenerAdded = false; // 标记变量，避免绘制画布时重复注册监听器
 
-
-
-
-    @FXML
-    private TableView<TaskModel> taskTable;
+    @FXML private TableView<TaskModel> taskTable;
     @FXML private TableColumn<TaskModel, String> taskNameColumn;
     @FXML private TableColumn<TaskModel, String> idColumn;
     @FXML private TableColumn<TaskModel, LocalDate> startDateColumn;
@@ -97,8 +93,6 @@ public class TaskController {
     @FXML
     private void initialize() {
 
-
-
         // 初始化表格列
         taskNameColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -109,18 +103,15 @@ public class TaskController {
         leaderColumn.setCellValueFactory(new PropertyValueFactory<>("leader"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
 
-
         //任务成本列
-//        TableColumn<TaskModel, Number> costColumn = new TableColumn<>("任务成本");
         costColumn.setCellValueFactory(cellData -> cellData.getValue().costProperty());
-//        taskTable.getColumns().add(costColumn);
-
 
         // 新增关联资源列
         TableColumn<TaskModel, String> resourcesColumn = new TableColumn<>("关联资源");
         resourcesColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getAssignedResourcesInfo())
         );
+
         //设置关联资源列宽
         resourcesColumn.setPrefWidth(200);
         taskTable.getColumns().add(resourcesColumn);
@@ -186,7 +177,7 @@ public class TaskController {
             );
 
             AnchorPane root = loader.load();
-//            TaskAddController controller = loader.getController();
+
 
             // 创建并配置对话框
             Stage dialogStage = new Stage();
@@ -384,27 +375,6 @@ public class TaskController {
         File file = fileChooser.showSaveDialog(taskTable.getScene().getWindow());
         if (file == null) return;
 
-//        try (FileWriter writer = new FileWriter(file)) {
-//            Gson gson = new GsonBuilder()
-//                    .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
-//                    .registerTypeAdapter(ResourceModel.class, new ResourceModelTypeAdapter())
-//                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-//                    .setPrettyPrinting()
-//                    .create();
-//
-//            // 构建包含完整项目数据的JSON对象
-//            JsonObject project = new JsonObject();
-//            project.add("tasks", gson.toJsonTree(dataModel.getTasks()));
-//            project.add("resources", gson.toJsonTree(dataModel.getResources()));
-//
-//            gson.toJson(project, writer);
-//
-//
-//
-////            // 直接序列化 ObservableList
-////            gson.toJson(dataModel.getTasks(), writer);
-//            new Alert(Alert.AlertType.INFORMATION, "项目导出成功！").show();
-//        }
 
         // 将 FileWriter 替换为 UTF-8 编码的 OutputStreamWriter
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
@@ -437,7 +407,7 @@ public class TaskController {
         File file = fileChooser.showOpenDialog(taskTable.getScene().getWindow());
         if (file == null) return;
 
-//        try (FileReader reader = new FileReader(file)) {
+
 // 将 FileReader 替换为 UTF-8 编码的 InputStreamReader
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
 

@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -111,6 +112,7 @@ public class ScheduleController {
         refreshAll();
 
         schedules.addListener((ListChangeListener<? super ScheduleModel>) change -> drawScheduleGantt());
+
         drawScheduleGantt(); // 初始化时绘制
     }
 
@@ -255,7 +257,7 @@ public class ScheduleController {
     }
 
 
-    // 添加打开添加窗口的逻辑
+
     @FXML
     private void handleAddSchedule() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectmanagement/scheduleadd.fxml"));
@@ -271,24 +273,30 @@ public class ScheduleController {
     }
 
 
-    // 新增删除处理方法
+    // 删除处理方法
     @FXML
-    private void handleDeleteSchedule() throws SQLException {
+    private void handleDeleteSchedule() throws SQLException, IOException {
         if (selectedSchedule == null) {
             new Alert(Alert.AlertType.WARNING, "请先选择要删除的日程").show();
             return;
         }
+        // 加载删除确认窗口
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/example/projectmanagement/scheduledelete.fxml"));
+        Parent root = loader.load();
+        ScheduleDeleteController deleteController = loader.getController();
+        deleteController.setScheduleToDelete(selectedSchedule);
 
-        // 确认对话框
-        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmDialog.setTitle("确认删除");
-        confirmDialog.setHeaderText("确定要删除此日程吗？");
-        Optional<ButtonType> result = confirmDialog.showAndWait();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("确认删除");
+        stage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
+        stage.showAndWait();
 
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            ScheduleDAO.delete(selectedSchedule.getId()); // 调用DAO删除
-            refreshAll(); // 刷新所有界面组件
-            selectedSchedule = null; // 清空选中状态
+        // 如果用户确认删除，则刷新界面
+        if (deleteController.isConfirmed()) {
+            refreshAll();
+            selectedSchedule = null;
         }
     }
 
@@ -341,7 +349,7 @@ public class ScheduleController {
 
 
 
-    // 新增事件处理方法
+
     @FXML
     private void handleFilterStartEnd() {
         currentFilter = FilterMode.START_END;
@@ -401,11 +409,20 @@ public class ScheduleController {
 
     // 新增甘特图绘制方法
     private void drawScheduleGantt() {
-        if (scheduleGanttCanvas == null || schedules.isEmpty()) return;
-
+        if (scheduleGanttCanvas == null || schedules.isEmpty()){
+            // 清空画布并直接返回
+            GraphicsContext gc = scheduleGanttCanvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, scheduleGanttCanvas.getWidth(), scheduleGanttCanvas.getHeight());
+            return;
+        }
         GraphicsContext gc = scheduleGanttCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, scheduleGanttCanvas.getWidth(), scheduleGanttCanvas.getHeight());
 
+//        // 如果没有日程，直接清空画布
+//        if (schedules.isEmpty()) {
+//            gc.clearRect(0, 0, scheduleGanttCanvas.getWidth(), scheduleGanttCanvas.getHeight());
+//            return;
+//        }
         // 计算时间范围
         LocalDate minDate = schedules.stream()
                 .map(ScheduleModel::getStartDate)
@@ -442,7 +459,7 @@ public class ScheduleController {
             double x = 50 + startOffset * BASE_DAY_WIDTH;
             double width = duration * BASE_DAY_WIDTH;
 
-            gc.setFill(Color.rgb(70, 130, 180)); // 钢蓝色
+            gc.setFill(Color.rgb(70, 130, 180));
             gc.fillRect(x, yPos, width, 20);
 
             // 绘制日程标题
@@ -461,6 +478,8 @@ public class ScheduleController {
         LocalDate currentMonday = start;
         int weekNumber = 1;
         while (!currentMonday.isAfter(end)) {
+
+            //当前周一与起始日期之间的天数
             long daysFromStart = ChronoUnit.DAYS.between(start, currentMonday);
             double xPos = 50 + daysFromStart * BASE_DAY_WIDTH;
 
@@ -496,13 +515,13 @@ public class ScheduleController {
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(1.0);
 
-            // 日期标签
+            // 日期标签，使每日日期在时间轴居中的位置
             gc.setTextAlign(TextAlignment.CENTER);
             gc.fillText(String.valueOf(currentDay.getDayOfMonth()),
                     xPos + BASE_DAY_WIDTH/2, WEEK_SECTION_HEIGHT + 25);
 
 
-            //使日程名称位于任务条左侧
+            //画笔恢复为左对齐，供后续文字使用
             gc.setTextAlign(TextAlignment.LEFT);
             // 每周日绘制分隔线（延长到分割线下方）
             if (currentDay.getDayOfWeek() == DayOfWeek.SUNDAY) {

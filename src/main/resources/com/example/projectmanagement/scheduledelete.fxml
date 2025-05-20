@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.projectmanagement.controller.ScheduleDeleteController"
             prefHeight="150.0" prefWidth="300.0"
             stylesheets="@style.css">
-
+    <children>
+        <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+            <Label fx:id="messageLabel" text="确定要删除日程吗？" style="-fx-font-size: 14px;"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="确定" onAction="#handleConfirm" styleClass="button1"/>
+                <Button text="取消" onAction="#handleCancel" styleClass="button1"/>
+            </HBox>
+        </VBox>
+    </children>
 </AnchorPane>

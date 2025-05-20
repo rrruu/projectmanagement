@@ -27,7 +27,6 @@ public class TaskDAO {
                 + "WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             bindTaskParametersForUpdate(stmt, task);
-//            stmt.setString(7, task.getId());
             stmt.executeUpdate();
         }
     }
@@ -89,7 +88,7 @@ public class TaskDAO {
 
 
 
-    // 在TaskDAO中添加以下方法
+
     public static void delete(String taskId) throws SQLException {
         String sql = "DELETE FROM tasks WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
@@ -119,20 +118,20 @@ public class TaskDAO {
     }
 
 
-    public static List<ResourceModel> getResourcesForTask(String taskId) throws SQLException {
-        String sql = "SELECT resource_id FROM task_resources WHERE task_id = ?";
-        List<ResourceModel> resources = new ArrayList<>();
-        try (PreparedStatement pstmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            pstmt.setString(1, taskId);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                String resId = rs.getString("resource_id");
-                ResourceModel res = DataModel.getInstance().findResourceById(resId);
-                if (res != null) resources.add(res);
-            }
-        }
-        return resources;
-    }
+//    public static List<ResourceModel> getResourcesForTask(String taskId) throws SQLException {
+//        String sql = "SELECT resource_id FROM task_resources WHERE task_id = ?";
+//        List<ResourceModel> resources = new ArrayList<>();
+//        try (PreparedStatement pstmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+//            pstmt.setString(1, taskId);
+//            ResultSet rs = pstmt.executeQuery();
+//            while (rs.next()) {
+//                String resId = rs.getString("resource_id");
+//                ResourceModel res = DataModel.getInstance().findResourceById(resId);
+//                if (res != null) resources.add(res);
+//            }
+//        }
+//        return resources;
+//    }
 
 
 

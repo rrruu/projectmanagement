@@ -21,12 +21,12 @@
     <content>
         <VBox spacing="20" style="-fx-padding: 20;">
 
-            <HBox spacing="30">
-                <!-- 移除value属性设置，改为在控制器初始化 -->
-                <DatePicker fx:id="startDatePicker"/>
-                <DatePicker fx:id="endDatePicker"/>
-                <Button text="更新统计" onAction="#updateUsageChart"/>
-            </HBox>
+<!--            <HBox spacing="30">-->
+<!--                &lt;!&ndash; 移除value属性设置，改为在控制器初始化 &ndash;&gt;-->
+<!--                <DatePicker fx:id="startDatePicker"/>-->
+<!--                <DatePicker fx:id="endDatePicker"/>-->
+<!--                <Button text="更新统计" onAction="#updateUsageChart"/>-->
+<!--            </HBox>-->
 
 
             <GridPane>
@@ -60,9 +60,18 @@
 
 
 
+            </GridPane>
+
+                        <HBox spacing="30">
+                            <!-- 移除value属性设置，改为在控制器初始化 -->
+                            <DatePicker fx:id="startDatePicker"/>
+                            <DatePicker fx:id="endDatePicker"/>
+                            <Button text="更新统计" onAction="#updateUsageChart"/>
+                        </HBox>
+            <GridPane>
 
                 <!-- 图表3：资源使用率 -->
-                <AnchorPane style="-fx-border-color: #eee; -fx-padding: 10;" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                <AnchorPane style="-fx-border-color: #eee; -fx-padding: 10;" GridPane.rowIndex="0" GridPane.columnIndex="0">
                     <Label text="资源使用率图" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
 
                     <BarChart fx:id="usageRateChart" prefHeight="400" prefWidth="400">
@@ -76,7 +85,7 @@
                 </AnchorPane>
 
                 <!-- 图表4：资源类型占比 -->
-                <AnchorPane style="-fx-border-color: #eee; -fx-padding: 10;" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <AnchorPane style="-fx-border-color: #eee; -fx-padding: 10;" GridPane.rowIndex="0" GridPane.columnIndex="1">
                     <Label text="资源类型占比图" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
                     <StackPane fx:id="pieChartContainer" prefHeight="500" prefWidth="800" styleClass="pie-chart-container"/>
                 </AnchorPane>
