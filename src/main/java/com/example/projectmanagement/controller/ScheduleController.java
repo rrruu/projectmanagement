@@ -218,7 +218,11 @@ public class ScheduleController {
         filteredSchedules.forEach(schedule -> {
             VBox card = new VBox(5);
             card.getStyleClass().add("schedule-card");
-            card.setPrefSize(200, 100);
+            card.setMinSize(200, 150);
+            card.setMaxSize(200, 150);//固定卡片尺寸
+
+
+
 
             // 点击事件
             card.setOnMouseClicked(event -> {
@@ -233,10 +237,14 @@ public class ScheduleController {
             Label title = new Label(schedule.getTitle());
             title.getStyleClass().add("card-title"); // 添加标题样式类
             Label dates = new Label(schedule.getStartDate() + " - " + schedule.getEndDate());
-            dates.getStyleClass().add("card-content"); // 添加内容样式类
-            Text content = new Text(schedule.getContent());
-            content.setWrappingWidth(180);
-            content.getStyleClass().add("card-content"); // 添加内容样式类
+            dates.getStyleClass().add("card-time"); // 添加内容样式类
+
+            Label content = new Label(schedule.getContent());
+            content.setWrapText(true);
+            content.setMaxWidth(180);
+            content.setMaxHeight(78); // 6行 x 13px行高 ≈ 78px
+            content.getStyleClass().add("card-content");
+
             card.getChildren().addAll(title, dates, content);
             cardsContainer.getChildren().add(card);
         });

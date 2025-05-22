@@ -405,23 +405,43 @@
 
 
 /* schedule.fxml中卡片样式 */
+/* 确保卡片尺寸固定 */
 .schedule-card {
+    -fx-min-width: 200px;
+    -fx-min-height: 150px;
+    -fx-max-width: 200px;
+    -fx-max-height: 150px;
     -fx-background-color: #f8f9fa;
     -fx-border-color: #dee2e6;
     -fx-border-radius: 5px;
     -fx-padding: 10px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
 }
-.schedule-card:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);
-}
-.schedule-card .card-title {
+.card-title {
     -fx-font-size: 15px;  /* 标题字体比默认大2px */
     -fx-font-weight: bold;
 }
-.schedule-card .card-content {
-    -fx-font-size: 13px;  /* 内容字体比默认大2px */
+.card-time {
+    -fx-font-size: 13px;
+    -fx-text-overrun: ellipsis;
+    -fx-wrap-text: true;
+    -fx-max-height: 3.2em; /* 限制显示2行 */
+
 }
+.card-content {
+    -fx-font-size: 13px;
+    -fx-text-overrun: ellipsis;
+    -fx-wrap-text: true;
+    -fx-max-width: 180px;
+    -fx-max-height: 78px;  /* 限制为6行 */
+    -fx-padding: 2px 0;
+
+}
+.schedule-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);
+}
+
+
 
 
 
