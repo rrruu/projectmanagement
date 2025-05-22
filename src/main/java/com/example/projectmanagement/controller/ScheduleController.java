@@ -57,33 +57,35 @@ public class ScheduleController {
 
     @FXML private FlowPane cardsContainer;
 
-    // 新增甘特图相关变量
+    // 甘特图相关变量
     @FXML private Canvas scheduleGanttCanvas;
     @FXML private ScrollPane scheduleGanttScrollPane;
 
     @FXML private MenuButton filterMenuButton;
 
+    //所有日程的数据列表
     private ObservableList<ScheduleModel> schedules = FXCollections.observableArrayList();
 
+    //当前月份
     private YearMonth currentYearMonth;
 
-    private boolean isRefreshing = false; // 添加标志位
+    //防止刷新时无限循环
+    private boolean isRefreshing = false;
 
 
-    // 新增成员变量：当前选中的日程
+    //当前选中的日程
     private ScheduleModel selectedSchedule;
 
-    // 新增成员变量：是否显示本周日程的标志
-    private boolean showThisWeek = false;
 
-    // 新增枚举类型定义筛选模式
+
+    // 枚举类型定义筛选模式
     private enum FilterMode {
         ALL,
         START_END,
         START_ONLY,
         END_ONLY
     }
-    // 修改成员变量
+
     private FilterMode currentFilter = FilterMode.ALL;
 
     // 甘特图常量
@@ -92,7 +94,7 @@ public class ScheduleController {
     private static final double TIME_AXIS_HEIGHT = 80.0;
     private static final double WEEK_SECTION_HEIGHT = 40.0;
 
-    // 添加currentYearMonth的属性支持
+    // currentYearMonth的属性支持
     private final ObjectProperty<YearMonth> currentYearMonthProperty = new SimpleObjectProperty<>(YearMonth.now());
 
     private YearMonth getCurrentYearMonth() {
@@ -107,13 +109,12 @@ public class ScheduleController {
     public void initialize() {
         currentYearMonth = YearMonth.now();
 
-        loadSchedules();
-        setupCalendarListeners();
-        refreshAll();
 
-        schedules.addListener((ListChangeListener<? super ScheduleModel>) change -> drawScheduleGantt());
-
-        drawScheduleGantt(); // 初始化时绘制
+        loadSchedules();//从数据库加载日程数据
+        setupCalendarListeners();//设置监听器
+        refreshAll();//刷新所有内容
+        schedules.addListener((ListChangeListener<? super ScheduleModel>) change -> drawScheduleGantt());//日程发生变化时重新绘制甘特图
+        drawScheduleGantt();//初始绘制甘特图
     }
 
     void refreshCalendar() {
@@ -219,7 +220,7 @@ public class ScheduleController {
             card.getStyleClass().add("schedule-card");
             card.setPrefSize(200, 100);
 
-            // 点击事件（保留原有逻辑）
+            // 点击事件
             card.setOnMouseClicked(event -> {
                 cardsContainer.getChildren().forEach(node ->
                         node.getStyleClass().remove("selected-card")
@@ -228,7 +229,7 @@ public class ScheduleController {
                 selectedSchedule = schedule;
             });
 
-            // 卡片内容（保留原有逻辑）
+            // 卡片内容
             Label title = new Label(schedule.getTitle());
             title.getStyleClass().add("card-title"); // 添加标题样式类
             Label dates = new Label(schedule.getStartDate() + " - " + schedule.getEndDate());

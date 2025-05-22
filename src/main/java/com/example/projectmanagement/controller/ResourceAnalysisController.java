@@ -78,7 +78,7 @@ public class ResourceAnalysisController {
         xAxis1.setLabel("资源名称");
         NumberAxis yAxis1 = new NumberAxis();
         yAxis1.setLabel("任务数量");
-        taskCountChart.setTitle("资源任务数量统计");
+//        taskCountChart.setTitle("资源任务数量统计");
         taskCountChart.setLegendVisible(false);
 
         // 图表2配置
@@ -86,7 +86,7 @@ public class ResourceAnalysisController {
         xAxis2.setLabel("资源名称");
         NumberAxis yAxis2 = new NumberAxis();
         yAxis2.setLabel("总工期（天）");
-        durationChart.setTitle("资源总工期统计");
+//        durationChart.setTitle("资源总工期统计");
         durationChart.setLegendVisible(false);
 
         // 图表3配置
@@ -94,7 +94,7 @@ public class ResourceAnalysisController {
         xAxis3.setLabel("资源名称");
         NumberAxis yAxis3 = new NumberAxis();
         yAxis3.setLabel("使用率 (%)");
-        usageRateChart.setTitle("资源使用率统计");
+//        usageRateChart.setTitle("资源使用率统计");
         usageRateChart.setLegendVisible(false);
     }
 
