@@ -90,7 +90,7 @@ public class ResourceController {
         commentColumn.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
-                //item：当前单元格绑定的数据（TaskModel的comment属性值）
+                //item：当前单元格绑定的数据（ResourceModel的comment属性值）
                 //empty：标识单元格是否为空（无数据）
                 super.updateItem(item, empty);
                 if (item == null || empty) {
@@ -142,12 +142,12 @@ public class ResourceController {
             dialogStage.setTitle("添加新资源");
             dialogStage.initModality(Modality.APPLICATION_MODAL);//模态窗口
             dialogStage.initOwner(resourceTable.getScene().getWindow());//设置父窗口
+            dialogStage.setScene(new Scene(root));
 
-
-            //让resourceadd.fxml使用style.css的样式
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-            dialogStage.setScene(scene);
+//            //让resourceadd.fxml使用style.css的样式
+//            Scene scene = new Scene(root);
+//            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
+//            dialogStage.setScene(scene);
 
 
             // 显示窗口并等待
@@ -217,10 +217,10 @@ public class ResourceController {
 
             AnchorPane root = loader.load();
             ResourceEditController controller = loader.getController();
-            controller.setResourceToEdit(selectedResource);// 传递待修改的任务
+            controller.setResourceToEdit(selectedResource);// 传递待修改的资源
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("修改资源");
+            dialogStage.setTitle("编辑资源");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.initOwner(resourceTable.getScene().getWindow());
             dialogStage.setScene(new Scene(root));
@@ -234,7 +234,7 @@ public class ResourceController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "修改资源对话框加载失败：" + e.getMessage()).show();
+            new Alert(Alert.AlertType.ERROR, "编辑资源对话框加载失败：" + e.getMessage()).show();
         }
 
 
@@ -407,11 +407,12 @@ public class ResourceController {
             gc.setLineWidth(1.0);
 
 
-            // 日期标签
+            // 日期标签，使每日日期在时间轴居中的位置
             gc.setTextAlign(TextAlignment.CENTER);
             gc.fillText(String.valueOf(currentDay.getDayOfMonth()),
                     xPos + BASE_DAY_WIDTH/2,
                     WEEK_SECTION_HEIGHT + 25);
+            //画笔恢复为左对齐，供后续文字使用
             gc.setTextAlign(TextAlignment.LEFT);
             // 每周日绘制分隔线（延长到分割线下方）
             if (currentDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
@@ -424,7 +425,7 @@ public class ResourceController {
             currentDay = currentDay.plusDays(1);
         }
 
-        // 边框
+        // 绘制时间轴边框
         gc.setStroke(Color.BLACK);
         gc.strokeRect(50, 20, canvasWidth - 100, TIME_AXIS_HEIGHT - 30);
     }

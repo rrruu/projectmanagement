@@ -21,7 +21,7 @@ public class TimeConflictChecker {
         );
     }
 
-//    检查指定时间段是否与现有任务冲突
+//    检查指定时间段是否存在时间冲突
     public static boolean isOverlap(LocalDate start1, LocalDate end1,
                                     LocalDate start2, LocalDate end2) {
         return !(end1.isBefore(start2) || start1.isAfter(end2));
@@ -29,9 +29,8 @@ public class TimeConflictChecker {
 
 
 
-    /**
-     * 检查任务列表内是否存在时间冲突
-     */
+
+    //检查任务列表内是否存在时间冲突
     public static boolean hasTimeConflictInList(List<TaskModel> tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             TaskModel taskA = tasks.get(i);
@@ -47,22 +46,22 @@ public class TimeConflictChecker {
 
 
 
-    // 批量检查方法
-    public static boolean hasAnyConflict(ResourceModel resource, List<TaskModel> tasks) {
-        return tasks.stream().anyMatch(task ->
-                resource.getAssignedTasks().stream()
-                        .filter(t -> t != task)
-                        .anyMatch(t -> hasTimeConflict(task, t))
-        );
-    }
-
-    public static boolean hasAnyConflict(TaskModel task, List<ResourceModel> resources) {
-        return resources.stream().anyMatch(res ->
-                res.getAssignedTasks().stream()
-                        .filter(t -> t != task)
-                        .anyMatch(t -> hasTimeConflict(task, t))
-        );
-    }
+//    // 批量检查方法
+//    public static boolean hasAnyConflict(ResourceModel resource, List<TaskModel> tasks) {
+//        return tasks.stream().anyMatch(task ->
+//                resource.getAssignedTasks().stream()
+//                        .filter(t -> t != task)
+//                        .anyMatch(t -> hasTimeConflict(task, t))
+//        );
+//    }
+//
+//    public static boolean hasAnyConflict(TaskModel task, List<ResourceModel> resources) {
+//        return resources.stream().anyMatch(res ->
+//                res.getAssignedTasks().stream()
+//                        .filter(t -> t != task)
+//                        .anyMatch(t -> hasTimeConflict(task, t))
+//        );
+//    }
 
 
 }

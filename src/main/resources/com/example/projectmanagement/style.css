@@ -420,6 +420,7 @@
 .card-title {
     -fx-font-size: 15px;  /* 标题字体比默认大2px */
     -fx-font-weight: bold;
+    -fx-wrap-text: true;/* 保证自动换行 */
 }
 .card-time {
     -fx-font-size: 13px;
@@ -431,7 +432,7 @@
 .card-content {
     -fx-font-size: 13px;
     -fx-text-overrun: ellipsis;
-    -fx-wrap-text: true;
+    -fx-wrap-text: true;/* 保证自动换行 */
     -fx-max-width: 180px;
     -fx-max-height: 78px;  /* 限制为6行 */
     -fx-padding: 2px 0;

@@ -36,7 +36,6 @@ public class DatabaseManager {
                     "email TEXT," +
                     "type TEXT NOT NULL," +
                     "daily_rate REAL NOT NULL," +
-//                    "status TEXT," +
                     "comment TEXT)");
 
             // 任务资源关联表
@@ -93,7 +92,7 @@ public class DatabaseManager {
     }
 
 
-    // 新增方法：清理任务和资源相关表（不清理日程表）
+    // 清理任务和资源相关表（不清理日程表）
     public static void clearProjectTables() throws SQLException {
         try (Statement stmt = getConnection().createStatement()) {
             stmt.executeUpdate("DELETE FROM task_resources");

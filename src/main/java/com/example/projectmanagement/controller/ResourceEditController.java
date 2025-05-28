@@ -56,8 +56,8 @@ public class ResourceEditController {
                 validateAndUpdateResource();
                 isConfirmed = true;
             } catch (Exception e) {
-                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
-                throw new RuntimeException("资源更新失败", e);
+                new Alert(Alert.AlertType.ERROR, "编辑资源失败").show();
+                throw new RuntimeException("编辑资源操作失败", e);
             }
         });
 
@@ -96,12 +96,14 @@ public class ResourceEditController {
 
 
             // 增量刷新数据
+//            DataModel.getInstance().loadResources();
+//            DataModel.getInstance().loadAssociations();
+            DataModel.getInstance().loadTasks();
             DataModel.getInstance().loadResources();
-            DataModel.getInstance().loadAssociations();
 
         } catch (SQLException e) {
             rollbackTransaction();
-            new Alert(Alert.AlertType.ERROR, "数据库操作失败").show();
+            new Alert(Alert.AlertType.ERROR, "编辑操作失败").show();
             throw new RuntimeException("数据库操作失败", e); // 再抛出，交给 executeTransaction 做二次处理
         }
 
@@ -127,13 +129,16 @@ public class ResourceEditController {
 
 
     private void validateRequiredFields(){
-        if(idField.getText().trim().isEmpty()){
+        if (nameField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("资源名称不能为空");
+        }
+        if (idField.getText().trim().isEmpty()){
             throw new IllegalArgumentException("资源ID不能为空");
         }
-        if(typeCombo.getValue() == null){
+        if (typeCombo.getValue() == null){
             throw new IllegalArgumentException("必须选择资源类型");
         }
-        if(rateField.getText().trim().isEmpty()){
+        if (rateField.getText().trim().isEmpty()){
             throw new IllegalArgumentException("资源单价不能为空");
         }
 
@@ -158,12 +163,6 @@ public class ResourceEditController {
         return isConfirmed;
     }
 
-
-    private void showErrorAlert(Exception e) {
-        new Alert(Alert.AlertType.ERROR,
-                "操作失败：" + e.getMessage(),
-                ButtonType.OK).show();
-    }
 
     private void rollbackTransaction() {
         try {

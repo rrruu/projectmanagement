@@ -24,12 +24,12 @@ public class TaskModel {
     private final SimpleStringProperty comment;
     private final ReadOnlyDoubleWrapper cost;
 
-    //新增资源列表属性
+    //资源列表属性
     private final ObservableList<ResourceModel> assignedResources = FXCollections.observableArrayList();
 
 
 
-    // 改进点1：优化监听器初始化
+    // 优化监听器初始化
     private void initListeners() {
         // 日期变化监听（同时影响工期和成本）
         startDate.addListener((obs, oldVal, newVal) -> {
@@ -72,7 +72,6 @@ public class TaskModel {
         this.duration = new ReadOnlyIntegerWrapper(0);
         this.cost = new ReadOnlyDoubleWrapper(0);
 
-//        initListeners(); // 初始化监听器
         calculateCost(); // 初始计算成本
     }
 
@@ -257,7 +256,7 @@ public class TaskModel {
 //                .sum() * getDuration();
 //    }
 
-    // 新增方法：手动初始化监听器（供反序列化后调用）
+    // 手动初始化监听器（供反序列化后调用）
     public void initListenersAfterDeserialization() {
         initListeners();
         calculateCost(); // 重新计算

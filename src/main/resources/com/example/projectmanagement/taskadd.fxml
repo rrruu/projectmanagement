@@ -41,7 +41,7 @@
         </GridPane>
 
         <HBox spacing="10" layoutX="20" layoutY="350" AnchorPane.rightAnchor="20">
-            <Button text="确定" onAction="#handleOk" styleClass="button1"/>
+            <Button text="确定" onAction="#handleConfirm" styleClass="button1"/>
             <Button text="取消" onAction="#handleCancel" styleClass="button1"/>
         </HBox>
 

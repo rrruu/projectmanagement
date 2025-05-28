@@ -22,7 +22,7 @@ public class LinkTaskController {
 
     private ResourceModel currentResource;
 
-    private boolean showAvailableOnly = false;
+//    private boolean showAvailableOnly = false;
 
     public void setCurrentResource(ResourceModel resource) {
         this.currentResource = resource;
@@ -37,6 +37,7 @@ public class LinkTaskController {
                     private final CheckBox checkBox = new CheckBox();
 
                     {
+                        //复选框状态改变时更新选择状态
                         checkBox.setOnAction(event -> {
                             TaskModel item = getItem();
                             if (item != null) {
@@ -57,18 +58,19 @@ public class LinkTaskController {
                             setText(null);
 
                         } else {
-                            boolean isAvailable = isTaskAvailable(item);
 
+                            //设置任务显示文本
                             checkBox.setText(item.getTaskName() + " (" + item.getId() + "  " + item.getStartDate() + "-" + item.getEndDate() + ")");
                             checkBox.setSelected(taskListView.getSelectionModel().getSelectedItems().contains(item));
 
-
-                            // 设置不可用状态
+                            boolean isAvailable = isTaskAvailable(item);
+                            //设置不可用状态
                             checkBox.setDisable(!isAvailable);
-                            setDisable(!isAvailable);
+                            setDisable(!isAvailable);//整行不可选
+
+                            //不可用资源样式设置
                             if (!isAvailable) {
                                 setStyle("-fx-opacity: 0.6; -fx-background-color: #ffeeee;");
-
                             } else {
                                 setStyle("");
 
@@ -82,10 +84,11 @@ public class LinkTaskController {
             }
         });
 
+        //启用多选模式
         taskListView.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
 
 
-        // 选中已关联任务
+        //预选中已关联任务
         currentResource.getAssignedTasks().forEach(task ->
                 taskListView.getSelectionModel().select(task)
         );
@@ -106,15 +109,17 @@ public class LinkTaskController {
 
     @FXML
     private void handleConfirm() {
+
+        //1.获取选中的任务
         ObservableList<TaskModel> selected = taskListView.getSelectionModel().getSelectedItems();
 
-        // ------------------------ 新增逻辑：检查选中的任务之间是否存在冲突 ------------------------
+        //2.检查选中的任务之间是否存在冲突
         if (TimeConflictChecker.hasTimeConflictInList(selected)) {
             showConflictAlert(selected, "选中的任务之间存在时间冲突！");
             return;
         }
 
-        // 验证选中的任务是否全部可用
+        //3.验证选中的任务是否全部可用
         List<TaskModel> invalidTasks = new ArrayList<>();
         for (TaskModel task : selected) {
             if (!isTaskAvailable(task)) {
@@ -123,22 +128,23 @@ public class LinkTaskController {
         }
 
 
+        //4.存在不可分配任务时提示
         if (!invalidTasks.isEmpty()) {
             showConflictAlert(invalidTasks, "以下任务与资源已有任务冲突：");
             return;
         }
 
 
-        //更新数据库关联
+        //5.更新数据库关联
         updateTaskAssociations(currentResource, selected);
 
-        // 更新双向关联
+        //6.更新双向关联
         updateBidirectionalAssociations(selected);
 
-        //关闭窗口
+        //7.关闭窗口
         taskListView.getScene().getWindow().hide();
 
-        // 刷新UI
+        //8.刷新UI
         refreshUI();
     }
 
@@ -150,9 +156,9 @@ public class LinkTaskController {
     private void updateTaskAssociations(ResourceModel resource,ObservableList<TaskModel> newTasks) {
         DatabaseManager.executeTransaction(() -> {
             try {
+                //使用DAO处理关联
                 // 清除旧关联
                 ResourceDAO.clearResourceTasks(resource.getId());
-
                 // 添加新关联
                 ResourceDAO.addResourceTasks(resource.getId(), newTasks);
 
@@ -182,7 +188,7 @@ public class LinkTaskController {
     }
 
     private void refreshUI() {
-        // 强制刷新任务表
+        // 强制刷新任务表（触发列表更新）
         DataModel.getInstance().getTasks().forEach(t -> {
             int index = DataModel.getInstance().getTasks().indexOf(t);
             DataModel.getInstance().getTasks().set(index, t);
@@ -207,8 +213,9 @@ public class LinkTaskController {
         return availableTasks;
     }
 
+    //任务可用性检查
     private boolean isTaskAvailable(TaskModel task) {
-        // 检查是否与当前资源已有任务冲突
+        // 检查当前资源已关联任务是否与任务存在冲突
         for (TaskModel assignedTask : currentResource.getAssignedTasks()) {
             if (assignedTask != task && // 排除当前任务自身
                     TimeConflictChecker.hasTimeConflict(task, assignedTask)) {
@@ -256,10 +263,11 @@ public class LinkTaskController {
                     .append(task.getEndDate())
                     .append(")\n");
         }
+        message.append("\n请点击“显示可用任务”选择可用任务");
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("时间冲突警告");
-        alert.setHeaderText("无法完成关联操作");
+        alert.setHeaderText("关联操作失败，存在不可用的任务选择");
         alert.setContentText(message.toString());
         alert.showAndWait();
     }

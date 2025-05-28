@@ -43,28 +43,14 @@ public class TaskModelTypeAdapter implements JsonSerializer<TaskModel>, JsonDese
         LocalDate startDate = context.deserialize(obj.get("startDate"), LocalDate.class);
         LocalDate endDate = context.deserialize(obj.get("endDate"), LocalDate.class);
 
-        // 直接设置属性，不触发监听器
+        // 设置日期属性
         task.setStartDate(startDate);
         task.setEndDate(endDate);
 
 
-//        // 确保必填字段存在并处理日期
-//        JsonElement startDateElem = obj.get("startDate");
-//        JsonElement endDateElem = obj.get("endDate");
-//        if (startDateElem == null || endDateElem == null) {
-//            throw new JsonParseException("Task must have startDate and endDate");
-//        }
-//        LocalDate startDate = context.deserialize(startDateElem, LocalDate.class);
-//        LocalDate endDate = context.deserialize(endDateElem, LocalDate.class);
-//        if (startDate == null || endDate == null) {
-//            throw new JsonParseException("Invalid date format");
-//        }
-
         //设置任务属性
         task.setTaskName(obj.get("taskName").getAsString());
         task.setId(obj.get("id").getAsString());
-//        task.setStartDate(startDate);
-//        task.setEndDate(endDate);
         task.setProgress(obj.get("progress").getAsDouble());
         task.setLeader(obj.get("leader").getAsString());
         task.setComment(obj.get("comment").getAsString());

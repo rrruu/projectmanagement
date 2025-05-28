@@ -35,7 +35,7 @@ public class ResourceDeleteController {
         DatabaseManager.executeTransaction(() -> {
             try {
 
-                // 先删除关联关系
+                // 删除关联关系
                 ResourceDAO.clearResourceTasks(resourceToDelete.getId());
                 // 使用DAO删除资源
                 ResourceDAO.delete(resourceToDelete.getId());
@@ -49,7 +49,7 @@ public class ResourceDeleteController {
                 isConfirmed = true;
 
             } catch (SQLException e) {
-                new Alert(Alert.AlertType.ERROR, "删除失败").show();
+                new Alert(Alert.AlertType.ERROR, "删除资源失败").show();
                 throw new RuntimeException("删除操作失败", e);
             }
         });
@@ -71,36 +71,5 @@ public class ResourceDeleteController {
     }
 
 
-    private void deleteResourceFromDatabase(ResourceModel resource) throws SQLException{
-        String sql = "DELETE FROM resources WHERE id=?";
-        try(PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1,resource.getId());
-            stmt.executeUpdate();
-        }
-    }
-
-
-
-    private void deleteResourceAssociations(ResourceModel resource) throws SQLException {
-        String sql = "DELETE FROM task_resources WHERE resource_id=?";
-        try(PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1,resource.getId());
-            stmt.executeUpdate();
-        }
-    }
-
-    private void showErrorAlert(Exception e) {
-        new Alert(Alert.AlertType.ERROR,
-                "操作失败：" + e.getMessage(),
-                ButtonType.OK).show();
-    }
-
-    private void rollbackTransaction() {
-        try {
-            DatabaseManager.getConnection().rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
 
 }

@@ -23,9 +23,11 @@ public class ResourceAddController {
 
     private ResourceModel newResource = null;
 
-    public ResourceModel getNewResource(){ return newResource;}
+    public ResourceModel getNewResource(){
+        return newResource;
+    }
 
-    private boolean confirmed = false;
+//    private boolean confirmed = false;
 
 
     @FXML
@@ -51,7 +53,7 @@ public class ResourceAddController {
                 showErrorAlert(e);
                 throw new RuntimeException("验证失败", e);
             } catch (SQLException e) {
-                showErrorAlert(new Exception("数据库操作失败"));
+                showErrorAlert(new Exception("添加操作失败"));
                 throw new RuntimeException("数据库错误", e);
             }
         });
@@ -90,13 +92,16 @@ public class ResourceAddController {
     }
 
     private void validateRequiredFields(){
-        if(idField.getText().trim().isEmpty()){
+        if (nameField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("资源名称不能为空");
+        }
+        if (idField.getText().trim().isEmpty()){
             throw new IllegalArgumentException("资源ID不能为空");
         }
-        if(typeCombo.getValue() == null){
+        if (typeCombo.getValue() == null){
             throw new IllegalArgumentException("必须选择资源类型");
         }
-        if(rateField.getText().trim().isEmpty()){
+        if (rateField.getText().trim().isEmpty()){
             throw new IllegalArgumentException("资源单价不能为空");
         }
 
@@ -114,42 +119,12 @@ public class ResourceAddController {
 
     }
 
-//    private void saveResourceToDatabase(ResourceModel resource) throws SQLException {
-//        String sql = "INSERT INTO resources(id, name, phone, email, type, daily_rate, comment) " +
-//                "VALUES(?, ?, ?, ?, ?, ?, ?)";
-//        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-//            stmt.setString(1, resource.getId());
-//            stmt.setString(2, resource.getName());
-//            stmt.setString(3, resource.getPhone());
-//            stmt.setString(4, resource.getEmail());
-//            stmt.setString(5, resource.getType());
-//            stmt.setDouble(6, resource.getDailyRate());
-////            stmt.setString(7, resource.getStatus());
-//            stmt.setString(7, resource.getComment());
-//            stmt.executeUpdate();
-//        }
-//    }
-
-
-
-
-
-
 
     private void showErrorAlert(Exception e) {
         new Alert(Alert.AlertType.ERROR,
                 "操作失败：" + e.getMessage(),
                 ButtonType.OK).show();
     }
-
-    private void rollbackTransaction() {
-        try {
-            DatabaseManager.getConnection().rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
 
 
 

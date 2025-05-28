@@ -23,8 +23,6 @@ public class TaskAddController {
     @FXML public TextField leaderField;
     @FXML public TextArea commentField;
 
-
-
     private TaskModel newTask = null;
 
     public TaskModel getNewTask() {
@@ -33,7 +31,7 @@ public class TaskAddController {
 
 
     @FXML
-    private void handleOk() {
+    private void handleConfirm() {
         DatabaseManager.executeTransaction(() -> {
             try {
                 newTask = validateAndCreateTask();
@@ -49,7 +47,7 @@ public class TaskAddController {
                 showErrorAlert(e);
                 throw new RuntimeException("验证失败", e);
             } catch (SQLException e) {
-                showErrorAlert(new Exception("数据库操作失败"));
+                showErrorAlert(new Exception("添加操作失败"));
                 throw new RuntimeException("数据库错误", e);
             }
         });
@@ -143,20 +141,20 @@ public class TaskAddController {
 
 
 
-    private void saveTaskToDatabase(TaskModel task) throws SQLException {
-        String sql = "INSERT INTO tasks(id, name, start_date, end_date, progress, leader, comment) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, task.getId());
-            stmt.setString(2, task.getTaskName());
-            stmt.setString(3, task.getStartDate().toString());
-            stmt.setString(4, task.getEndDate().toString());
-            stmt.setDouble(5, task.getProgress());
-            stmt.setString(6, task.getLeader());
-            stmt.setString(7, task.getComment());
-            stmt.executeUpdate();
-        }
-    }
+//    private void saveTaskToDatabase(TaskModel task) throws SQLException {
+//        String sql = "INSERT INTO tasks(id, name, start_date, end_date, progress, leader, comment) " +
+//                "VALUES(?, ?, ?, ?, ?, ?, ?)";
+//        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, task.getId());
+//            stmt.setString(2, task.getTaskName());
+//            stmt.setString(3, task.getStartDate().toString());
+//            stmt.setString(4, task.getEndDate().toString());
+//            stmt.setDouble(5, task.getProgress());
+//            stmt.setString(6, task.getLeader());
+//            stmt.setString(7, task.getComment());
+//            stmt.executeUpdate();
+//        }
+//    }
 
     private void showErrorAlert(Exception e) {
         new Alert(Alert.AlertType.ERROR,
@@ -164,26 +162,26 @@ public class TaskAddController {
                 ButtonType.OK).show();
     }
 
-    private void rollbackTransaction() {
-        try {
-            DatabaseManager.getConnection().rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    private void rollbackTransaction() {
+//        try {
+//            DatabaseManager.getConnection().rollback();
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
 
-    private void updateTaskResources(TaskModel task) throws SQLException {
-        String sql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            for (ResourceModel res : task.getAssignedResources()) {
-                stmt.setString(1, task.getId());
-                stmt.setString(2, res.getId());
-                stmt.addBatch();
-            }
-            stmt.executeBatch();
-        }
-    }
+//    private void updateTaskResources(TaskModel task) throws SQLException {
+//        String sql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
+//        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+//            for (ResourceModel res : task.getAssignedResources()) {
+//                stmt.setString(1, task.getId());
+//                stmt.setString(2, res.getId());
+//                stmt.addBatch();
+//            }
+//            stmt.executeBatch();
+//        }
+//    }
 
 
 

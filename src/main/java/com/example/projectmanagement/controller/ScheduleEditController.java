@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
+
 public class ScheduleEditController {
     @FXML private TextField titleField;
     @FXML private DatePicker startDatePicker;
@@ -28,10 +30,14 @@ public class ScheduleEditController {
     private void handleConfirm() {
         try {
             // 验证数据
-            if (startDatePicker.getValue().isAfter(endDatePicker.getValue())) {
-                showAlert("错误", "开始时间不能晚于结束时间");
-                return;
-            }
+//            if (startDatePicker.getValue().isAfter(endDatePicker.getValue())) {
+//                showAlert("错误", "开始时间不能晚于结束时间");
+//                return;
+//            }
+
+            validateRequireFields();
+
+            validateDateRange();
 
             // 更新模型
             selectedSchedule.setTitle(titleField.getText());
@@ -46,13 +52,33 @@ public class ScheduleEditController {
             mainController.refreshAll();
             closeWindow();
         } catch (Exception e) {
-            showAlert("错误", "更新失败: " + e.getMessage());
+            showAlert("错误", "操作失败: " + e.getMessage());
         }
     }
 
     @FXML
     private void handleCancel() {
         closeWindow();
+    }
+
+    private void validateRequireFields(){
+        if(titleField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("日程标题不能为空");
+        }
+        if(contentField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("日程内容不能为空");
+        }
+    }
+
+    private void validateDateRange(){
+        LocalDate start = startDatePicker.getValue();
+        LocalDate end = endDatePicker.getValue();
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("必须选择开始和结束日期");
+        }
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("结束日期不能早于开始日期");
+        }
     }
 
     private void closeWindow() {

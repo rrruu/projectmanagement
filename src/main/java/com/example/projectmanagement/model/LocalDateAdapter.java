@@ -15,7 +15,6 @@ public class LocalDateAdapter extends TypeAdapter<LocalDate> {
         if (value == null) {
             out.nullValue();
         } else {
-//            out.value(value.format(DateTimeFormatter.ISO_LOCAL_DATE));
             out.value(formatter.format(value));
         }
     }

@@ -29,6 +29,11 @@ public class ScheduleAddController {
     @FXML
     private void handleConfirm() {
         try {
+
+            validateRequireFields();
+
+            validateDateRange();
+
             ScheduleModel schedule = new ScheduleModel(
                     UUID.randomUUID().toString(),
                     titleField.getText(),
@@ -37,10 +42,11 @@ public class ScheduleAddController {
                     contentField.getText()
             );
 
-            if (schedule.getStartDate().isAfter(schedule.getEndDate())) {
-                showAlert("错误", "开始时间不能晚于结束时间");
-                return;
-            }
+
+//            if (schedule.getStartDate().isAfter(schedule.getEndDate())) {
+//                showAlert("错误", "开始时间不能晚于结束时间");
+//                return;
+//            }
 
             ScheduleDAO.create(schedule);
 //            mainController.refreshAll();
@@ -51,13 +57,34 @@ public class ScheduleAddController {
             });
             closeWindow();
         } catch (Exception e) {
-            showAlert("错误", "保存失败: " + e.getMessage());
+            showAlert("错误", "操作失败: " + e.getMessage());
         }
     }
 
     @FXML
     private void handleCancel() {
         closeWindow();
+    }
+
+
+    private void validateRequireFields(){
+        if(titleField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("日程标题不能为空");
+        }
+        if(contentField.getText().trim().isEmpty()){
+            throw new IllegalArgumentException("日程内容不能为空");
+        }
+    }
+
+    private void validateDateRange(){
+        LocalDate start = startDatePicker.getValue();
+        LocalDate end = endDatePicker.getValue();
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("必须选择开始和结束日期");
+        }
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("结束日期不能早于开始日期");
+        }
     }
 
     private void closeWindow() {

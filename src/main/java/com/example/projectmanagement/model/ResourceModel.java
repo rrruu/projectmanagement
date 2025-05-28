@@ -120,17 +120,6 @@ public class ResourceModel {
         this.comment.set(comment);
     }
 
-//    //用于后续资源调度
-//    @SerializedName("status")
-//    public String getStatus() {
-//        return status.get();
-//    }
-//    public SimpleStringProperty statusProperty() {
-//        return status;
-//    }
-//    public void setStatus(String status) {
-//        this.status.set(status);
-//    }
 
     @SerializedName("assignedTasks")
     public ObservableList<TaskModel> getAssignedTasks() {

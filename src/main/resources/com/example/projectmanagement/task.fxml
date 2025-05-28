@@ -28,7 +28,6 @@
                         <Button onAction="#handleDeleteTask" text="删除任务" styleClass="navButton"/>
                         <Button onAction="#handleExport" text="导出图片" styleClass="navButton"/>
                         <Button onAction="#handleImportProject" text="导入项目" styleClass="navButton"/>
-<!--                        <Button onAction="#handleAdditionalImportProject" text="追加导入" styleClass="mainButton"/>-->
                         <Button onAction="#handleExportProject" text="导出项目" styleClass="navButton"/>
                         <Button onAction="#handleLinkResources" text="关联资源" styleClass="navButton"/>
                     </children>
@@ -40,7 +39,7 @@
                         <TableColumn fx:id="idColumn" prefWidth="150" text="ID" />
                         <TableColumn fx:id="startDateColumn" prefWidth="100" text="开始日期" />
                         <TableColumn fx:id="endDateColumn" prefWidth="100" text="结束日期" />
-                        <TableColumn fx:id="durationColumn" prefWidth="150" text="工期" />
+                        <TableColumn fx:id="durationColumn" prefWidth="100" text="工期" />
                         <TableColumn fx:id="progressColumn" prefWidth="150" text="完成进度" />
                         <TableColumn fx:id="leaderColumn" prefWidth="150" text="负责人" />
                         <TableColumn fx:id="commentColumn" prefWidth="150" text="备注" />

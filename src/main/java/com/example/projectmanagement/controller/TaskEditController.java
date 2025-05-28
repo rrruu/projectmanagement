@@ -41,14 +41,14 @@ public class TaskEditController {
     }
 
     @FXML
-    private void handleOk() {
+    private void handleConfirm() {
         DatabaseManager.executeTransaction(() -> {
             try {
                 validateAndUpdateTask();
                 isConfirmed = true;
             } catch (Exception e) {
-                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
-                throw new RuntimeException("任务更新失败", e);
+                new Alert(Alert.AlertType.ERROR, "编辑任务失败").show();
+                throw new RuntimeException("编辑任务操作失败", e);
             }
         });
 
@@ -79,13 +79,14 @@ public class TaskEditController {
 
 
             // 增量刷新数据
+            DataModel.getInstance().loadTasks();
             DataModel.getInstance().loadResources();
-            DataModel.getInstance().loadAssociations();
+//            DataModel.getInstance().loadAssociations();
 
 
         } catch (SQLException e) {
             rollbackTransaction();
-            new Alert(Alert.AlertType.ERROR, "数据库操作失败").show();
+            new Alert(Alert.AlertType.ERROR, "编辑操作失败").show();
             throw new RuntimeException("数据库操作失败", e); // 再抛出，交给 executeTransaction 做二次处理
 
         }
@@ -106,11 +107,6 @@ public class TaskEditController {
     }
 
 
-    private void showErrorAlert(Exception e) {
-        new Alert(Alert.AlertType.ERROR,
-                "操作失败：" + e.getMessage(),
-                ButtonType.OK).show();
-    }
 
     private void rollbackTransaction() {
         try {

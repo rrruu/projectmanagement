@@ -47,14 +47,14 @@ public class DataModel {
         tasks.clear();
         try {
             List<TaskModel> newTasks = TaskDAO.findAll();
-            tasks.setAll(newTasks);
+            tasks.setAll(newTasks);// 此处会触发 ObservableList 的监听器
             loadAssociations(); // 加载关联关系
         } catch (SQLException e) {
             throw new DataLoadingException("Failed to load tasks", e);
         }
     }
 
-    // 加载资源
+    //加载资源
     public void loadResources() {
         resources.clear();
         try {
@@ -66,13 +66,13 @@ public class DataModel {
         }
     }
 
-    // 加载关联关系
+    //加载关联关系
     public void loadAssociations() {
-        // 先清空现有关联
+        //先清空现有关联
         tasks.forEach(task -> task.getAssignedResources().clear());
         resources.forEach(res -> res.getAssignedTasks().clear());
 
-        // 重新加载数据库关联
+        //重新加载数据库关联
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(
                 "SELECT * FROM task_resources")) {
             ResultSet rs = stmt.executeQuery();
@@ -128,7 +128,7 @@ public class DataModel {
     }
 
 
-    // 新增自定义异常
+    //自定义异常
     private static class DataLoadingException extends RuntimeException {
         public DataLoadingException(String message, Throwable cause) {
             super(message, cause);
@@ -137,57 +137,59 @@ public class DataModel {
 
 
 
-    /**
-     * 获取资源的所有关联任务（包括通过其他任务间接关联的）
-     */
-    public ObservableList<TaskModel> getAllRelatedTasks(ResourceModel resource) {
-        ObservableList<TaskModel> allTasks = FXCollections.observableArrayList();
-        resource.getAssignedTasks().forEach(task -> {
-            if (!allTasks.contains(task)) {
-                allTasks.add(task);
-            }
-        });
-        return allTasks;
-    }
-
-    /**
-     * 获取任务的所有关联资源（包括通过其他资源间接关联的）
-     */
-    public ObservableList<ResourceModel> getAllRelatedResources(TaskModel task) {
-        ObservableList<ResourceModel> allResources = FXCollections.observableArrayList();
-        task.getAssignedResources().forEach(res -> {
-            if (!allResources.contains(res)) {
-                allResources.add(res);
-            }
-        });
-        return allResources;
-    }
-
-
-
-    // 添加资源类型统计方法
-    public Map<String, Long> getResourceTypeCount() {
-        return resources.stream()
-                .collect(Collectors.groupingBy(
-                        ResourceModel::getType,
-                        Collectors.counting()
-                ));
-    }
-
-    // 添加任务时间范围获取方法
-    public LocalDate getEarliestTaskDate() {
-        return tasks.stream()
-                .map(TaskModel::getStartDate)
-                .min(LocalDate::compareTo)
-                .orElse(LocalDate.now());
-    }
-
-    public LocalDate getLatestTaskDate() {
-        return tasks.stream()
-                .map(TaskModel::getEndDate)
-                .max(LocalDate::compareTo)
-                .orElse(LocalDate.now());
-    }
+//    /**
+//     * 获取资源的所有关联任务（包括通过其他任务间接关联的）
+//     */
+//
+//    //
+//    public ObservableList<TaskModel> getAllRelatedTasks(ResourceModel resource) {
+//        ObservableList<TaskModel> allTasks = FXCollections.observableArrayList();
+//        resource.getAssignedTasks().forEach(task -> {
+//            if (!allTasks.contains(task)) {
+//                allTasks.add(task);
+//            }
+//        });
+//        return allTasks;
+//    }
+//
+//    /**
+//     * 获取任务的所有关联资源（包括通过其他资源间接关联的）
+//     */
+//    public ObservableList<ResourceModel> getAllRelatedResources(TaskModel task) {
+//        ObservableList<ResourceModel> allResources = FXCollections.observableArrayList();
+//        task.getAssignedResources().forEach(res -> {
+//            if (!allResources.contains(res)) {
+//                allResources.add(res);
+//            }
+//        });
+//        return allResources;
+//    }
+//
+//
+//
+//    // 添加资源类型统计方法
+//    public Map<String, Long> getResourceTypeCount() {
+//        return resources.stream()
+//                .collect(Collectors.groupingBy(
+//                        ResourceModel::getType,
+//                        Collectors.counting()
+//                ));
+//    }
+//
+//    // 添加任务时间范围获取方法
+//    public LocalDate getEarliestTaskDate() {
+//        return tasks.stream()
+//                .map(TaskModel::getStartDate)
+//                .min(LocalDate::compareTo)
+//                .orElse(LocalDate.now());
+//    }
+//
+//    public LocalDate getLatestTaskDate() {
+//        return tasks.stream()
+//                .map(TaskModel::getEndDate)
+//                .max(LocalDate::compareTo)
+//                .orElse(LocalDate.now());
+//    }
 
 
     public LocalDate getAnalysisStartDate() {

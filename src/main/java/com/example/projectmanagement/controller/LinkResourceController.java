@@ -21,7 +21,7 @@ public class LinkResourceController {
     private ListView<ResourceModel> resourceListView;
 
     private TaskModel currentTask;
-    private boolean showAvailableOnly = false;
+//    private boolean showAvailableOnly = false;
 
     public void setCurrentTask(TaskModel task) {
         this.currentTask = task;
@@ -37,6 +37,7 @@ public class LinkResourceController {
                     private final CheckBox checkBox = new CheckBox();
 
                     {
+                        //复选框状态改变时更新选择状态
                         checkBox.setOnAction(event -> {
                             ResourceModel item = getItem();
                             if (item != null) {
@@ -57,20 +58,21 @@ public class LinkResourceController {
                             setText(null);
 
                         } else {
-                            boolean isAvailable = isResourceAvailable(item);
 
+
+                            //设置资源显示文本
                             checkBox.setText(item.getName() + " (" + item.getId() + ")");
                             checkBox.setSelected(resourceListView.getSelectionModel().getSelectedItems().contains(item));
 
 
-                            // 设置不可用状态
+                            boolean isAvailable = isResourceAvailable(item);
+                            //设置不可用状态
                             checkBox.setDisable(!isAvailable);
                             setDisable(!isAvailable); // 整行不可选
 
+                            //不可用资源样式设置
                             if (!isAvailable) {
                                 setStyle("-fx-opacity: 0.6; -fx-background-color: #ffeeee;");
-
-
                             } else {
                                 setStyle("");
                             }
@@ -83,9 +85,10 @@ public class LinkResourceController {
             }
         });
 
+        //启用多选模式
         resourceListView.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
 
-        // 选中已关联资源
+        //预选中已关联资源
         currentTask.getAssignedResources().forEach(res ->
                 resourceListView.getSelectionModel().select(res)
         );
@@ -106,9 +109,11 @@ public class LinkResourceController {
 
     @FXML
     private void handleConfirm() {
+
+        //1.获取选中的资源
         ObservableList<ResourceModel> selected = resourceListView.getSelectionModel().getSelectedItems();
 
-        // 验证选中的资源是否全部可用
+        //2.验证选中的资源是否全部可用
         List<ResourceModel> invalidResources = new ArrayList<>();
         for (ResourceModel res : selected) {
             if (!isResourceAvailable(res)) {
@@ -116,23 +121,24 @@ public class LinkResourceController {
             }
         }
 
+        //3.存在不可用资源时提示
         if (!invalidResources.isEmpty()) {
             showConflictAlert(invalidResources);
             return;
         }
 
-        //更新数据库关联
+        //4.更新数据库关联
         updateResourceAssociations(currentTask, selected);
 
 
-        // 更新双向关联
+        //5.更新双向关联
         updateBidirectionalAssociations(selected);
 
 
-        //关闭窗口
+        //6.关闭窗口
         resourceListView.getScene().getWindow().hide();
 
-        // 刷新UI
+        //7.刷新UI
         refreshUI();
     }
 
@@ -144,11 +150,14 @@ public class LinkResourceController {
 
 
 
+    //更新数据库关联
     private void updateResourceAssociations(TaskModel task, ObservableList<ResourceModel> newResources) {
         DatabaseManager.executeTransaction(() -> {
             try {
-                // 使用DAO处理关联
+                //使用DAO处理关联
+                //清除旧关联
                 TaskDAO.clearTaskResources(task.getId());
+                //添加新关联
                 TaskDAO.addTaskResources(task.getId(), newResources);
             } catch (SQLException e) {
                 throw new RuntimeException("关联更新失败", e);
@@ -178,7 +187,7 @@ public class LinkResourceController {
 
 
     private void refreshUI() {
-        // 强制刷新资源表
+        // 强制刷新资源表（触发列表更新）
         DataModel.getInstance().getResources().forEach(r -> {
             int index = DataModel.getInstance().getResources().indexOf(r);
             DataModel.getInstance().getResources().set(index, r);
@@ -209,8 +218,9 @@ public class LinkResourceController {
 
 
 
+    //资源可用性检查
     private boolean isResourceAvailable(ResourceModel resource) {
-        // 获取该资源所有已关联任务
+        // 获取该资源所有已关联任务，检查当前任务是否与资源已关联任务存在冲突
         for (TaskModel associatedTask : resource.getAssignedTasks()) {
             if (associatedTask != currentTask && // 排除当前任务自身
                     TimeConflictChecker.hasTimeConflict(currentTask, associatedTask)) {
@@ -244,17 +254,21 @@ public class LinkResourceController {
 
 
 
-    // 新增冲突提示方法
+    // 冲突提示方法
     private void showConflictAlert(List<ResourceModel> invalidResources) {
         StringBuilder message = new StringBuilder("以下资源存在时间冲突：\n");
         for (ResourceModel res : invalidResources) {
-            message.append("• ").append(res.getName()).append(" (").append(res.getId()).append(")\n");
+            message.append("• ")
+                    .append(res.getName())
+                    .append(" (")
+                    .append(res.getId())
+                    .append(")\n");
         }
-        message.append("\n请切换到'可用资源'视图选择可用资源");
+        message.append("\n请点击“显示可用资源”选择可用资源");
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("时间冲突警告");
-        alert.setHeaderText("存在不可用的资源选择");
+        alert.setHeaderText("关联操作失败，存在不可用的资源选择");
         alert.setContentText(message.toString());
         alert.showAndWait();
     }

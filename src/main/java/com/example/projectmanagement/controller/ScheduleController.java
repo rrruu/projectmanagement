@@ -60,7 +60,6 @@ public class ScheduleController {
     // 甘特图相关变量
     @FXML private Canvas scheduleGanttCanvas;
     @FXML private ScrollPane scheduleGanttScrollPane;
-
     @FXML private MenuButton filterMenuButton;
 
     //所有日程的数据列表
@@ -268,88 +267,121 @@ public class ScheduleController {
 
 
     @FXML
-    private void handleAddSchedule() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectmanagement/scheduleadd.fxml"));
-        Parent root = loader.load();
+    private void handleAddSchedule(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectmanagement/scheduleadd.fxml"));
+            Parent root = loader.load();
 
-        ScheduleAddController controller = loader.getController();
-        controller.setMainController(this);
+            ScheduleAddController controller = loader.getController();
+            controller.setMainController(this);
 
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("添加日程");
-        stage.show();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("添加日程");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR,"添加日程对话框加载失败：" + e.getMessage()).show();
+//            throw new RuntimeException(e);
+        }
+
+
     }
 
 
     // 删除处理方法
     @FXML
-    private void handleDeleteSchedule() throws SQLException, IOException {
+    private void handleDeleteSchedule() {
         if (selectedSchedule == null) {
             new Alert(Alert.AlertType.WARNING, "请先选择要删除的日程").show();
             return;
         }
-        // 加载删除确认窗口
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/example/projectmanagement/scheduledelete.fxml"));
-        Parent root = loader.load();
-        ScheduleDeleteController deleteController = loader.getController();
-        deleteController.setScheduleToDelete(selectedSchedule);
 
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("确认删除");
-        stage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
-        stage.showAndWait();
+        try {
+            // 加载删除确认窗口
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/projectmanagement/scheduledelete.fxml"));
+            Parent root = loader.load();
+            ScheduleDeleteController deleteController = loader.getController();
+            deleteController.setScheduleToDelete(selectedSchedule);
 
-        // 如果用户确认删除，则刷新界面
-        if (deleteController.isConfirmed()) {
-            refreshAll();
-            selectedSchedule = null;
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("确认删除");
+            stage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
+            stage.showAndWait();
+
+            // 如果用户确认删除，则刷新界面
+            if (deleteController.isConfirmed()) {
+                refreshAll();
+                selectedSchedule = null;
+            }
+        } catch (IOException e) {
+//            throw new RuntimeException(e);
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR,"删除日程对话框加载失败：" + e.getMessage()).show();
         }
+
     }
 
     @FXML
-    private void handleEditSchedule() throws IOException {
+    private void handleEditSchedule() {
         if (selectedSchedule == null) {
             new Alert(Alert.AlertType.WARNING, "请先选择要编辑的日程").show();
             return;
         }
 
-        // 加载编辑窗口
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectmanagement/scheduleedit.fxml"));
-        Parent root = loader.load();
+        try {
+            // 加载编辑窗口
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectmanagement/scheduleedit.fxml"));
+            Parent root = loader.load();
 
-        ScheduleEditController controller = loader.getController();
-        controller.setScheduleToEdit(selectedSchedule); // 传递待编辑数据
-        controller.setMainController(this);
+            ScheduleEditController controller = loader.getController();
+            controller.setScheduleToEdit(selectedSchedule); // 传递待编辑数据
+            controller.setMainController(this);
 
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("编辑日程");
-        stage.show();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("编辑日程");
+            stage.show();
+        } catch (IOException e) {
+//            throw new RuntimeException(e);
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR,"编辑日程对话框加载失败：" + e.getMessage()).show();
+
+        }
+
     }
 
 
     @FXML
-    private void handleShowDetail() throws IOException {
+    private void handleShowDetail() {
         if (selectedSchedule == null) {
             new Alert(Alert.AlertType.WARNING, "请先选择要查看的日程").show();
             return;
         }
 
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/example/projectmanagement/scheduleshow.fxml")
-        );
-        Parent root = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/projectmanagement/scheduleshow.fxml")
+            );
+            Parent root = loader.load();
 
-        ScheduleShowController controller = loader.getController();
-        controller.setSchedule(selectedSchedule); // 传递选中的日程数据
+            ScheduleShowController controller = loader.getController();
+            controller.setSchedule(selectedSchedule); // 传递选中的日程数据
 
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("日程详情");
-        stage.show();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("日程详情");
+            stage.show();
+        } catch (IOException e) {
+//            throw new RuntimeException(e);
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR,"日程详情对话框加载失败：" + e.getMessage()).show();
+
+        }
+
+
     }
 
 

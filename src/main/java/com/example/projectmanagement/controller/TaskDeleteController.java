@@ -16,7 +16,7 @@ public class TaskDeleteController {
     @FXML
     public Label messageLabel;
     public TaskModel taskToDelete;
-    public boolean confirmed = false;
+    public boolean isConfirmed = false;
 
     public void setTaskToDelete(TaskModel task) {
         this.taskToDelete = task;
@@ -38,58 +38,31 @@ public class TaskDeleteController {
 
                 // 删除内存数据
                 DataModel.getInstance().getTasks().remove(taskToDelete);
-                confirmed = true;
+                isConfirmed = true;
             } catch (SQLException e) {
-                new Alert(Alert.AlertType.ERROR, "删除失败").show();
+                new Alert(Alert.AlertType.ERROR, "删除任务失败").show();
                 throw new RuntimeException("删除操作失败", e);
             }
         });
 
-        if (confirmed) {
+        if (isConfirmed) {
             messageLabel.getScene().getWindow().hide();
         }
     }
 
     @FXML
     private void handleCancel() {
-        confirmed = false;
+        isConfirmed = false;
         messageLabel.getScene().getWindow().hide();
     }
 
     public boolean isConfirmed() {
-        return confirmed;
+        return isConfirmed;
     }
 
 
-    private void deleteTaskFromDatabase(TaskModel task) throws SQLException {
-        String sql = "DELETE FROM tasks WHERE id=?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, task.getId());
-            stmt.executeUpdate();
-        }
-    }
-
-    private void deleteTaskAssociations(TaskModel task) throws SQLException {
-        String sql = "DELETE FROM task_resources WHERE task_id=?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, task.getId());
-            stmt.executeUpdate();
-        }
-    }
 
 
-    private void showErrorAlert(Exception e) {
-        new Alert(Alert.AlertType.ERROR,
-                "操作失败：" + e.getMessage(),
-                ButtonType.OK).show();
-    }
 
-    private void rollbackTransaction() {
-        try {
-            DatabaseManager.getConnection().rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
 }
 

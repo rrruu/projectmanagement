@@ -42,13 +42,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * 主界面控制器
+ * 任务管理界面
  */
 
 public class TaskController {
 
 
-    private Stage primaryStage;
+//    private Stage primaryStage;
 
     // 甘特图常量
     private static final double BASE_DAY_WIDTH = 40.0;  // 每天基础宽度
@@ -57,7 +57,6 @@ public class TaskController {
     private static final double WEEK_SECTION_HEIGHT = 40.0; // 周信息区域高度
 
 
-//    private boolean isWindowSizeListenerAdded = false; // 标记变量，避免绘制画布时重复注册监听器
 
     @FXML private TableView<TaskModel> taskTable;
     @FXML private TableColumn<TaskModel, String> taskNameColumn;
@@ -72,11 +71,9 @@ public class TaskController {
     @FXML private Canvas ganttCanvas;
     @FXML private ScrollPane ganttScrollPane;
 
-
-
     //    ObservableList<TaskModel>是关键数据容器，是JavaFX提供的可观察列表，特点如下
-//    自动通知机制：当列表内容发生变动（增、删、改）时，会主动通知所有依赖它的 UI 组件。
-//    与TableView绑定：通过 taskTable.setItems(tasks)，表格直接监听此列表的变动。
+    //    自动通知机制：当列表内容发生变动（增、删、改）时，会主动通知所有依赖它的 UI 组件。
+    //    与TableView绑定：通过 taskTable.setItems(tasks)，表格直接监听此列表的变动。
 
 
     private DataModel dataModel = DataModel.getInstance();
@@ -106,7 +103,7 @@ public class TaskController {
         //任务成本列
         costColumn.setCellValueFactory(cellData -> cellData.getValue().costProperty());
 
-        // 新增关联资源列
+        //关联资源列
         TableColumn<TaskModel, String> resourcesColumn = new TableColumn<>("关联资源");
         resourcesColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getAssignedResourcesInfo())
@@ -118,7 +115,7 @@ public class TaskController {
 
 
         //为备注列定义自定义的单元格渲染逻辑
-        // 为备注列添加Tooltip
+        //为备注列添加Tooltip
         commentColumn.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -154,24 +151,24 @@ public class TaskController {
         });
 
 
-        drawGanttChart(); // 新增：初始化时立即绘制一次
+        drawGanttChart(); // 初始化时立即绘制一次
 
 
     }
 
-
-    public void setPrimaryStage(Stage stage) {
-        this.primaryStage = stage;
-        // 监听窗口大小变化
-        stage.widthProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
-        stage.heightProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
-    }
+//
+//    public void setPrimaryStage(Stage stage) {
+//        this.primaryStage = stage;
+//        // 监听窗口大小变化
+//        stage.widthProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
+//        stage.heightProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
+//    }
 
 
     @FXML
     private void handleAddTask() {
         try {
-            // 加载新的FXML对话框
+            // 加载FXML对话框
             FXMLLoader loader = new FXMLLoader(
                     Main.class.getResource("/com/example/projectmanagement/taskadd.fxml")
             );
@@ -184,22 +181,22 @@ public class TaskController {
             dialogStage.setTitle("添加新任务");
             dialogStage.initModality(Modality.APPLICATION_MODAL);//模态窗口
             dialogStage.initOwner(taskTable.getScene().getWindow());//设置父窗口
-
-
-
-            //让addtask.fxml使用style.css的样式
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-            dialogStage.setScene(scene);
-
-
-
+            dialogStage.setScene(new Scene(root));
             // 显示窗口并等待
             dialogStage.showAndWait();
 
+//            //让taskadd.fxml使用style.css的样式
+//            Scene scene = new Scene(root);
+//            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
+//            dialogStage.setScene(scene);
 
 
-            drawGanttChart();
+
+
+
+
+
+//            drawGanttChart();
 
 
         } catch (IOException e) {
@@ -222,7 +219,7 @@ public class TaskController {
             );
             AnchorPane root = loader.load();
             TaskDeleteController controller = loader.getController();
-            controller.setTaskToDelete(selectedTask);
+            controller.setTaskToDelete(selectedTask);// 传递待删除的任务
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("确认删除");
@@ -233,6 +230,7 @@ public class TaskController {
 
             if (controller.isConfirmed()) {
                 dataModel.getTasks().remove(selectedTask);
+//                drawGanttChart();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -258,7 +256,7 @@ public class TaskController {
             controller.setTaskToEdit(selectedTask); // 传递待修改的任务
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("修改任务");
+            dialogStage.setTitle("编辑任务");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.initOwner(taskTable.getScene().getWindow());
             dialogStage.setScene(new Scene(root));
@@ -266,15 +264,14 @@ public class TaskController {
 
             // 由于 TaskModel 是对象引用，直接修改后无需额外操作
             // ObservableList 会自动通知 TableView 更新
-
-            // 关键修改：仅在用户确认修改后触发重绘
-            if (controller.isConfirmed()) {
-                drawGanttChart();
-            }
+            // 仅在用户确认修改后触发重绘甘特图
+//            if (controller.isConfirmed()) {
+//                drawGanttChart();
+//            }
 
         } catch (IOException e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "修改任务对话框加载失败：" + e.getMessage()).show();
+            new Alert(Alert.AlertType.ERROR, "编辑任务对话框加载失败：" + e.getMessage()).show();
         }
     }
 
@@ -361,7 +358,7 @@ public class TaskController {
 
 
 
-    // 新增导入导出方法
+    // 导入导出项目文件方法
     @FXML
     private void handleExportProject() {
         FileChooser fileChooser = new FileChooser();
@@ -376,7 +373,7 @@ public class TaskController {
         if (file == null) return;
 
 
-        // 将 FileWriter 替换为 UTF-8 编码的 OutputStreamWriter
+
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
@@ -488,7 +485,7 @@ public class TaskController {
 
 
 
-    // 新增方法：重建资源与任务的关联关系
+    // 重建资源与任务的关联关系
     private void rebuildAssociations() {
         // 清除所有现有关联
         dataModel.getResources().forEach(res -> res.getAssignedTasks().clear());
@@ -501,7 +498,7 @@ public class TaskController {
     }
 
 
-    // 新增 LocalDate 序列化适配器
+    // LocalDate 序列化适配器
     private static class LocalDateAdapter extends TypeAdapter<LocalDate> {
         @Override
         public void write(JsonWriter out, LocalDate value) throws IOException {
@@ -542,11 +539,8 @@ public class TaskController {
         LocalDate adjustedProjectEnd = maxTaskEnd.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
 
 
-        // 计算时间轴参数
-        long totalDays = ChronoUnit.DAYS.between(adjustedProjectStart, adjustedProjectEnd) + 1;
-
-
         // 计算画布尺寸
+        long totalDays = ChronoUnit.DAYS.between(adjustedProjectStart, adjustedProjectEnd) + 1;
         double canvasWidth = 100 + totalDays * BASE_DAY_WIDTH; // 左右边距各50
         double canvasHeight = TIME_AXIS_HEIGHT + dataModel.getTasks().size() * ROW_HEIGHT + 50;
 
@@ -662,7 +656,7 @@ public class TaskController {
             long daysFromStart = ChronoUnit.DAYS.between(start, currentDay);
             double xPos = 50 + daysFromStart * BASE_DAY_WIDTH;
 
-            // ========== 新增每日分割线 ==========
+            // 每日分割线
             gc.setStroke(Color.LIGHTGRAY); // 使用浅灰色区分
             gc.setLineWidth(0.5);          // 细线
 
@@ -674,12 +668,12 @@ public class TaskController {
             gc.setLineWidth(1.0);
 
 
-            // 绘制日期
-            // 日期文本（居中显示）
+            // 日期标签，使每日日期在时间轴居中的位置
             gc.setTextAlign(TextAlignment.CENTER);
             gc.fillText(String.valueOf(currentDay.getDayOfMonth()),
                     xPos + BASE_DAY_WIDTH/2,
                     WEEK_SECTION_HEIGHT + 25);
+            //画笔恢复为左对齐，供后续文字使用
             gc.setTextAlign(TextAlignment.LEFT);
             // 每周日绘制分隔线（延长到分割线下方）
             if (currentDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
