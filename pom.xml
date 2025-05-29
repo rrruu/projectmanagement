@@ -17,6 +17,7 @@
         <module>com.example.projectmanagement</module>
         <jpackage.image-name>ProjectManagementTool</jpackage.image-name>
         <jpackage.vendor>rrru33</jpackage.vendor>
+        <jpackage.app-version>1.0</jpackage.app-version>
         <image-extension>ico</image-extension> <!-- 防止空指针 -->
     </properties>
 
@@ -149,6 +150,13 @@
                 <groupId>org.panteleyev</groupId>
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <name>${jpackage.image-name}</name>
                     <vendor>${jpackage.vendor}</vendor>
@@ -157,9 +165,6 @@
                     <mainClass>com.example.projectmanagement.Main</mainClass>
                     <module>${module}</module>
                     <runtimeImage>${project.build.directory}/app</runtimeImage>
-                    <javaOptions>
-                        <option>--enable-preview</option>
-                    </javaOptions>
                     <arguments>
                         <argument>--type</argument>
                         <argument>app-image</argument>
