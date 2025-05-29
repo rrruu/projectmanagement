@@ -23,16 +23,18 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y fakeroot binutils
 
-      - name: Set image extension
-        id: set-ext
-        run: |
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            echo "image-extension=ico" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" = "Linux" ]; then
-            echo "image-extension=png" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" = "macOS" ]; then
-            echo "image-extension=icns" >> $GITHUB_ENV
-          fi
+      # 替代方案 - 每个平台有独立的步骤
+      - name: Set Windows image extension
+        if: runner.os == 'Windows'
+        run: echo "image-extension=ico" >> $GITHUB_ENV
+
+      - name: Set Linux image extension
+        if: runner.os == 'Linux'
+        run: echo "image-extension=png" >> $GITHUB_ENV
+
+      - name: Set macOS image extension
+        if: runner.os == 'macOS'
+        run: echo "image-extension=icns" >> $GITHUB_ENV
 
       - name: Build with Maven
         run: |
@@ -42,10 +44,10 @@ jobs:
       - name: Package application
         run: |
           # 设置平台特定参数
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
             mvn jpackage:jpackage -Dimage-extension=${{ env.image-extension }} \
               -Djpackage.arguments="--win-menu,--win-dir-chooser"
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
             mvn jpackage:jpackage -Dimage-extension=${{ env.image-extension }} \
               -Djpackage.arguments="--mac-package-identifier,com.example.projectmanagement,--mac-package-name,ProjectManagement,--mac-category,Business"
           else
@@ -53,7 +55,7 @@ jobs:
           fi
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4  # 更新为 v4
+        uses: actions/upload-artifact@v4
         with:
           name: ProjectManagement-${{ runner.os }}
           path: target/installer/*
