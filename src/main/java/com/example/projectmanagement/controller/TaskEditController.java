@@ -81,7 +81,7 @@ public class TaskEditController {
             // 增量刷新数据
             DataModel.getInstance().loadTasks();
             DataModel.getInstance().loadResources();
-//            DataModel.getInstance().loadAssociations();
+
 
 
         } catch (SQLException e) {

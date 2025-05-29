@@ -21,12 +21,6 @@
     <content>
         <VBox spacing="20" style="-fx-padding: 20;">
 
-<!--            <HBox spacing="30">-->
-<!--                &lt;!&ndash; 移除value属性设置，改为在控制器初始化 &ndash;&gt;-->
-<!--                <DatePicker fx:id="startDatePicker"/>-->
-<!--                <DatePicker fx:id="endDatePicker"/>-->
-<!--                <Button text="更新统计" onAction="#updateUsageChart"/>-->
-<!--            </HBox>-->
 
 
             <GridPane>

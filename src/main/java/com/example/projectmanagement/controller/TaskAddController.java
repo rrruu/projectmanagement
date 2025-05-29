@@ -36,7 +36,7 @@ public class TaskAddController {
             try {
                 newTask = validateAndCreateTask();
                 TaskDAO.create(newTask);  // 使用DAO层
-//                updateTaskResources(newTask); // 处理资源关联
+
                 DataModel.getInstance().getTasks().add(newTask); // 增量更新
 
 
@@ -141,49 +141,13 @@ public class TaskAddController {
 
 
 
-//    private void saveTaskToDatabase(TaskModel task) throws SQLException {
-//        String sql = "INSERT INTO tasks(id, name, start_date, end_date, progress, leader, comment) " +
-//                "VALUES(?, ?, ?, ?, ?, ?, ?)";
-//        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-//            stmt.setString(1, task.getId());
-//            stmt.setString(2, task.getTaskName());
-//            stmt.setString(3, task.getStartDate().toString());
-//            stmt.setString(4, task.getEndDate().toString());
-//            stmt.setDouble(5, task.getProgress());
-//            stmt.setString(6, task.getLeader());
-//            stmt.setString(7, task.getComment());
-//            stmt.executeUpdate();
-//        }
-//    }
+
 
     private void showErrorAlert(Exception e) {
         new Alert(Alert.AlertType.ERROR,
                 "操作失败：" + e.getMessage(),
                 ButtonType.OK).show();
     }
-
-//    private void rollbackTransaction() {
-//        try {
-//            DatabaseManager.getConnection().rollback();
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
-
-//    private void updateTaskResources(TaskModel task) throws SQLException {
-//        String sql = "INSERT INTO task_resources(task_id, resource_id) VALUES(?,?)";
-//        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-//            for (ResourceModel res : task.getAssignedResources()) {
-//                stmt.setString(1, task.getId());
-//                stmt.setString(2, res.getId());
-//                stmt.addBatch();
-//            }
-//            stmt.executeBatch();
-//        }
-//    }
-
-
 
 
 

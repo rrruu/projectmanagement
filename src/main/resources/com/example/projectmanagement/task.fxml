@@ -48,8 +48,6 @@
                 </TableView>
 
 
-
-<!--                <VBox style="-fx-background-color: #F9F9F9;-fx-padding:10 0 0 0;">-->
                     <Label text="任务甘特图" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
                     <ScrollPane fx:id="ganttScrollPane" fitToHeight="true" fitToWidth="true" hvalue="0.0" vvalue="0.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
                                 AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120" style="-fx-border-color: #cccccc;-fx-pref-height: 400;">
@@ -57,7 +55,7 @@
                             <Canvas fx:id="ganttCanvas" />
                         </content>
                     </ScrollPane>
-<!--                </VBox>-->
+
 
             </children>
 

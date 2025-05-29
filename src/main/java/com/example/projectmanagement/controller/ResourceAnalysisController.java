@@ -21,7 +21,6 @@ public class ResourceAnalysisController {
     @FXML private BarChart<String, Number> taskCountChart;
     @FXML private BarChart<String, Number> durationChart;
     @FXML private BarChart<String, Number> usageRateChart;
-    //    @FXML private PieChart typePieChart;
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
     @FXML private StackPane pieChartContainer;
@@ -32,13 +31,6 @@ public class ResourceAnalysisController {
 
     @FXML
     private void initialize() {
-//        // 设置默认日期（确保不为空）
-//        if (startDatePicker.getValue() == null) {
-//            startDatePicker.setValue(LocalDate.of(2025, 01, 01));
-//        }
-//        if (endDatePicker.getValue() == null) {
-//            endDatePicker.setValue(LocalDate.of(2025, 12, 31));
-//        }
 
         // 从DataModel读取日期
         startDatePicker.setValue(dataModel.getAnalysisStartDate());
@@ -54,9 +46,6 @@ public class ResourceAnalysisController {
             dataModel.setAnalysisEndDate(newVal);
         });
 
-//        startDatePicker.setValue(LocalDate.of(2025, 01, 01));
-//
-//        endDatePicker.setValue(LocalDate.of(2025, 12, 31));
 
 
         // 初始化双层饼图
@@ -64,8 +53,6 @@ public class ResourceAnalysisController {
         innerPieChart = new PieChart();
         innerPieChart.setLabelsVisible(true); // 显示内层标签
         innerPieChart.setMaxSize(250, 250);    // 调整内层大小
-//        innerPieChart.setTranslateX(25);      // X轴偏移
-//        innerPieChart.setTranslateY(25);      // Y轴偏移
         pieChartContainer.getChildren().addAll(outerPieChart, innerPieChart);
 
         configureCharts();
@@ -78,7 +65,6 @@ public class ResourceAnalysisController {
         xAxis1.setLabel("资源名称");
         NumberAxis yAxis1 = new NumberAxis();
         yAxis1.setLabel("任务数量");
-//        taskCountChart.setTitle("资源任务数量统计");
         taskCountChart.setLegendVisible(false);
 
         // 图表2配置
@@ -86,7 +72,6 @@ public class ResourceAnalysisController {
         xAxis2.setLabel("资源名称");
         NumberAxis yAxis2 = new NumberAxis();
         yAxis2.setLabel("总工期（天）");
-//        durationChart.setTitle("资源总工期统计");
         durationChart.setLegendVisible(false);
 
         // 图表3配置
@@ -94,7 +79,6 @@ public class ResourceAnalysisController {
         xAxis3.setLabel("资源名称");
         NumberAxis yAxis3 = new NumberAxis();
         yAxis3.setLabel("使用率 (%)");
-//        usageRateChart.setTitle("资源使用率统计");
         usageRateChart.setLegendVisible(false);
     }
 
@@ -175,7 +159,6 @@ public class ResourceAnalysisController {
         LocalDate start = startDatePicker.getValue();
         LocalDate end = endDatePicker.getValue();
 
-//        long periodDays = ChronoUnit.DAYS.between(start, end) + 1;
 
         Map<String, Integer> typeCount = new HashMap<>();
         Map<String, Double> typeUsageSum = new HashMap<>();
@@ -196,7 +179,6 @@ public class ResourceAnalysisController {
 
             // 计算该资源的使用率
             long usedDays = calculateUsedDays(res, start, end);
-//            double usageRate = (usedDays * 100.0) / periodDays;
             long periodDays = ChronoUnit.DAYS.between(start, end) + 1;
             double usageRate = (usedDays * 100.0) / periodDays;
 
@@ -204,7 +186,6 @@ public class ResourceAnalysisController {
             // 累加类型使用率
             typeUsageSum.put(type, typeUsageSum.getOrDefault(type, 0.0) + usageRate);
 
-//            typeUsage.put(type, typeUsage.getOrDefault(type, 0.0) + usageRate);
 
         });
 
@@ -223,11 +204,10 @@ public class ResourceAnalysisController {
         typeCount.forEach((type, count) -> {
             //计算平均使用率
             double avgUsage = typeUsageSum.getOrDefault(type, 0.0) / count;
-//            innerData.add(new PieChart.Data(type, avgUsage));
 
             PieChart.Data data = new PieChart.Data(type, avgUsage);
 
-            // 绑定标签显示格式 (示例："Human\n25.0%")
+            // 绑定标签显示格式 (示例："人力\n25.0%")
             data.nameProperty().bind(
                     Bindings.concat(
                             type, "\n",
@@ -248,9 +228,6 @@ public class ResourceAnalysisController {
         outerPieChart.setLegendVisible(true);  // 隐藏图例避免重复
         innerPieChart.setLabelsVisible(true);   // 强制显示标签
 
-//        // 设置内层标签偏移（避免与外层重叠）
-//        innerPieChart.setTranslateX(25);
-//        innerPieChart.setTranslateY(25);
     }
 
     // 计算资源在时间段内的使用天数
@@ -268,7 +245,7 @@ public class ResourceAnalysisController {
     }
 
 
-    // 新增辅助方法：判断任务是否在时间段内
+    // 判断任务是否在时间段内
     private boolean isTaskInPeriod(TaskModel task, LocalDate start, LocalDate end) {
         LocalDate taskStart = task.getStartDate();
         LocalDate taskEnd = task.getEndDate();
@@ -295,7 +272,7 @@ public class ResourceAnalysisController {
     }
 
 
-    // 新增提示框方法
+    // 提示框方法
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("输入验证");

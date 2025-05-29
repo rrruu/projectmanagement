@@ -249,12 +249,6 @@ public class TaskModel {
         }
     }
 
-//    //任务成本计算
-//    public double getCost() {
-//        return getAssignedResources().stream()
-//                .mapToDouble(ResourceModel::getDailyRate)
-//                .sum() * getDuration();
-//    }
 
     // 手动初始化监听器（供反序列化后调用）
     public void initListenersAfterDeserialization() {

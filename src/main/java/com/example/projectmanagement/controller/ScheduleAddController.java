@@ -20,11 +20,6 @@ public class ScheduleAddController {
 
     private ScheduleController mainController;
 
-//    @FXML
-//    private void initialize() {
-//        confirmButton.setOnAction(e -> handleConfirm());
-//        cancelButton.setOnAction(e -> handleCancel());
-//    }
 
     @FXML
     private void handleConfirm() {
@@ -43,13 +38,9 @@ public class ScheduleAddController {
             );
 
 
-//            if (schedule.getStartDate().isAfter(schedule.getEndDate())) {
-//                showAlert("错误", "开始时间不能晚于结束时间");
-//                return;
-//            }
 
             ScheduleDAO.create(schedule);
-//            mainController.refreshAll();
+
 
             // 仅调用一次刷新，且确保在主线程
             Platform.runLater(() -> {

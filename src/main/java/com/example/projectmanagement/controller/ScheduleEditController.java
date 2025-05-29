@@ -30,11 +30,6 @@ public class ScheduleEditController {
     private void handleConfirm() {
         try {
             // 验证数据
-//            if (startDatePicker.getValue().isAfter(endDatePicker.getValue())) {
-//                showAlert("错误", "开始时间不能晚于结束时间");
-//                return;
-//            }
-
             validateRequireFields();
 
             validateDateRange();

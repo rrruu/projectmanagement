@@ -96,8 +96,6 @@ public class ResourceEditController {
 
 
             // 增量刷新数据
-//            DataModel.getInstance().loadResources();
-//            DataModel.getInstance().loadAssociations();
             DataModel.getInstance().loadTasks();
             DataModel.getInstance().loadResources();
 

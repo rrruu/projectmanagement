@@ -31,12 +31,11 @@
                 <TableColumn fx:id="emailColumn" text="邮箱" prefWidth="150"/>
                 <TableColumn fx:id="typeColumn" text="类型" prefWidth="100"/>
                 <TableColumn fx:id="rateColumn" text="单价/天" prefWidth="150"/>
-<!--                <TableColumn fx:id="statusColumn" text="状态" prefWidth="150"/>-->
                 <TableColumn fx:id="commentColumn" text="备注" prefWidth="150"/>
             </columns>
         </TableView>
 
-        <!-- 新增资源甘特图区域 -->
+        <!-- 资源甘特图区域 -->
         <Label text="资源使用情况" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
         <ScrollPane fx:id="resourceGanttScrollPane"
                     fitToWidth="true"

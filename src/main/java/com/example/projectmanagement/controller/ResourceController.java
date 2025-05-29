@@ -51,7 +51,7 @@ public class ResourceController {
     @FXML private ScrollPane resourceGanttScrollPane;
 
 
-//    private final ObservableList<ResourceModel> resources = FXCollections.observableArrayList();
+
     private DataModel dataModel = DataModel.getInstance();
     public void setDataModel(DataModel dataModel) {
         this.dataModel = dataModel;
@@ -144,10 +144,6 @@ public class ResourceController {
             dialogStage.initOwner(resourceTable.getScene().getWindow());//设置父窗口
             dialogStage.setScene(new Scene(root));
 
-//            //让resourceadd.fxml使用style.css的样式
-//            Scene scene = new Scene(root);
-//            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-//            dialogStage.setScene(scene);
 
 
             // 显示窗口并等待

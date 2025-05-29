@@ -35,14 +35,14 @@ public class MainFrameController {
     }
 
 
-    // 新增设置primaryStage的方法
+    // 设置primaryStage
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         setupCloseHandler(); // 设置关闭事件处理器
     }
 
 
-    // 新增：关闭事件处理逻辑
+    // 关闭事件处理逻辑
     private void setupCloseHandler() {
         primaryStage.setOnCloseRequest(event -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -127,7 +127,7 @@ public class MainFrameController {
     }
 
 
-    // 更新选中按钮的样式
+    // 选中导航界面按钮的样式
     private void updateSelectedButton(Button newButton) {
         if (selectedButton != null) {
             selectedButton.getStyleClass().remove("navButtonMain-selected");

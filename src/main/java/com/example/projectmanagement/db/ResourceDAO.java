@@ -27,7 +27,6 @@ public class ResourceDAO {
                 + "WHERE id=?";
         try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
             bindResourceParametersForUpdate(stmt, resource);
-//            stmt.setString(8, resource.getId());
             stmt.executeUpdate();
         }
     }

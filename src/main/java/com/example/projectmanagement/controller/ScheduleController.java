@@ -155,7 +155,7 @@ public class ScheduleController {
     }
 
 
-    // 修改原有按钮事件处理逻辑
+
     @FXML
     private void handlePrevMonth() {
         currentYearMonthProperty.set(getCurrentYearMonth().minusMonths(1));
@@ -189,7 +189,7 @@ public class ScheduleController {
     public void refreshAll() {
         if (isRefreshing) return; // 防止重复刷新
         isRefreshing = true;
-        loadSchedules();  // 新增：每次刷新前重新加载数据库数据
+        loadSchedules();  // 每次刷新前重新加载数据库数据
         refreshCalendar();
         refreshCards();
         isRefreshing = false;
@@ -282,7 +282,7 @@ public class ScheduleController {
         } catch (IOException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"添加日程对话框加载失败：" + e.getMessage()).show();
-//            throw new RuntimeException(e);
+
         }
 
 
@@ -317,7 +317,7 @@ public class ScheduleController {
                 selectedSchedule = null;
             }
         } catch (IOException e) {
-//            throw new RuntimeException(e);
+
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"删除日程对话框加载失败：" + e.getMessage()).show();
         }
@@ -345,7 +345,7 @@ public class ScheduleController {
             stage.setTitle("编辑日程");
             stage.show();
         } catch (IOException e) {
-//            throw new RuntimeException(e);
+
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"编辑日程对话框加载失败：" + e.getMessage()).show();
 
@@ -375,7 +375,7 @@ public class ScheduleController {
             stage.setTitle("日程详情");
             stage.show();
         } catch (IOException e) {
-//            throw new RuntimeException(e);
+
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"日程详情对话框加载失败：" + e.getMessage()).show();
 
@@ -439,7 +439,7 @@ public class ScheduleController {
 
 
 
-    // 新增方法：判断日期是否在本周内（周一至周日）
+    // 判断日期是否在本周内（周一至周日）
     private boolean isDateInThisWeek(LocalDate date) {
         LocalDate now = LocalDate.now();
         LocalDate monday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -448,7 +448,7 @@ public class ScheduleController {
     }
 
 
-    // 新增甘特图绘制方法
+    // 甘特图绘制方法
     private void drawScheduleGantt() {
         if (scheduleGanttCanvas == null || schedules.isEmpty()){
             // 清空画布并直接返回
@@ -534,7 +534,7 @@ public class ScheduleController {
             weekNumber++;
         }
 
-        // ========== 添加水平分割线 ==========
+        // 添加水平分割线
         gc.strokeLine(50, WEEK_SECTION_HEIGHT, canvasWidth - 50, WEEK_SECTION_HEIGHT);
 
 

@@ -24,7 +24,7 @@ public class DataModel {
     private ObservableList<ResourceModel> resources = FXCollections.observableArrayList();
 
 
-    //资源分析界面图表3和4 时间选择器默认值
+    //资源统计分析界面图表3和4 时间选择器默认值
     private LocalDate analysisStartDate = LocalDate.of(2025, 1, 1);
     private LocalDate analysisEndDate = LocalDate.of(2025, 12, 31);
     private DataModel() {
@@ -136,60 +136,6 @@ public class DataModel {
     }
 
 
-
-//    /**
-//     * 获取资源的所有关联任务（包括通过其他任务间接关联的）
-//     */
-//
-//    //
-//    public ObservableList<TaskModel> getAllRelatedTasks(ResourceModel resource) {
-//        ObservableList<TaskModel> allTasks = FXCollections.observableArrayList();
-//        resource.getAssignedTasks().forEach(task -> {
-//            if (!allTasks.contains(task)) {
-//                allTasks.add(task);
-//            }
-//        });
-//        return allTasks;
-//    }
-//
-//    /**
-//     * 获取任务的所有关联资源（包括通过其他资源间接关联的）
-//     */
-//    public ObservableList<ResourceModel> getAllRelatedResources(TaskModel task) {
-//        ObservableList<ResourceModel> allResources = FXCollections.observableArrayList();
-//        task.getAssignedResources().forEach(res -> {
-//            if (!allResources.contains(res)) {
-//                allResources.add(res);
-//            }
-//        });
-//        return allResources;
-//    }
-//
-//
-//
-//    // 添加资源类型统计方法
-//    public Map<String, Long> getResourceTypeCount() {
-//        return resources.stream()
-//                .collect(Collectors.groupingBy(
-//                        ResourceModel::getType,
-//                        Collectors.counting()
-//                ));
-//    }
-//
-//    // 添加任务时间范围获取方法
-//    public LocalDate getEarliestTaskDate() {
-//        return tasks.stream()
-//                .map(TaskModel::getStartDate)
-//                .min(LocalDate::compareTo)
-//                .orElse(LocalDate.now());
-//    }
-//
-//    public LocalDate getLatestTaskDate() {
-//        return tasks.stream()
-//                .map(TaskModel::getEndDate)
-//                .max(LocalDate::compareTo)
-//                .orElse(LocalDate.now());
-//    }
 
 
     public LocalDate getAnalysisStartDate() {

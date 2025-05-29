@@ -22,7 +22,6 @@ public class LinkTaskController {
 
     private ResourceModel currentResource;
 
-//    private boolean showAvailableOnly = false;
 
     public void setCurrentResource(ResourceModel resource) {
         this.currentResource = resource;

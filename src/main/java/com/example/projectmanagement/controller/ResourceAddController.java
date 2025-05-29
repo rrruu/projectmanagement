@@ -27,7 +27,6 @@ public class ResourceAddController {
         return newResource;
     }
 
-//    private boolean confirmed = false;
 
 
     @FXML

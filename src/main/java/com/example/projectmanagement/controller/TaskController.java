@@ -156,13 +156,7 @@ public class TaskController {
 
     }
 
-//
-//    public void setPrimaryStage(Stage stage) {
-//        this.primaryStage = stage;
-//        // 监听窗口大小变化
-//        stage.widthProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
-//        stage.heightProperty().addListener((obs, oldVal, newVal) -> drawGanttChart());
-//    }
+
 
 
     @FXML
@@ -185,18 +179,8 @@ public class TaskController {
             // 显示窗口并等待
             dialogStage.showAndWait();
 
-//            //让taskadd.fxml使用style.css的样式
-//            Scene scene = new Scene(root);
-//            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-//            dialogStage.setScene(scene);
 
 
-
-
-
-
-
-//            drawGanttChart();
 
 
         } catch (IOException e) {
@@ -230,7 +214,7 @@ public class TaskController {
 
             if (controller.isConfirmed()) {
                 dataModel.getTasks().remove(selectedTask);
-//                drawGanttChart();
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -264,10 +248,6 @@ public class TaskController {
 
             // 由于 TaskModel 是对象引用，直接修改后无需额外操作
             // ObservableList 会自动通知 TableView 更新
-            // 仅在用户确认修改后触发重绘甘特图
-//            if (controller.isConfirmed()) {
-//                drawGanttChart();
-//            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -405,7 +385,7 @@ public class TaskController {
         if (file == null) return;
 
 
-// 将 FileReader 替换为 UTF-8 编码的 InputStreamReader
+
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
 
             Gson gson = new GsonBuilder()
@@ -646,7 +626,7 @@ public class TaskController {
         }
 
 
-        // ========== 添加水平分割线 ==========
+        // 添加水平分割线
         gc.strokeLine(50, WEEK_SECTION_HEIGHT, canvasWidth - 50, WEEK_SECTION_HEIGHT);
 
 

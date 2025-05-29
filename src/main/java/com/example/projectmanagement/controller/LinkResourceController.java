@@ -21,7 +21,6 @@ public class LinkResourceController {
     private ListView<ResourceModel> resourceListView;
 
     private TaskModel currentTask;
-//    private boolean showAvailableOnly = false;
 
     public void setCurrentTask(TaskModel task) {
         this.currentTask = task;
