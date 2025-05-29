@@ -15,6 +15,9 @@
         <javafx.version>21.0.6</javafx.version>
         <junit.version>5.9.1</junit.version>
         <module>com.example.projectmanagement</module>
+        <jpackage.image-name>ProjectManagementTool</jpackage.image-name>
+        <jpackage.vendor>rrru33</jpackage.vendor>
+        <image-extension>ico</image-extension> <!-- 防止空指针 -->
     </properties>
 
     <dependencies>
@@ -136,6 +139,38 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+
+
+
+            <!-- 添加 maven-jpackage-plugin -->
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <name>${jpackage.image-name}</name>
+                    <vendor>${jpackage.vendor}</vendor>
+                    <appVersion>${jpackage.app-version}</appVersion>
+                    <icon>src/main/resources/icon.${image-extension}</icon>
+                    <mainClass>com.example.projectmanagement.Main</mainClass>
+                    <module>${module}</module>
+                    <runtimeImage>${project.build.directory}/app</runtimeImage>
+                    <javaOptions>
+                        <option>--enable-preview</option>
+                    </javaOptions>
+                    <arguments>
+                        <argument>--type</argument>
+                        <argument>app-image</argument>
+                        <argument>--input</argument>
+                        <argument>${project.build.directory}</argument>
+                        <argument>--dest</argument>
+                        <argument>${project.build.directory}/installer</argument>
+                        <argument>--java-options</argument>
+                        <argument>--enable-preview</argument>
+                    </arguments>
+                </configuration>
             </plugin>
 
         </plugins>
