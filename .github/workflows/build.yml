@@ -23,7 +23,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y fakeroot binutils
 
-      # 替代方案 - 每个平台有独立的步骤
+      # 设置图标扩展名
       - name: Set Windows image extension
         if: runner.os == 'Windows'
         run: echo "image-extension=ico" >> $GITHUB_ENV
@@ -43,15 +43,15 @@ jobs:
 
       - name: Package application
         run: |
-          # 设置平台特定参数
+          # 使用完整的 Maven 插件目标语法
           if [[ "${{ runner.os }}" == "Windows" ]]; then
-            mvn jpackage:jpackage -Dimage-extension=${{ env.image-extension }} \
+            mvn org.panteleyev:jpackage-maven-plugin:jpackage -Dimage-extension=${{ env.image-extension }} \
               -Djpackage.arguments="--win-menu,--win-dir-chooser"
           elif [[ "${{ runner.os }}" == "macOS" ]]; then
-            mvn jpackage:jpackage -Dimage-extension=${{ env.image-extension }} \
+            mvn org.panteleyev:jpackage-maven-plugin:jpackage -Dimage-extension=${{ env.image-extension }} \
               -Djpackage.arguments="--mac-package-identifier,com.example.projectmanagement,--mac-package-name,ProjectManagement,--mac-category,Business"
           else
-            mvn jpackage:jpackage -Dimage-extension=${{ env.image-extension }}
+            mvn org.panteleyev:jpackage-maven-plugin:jpackage -Dimage-extension=${{ env.image-extension }}
           fi
 
       - name: Upload artifacts
