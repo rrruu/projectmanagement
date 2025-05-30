@@ -118,6 +118,11 @@
                                 <module>javafx.graphics</module>
                                 <module>javafx.base</module>
                                 <module>java.sql</module>
+                                <module>java.desktop</module>
+                                <module>java.logging</module>
+                                <module>java.xml</module>
+                                <module>java.naming</module>
+                                <module>java.transaction.xa</module>
                             </modules>
                         </configuration>
                     </execution>
@@ -166,12 +171,17 @@
                     <icon>src/main/resources/icon.${image-extension}</icon>
                     <mainClass>${main.class}</mainClass>
                     <mainJar>${project.build.finalName}-jar-with-dependencies.jar</mainJar>
+                    <runtimeImage>${project.build.directory}/app</runtimeImage>
                     <input>${project.build.directory}</input>
                     <destination>${project.build.directory}/installer</destination>
                     <javaOptions>
                         <option>--enable-preview</option>
                         <option>--add-modules</option>
-                        <option>javafx.controls,javafx.fxml,javafx.swing,javafx.graphics,javafx.base,java.sql</option>
+                        <option>javafx.controls,javafx.fxml,javafx.swing,javafx.graphics,javafx.base,java.sql,java.desktop,java.logging,java.xml,java.naming,java.transaction.xa</option>
+                        <option>-Djavafx.verbose=true</option>
+                        <option>-Dprism.verbose=true</option>
+                        <option>-Dprism.order=es2,sw</option>
+                        <option>-XshowSettings:properties</option>
                     </javaOptions>
                     <winMenu>true</winMenu>
                     <winDirChooser>true</winDirChooser>

@@ -43,9 +43,12 @@ jobs:
       - name: Build project
         run: mvn clean package
 
+      - name: Create runtime image with jlink
+        run: mvn javafx:jlink
+
       - name: Package application for Windows
         if: runner.os == 'Windows'
-        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}"
+        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}" "--runtime-image" "${project.build.directory}/app"
 
       - name: Package application for Unix-like systems
         if: runner.os != 'Windows'
