@@ -41,17 +41,14 @@ jobs:
         run: echo "image-extension=icns" >> $GITHUB_ENV
 
       - name: Build project
-        run: |
-          mvn clean package
-          mvn javafx:jlink
+        run: mvn clean package
 
       - name: Package application
         run: |
           mvn jpackage:jpackage \
             -Dimage-extension=${{ env.image-extension }} \
             -Dinstaller.dir="${{ github.workspace }}/target/installer" \
-            -Dinstaller.name="ProjectManagement-${{ runner.os }}" \
-            -Djpackage.dest="${{ github.workspace }}/target/installer"
+            -Dinstaller.name="ProjectManagement-${{ runner.os }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

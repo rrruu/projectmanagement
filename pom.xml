@@ -15,6 +15,7 @@
         <javafx.version>21.0.6</javafx.version>
         <junit.version>5.9.1</junit.version>
         <module>com.example.projectmanagement</module>
+        <main.class>com.example.projectmanagement.Main</main.class>
         <jpackage.image-name>ProjectManagementTool</jpackage.image-name>
         <jpackage.vendor>rrru33</jpackage.vendor>
         <jpackage.app-version>1.0</jpackage.app-version>
@@ -104,9 +105,8 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>${module}/com.example.projectmanagement.Main
-                            </mainClass>
-                            <!--                            <launcher>app</launcher>-->
+                            <mainClass>${main.class}</mainClass>
+                            <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
                             <noManPages>true</noManPages>
@@ -157,9 +157,9 @@
                     <vendor>${jpackage.vendor}</vendor>
                     <appVersion>${jpackage.app-version}</appVersion>
                     <icon>src/main/resources/icon.${image-extension}</icon>
-                    <mainClass>com.example.projectmanagement.Main</mainClass>
-                    <module>${module}</module>
-                    <runtimeImage>${project.build.directory}/app</runtimeImage>
+                    <mainClass>${main.class}</mainClass>
+                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <input>${project.build.directory}</input>
                     <destination>${project.build.directory}/installer</destination>
                     <javaOptions>
                         <option>--enable-preview</option>
