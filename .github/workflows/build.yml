@@ -30,7 +30,7 @@ jobs:
       # 设置图标扩展名
       - name: Set Windows image extension
         if: runner.os == 'Windows'
-        run: echo "image-extension=ico" >> $GITHUB_ENV
+        run: echo "image-extension=ico" >> $env:GITHUB_ENV
 
       - name: Set Linux image extension
         if: runner.os == 'Linux'
@@ -43,7 +43,12 @@ jobs:
       - name: Build project
         run: mvn clean package
 
-      - name: Package application
+      - name: Package application for Windows
+        if: runner.os == 'Windows'
+        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}"
+
+      - name: Package application for Unix-like systems
+        if: runner.os != 'Windows'
         run: |
           mvn jpackage:jpackage \
             -Dimage-extension=${{ env.image-extension }} \
