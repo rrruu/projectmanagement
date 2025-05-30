@@ -49,10 +49,15 @@ jobs:
         run: echo "image-extension=icns" >> $GITHUB_ENV
 
       - name: Build project
-        run: mvn clean package
+        run: mvn clean package -B -e
 
       - name: Create runtime image with jlink
         run: mvn javafx:jlink
+
+      # 获取目标目录路径
+      - name: Get target directory path
+        run: |
+          echo "TARGET_DIR=$(mvn help:evaluate -Dexpression=project.build.directory -q -DforceStdout)" >> $GITHUB_ENV
 
       - name: Package application for Windows
         if: runner.os == 'Windows'
@@ -65,7 +70,7 @@ jobs:
             -Dimage-extension=${{ env.image-extension }} \
             -Dinstaller.dir="${{ github.workspace }}/target/installer" \
             -Dinstaller.name="ProjectManagement-${{ runner.os }}" \
-            -DruntimeImage="${project.build.directory}/app"
+            -DruntimeImage="${{ env.TARGET_DIR }}/app"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
