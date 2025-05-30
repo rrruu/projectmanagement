@@ -102,7 +102,6 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>${main.class}</mainClass>
@@ -116,6 +115,9 @@
                                 <module>javafx.controls</module>
                                 <module>javafx.fxml</module>
                                 <module>javafx.swing</module>
+                                <module>javafx.graphics</module>
+                                <module>javafx.base</module>
+                                <module>java.sql</module>
                             </modules>
                         </configuration>
                     </execution>
@@ -168,6 +170,8 @@
                     <destination>${project.build.directory}/installer</destination>
                     <javaOptions>
                         <option>--enable-preview</option>
+                        <option>--add-modules</option>
+                        <option>javafx.controls,javafx.fxml,javafx.swing,javafx.graphics,javafx.base,java.sql</option>
                     </javaOptions>
                     <winMenu>true</winMenu>
                     <winDirChooser>true</winDirChooser>
