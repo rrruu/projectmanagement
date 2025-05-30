@@ -160,23 +160,15 @@
                     <mainClass>com.example.projectmanagement.Main</mainClass>
                     <module>${module}</module>
                     <runtimeImage>${project.build.directory}/app</runtimeImage>
-                    <arguments>
-                        <argument>--type</argument>
-                        <argument>app-image</argument>
-                        <argument>--input</argument>
-                        <argument>${project.build.directory}</argument>
-                        <argument>--dest</argument>
-                        <argument>${installer.dir}</argument>
-                        <argument>--name</argument>
-                        <argument>${installer.name}</argument>
-                        <argument>--java-options</argument>
-                        <argument>--enable-preview</argument>
-                        <!-- 添加 macOS 特定参数 -->
-                        <argument>--mac-package-identifier</argument>
-                        <argument>com.example.projectmanagement</argument>
-                        <argument>--mac-package-name</argument>
-                        <argument>ProjectManagement</argument>
-                    </arguments>
+                    <destination>${project.build.directory}/installer</destination>
+                    <javaOptions>
+                        <option>--enable-preview</option>
+                    </javaOptions>
+                    <winMenu>true</winMenu>
+                    <winDirChooser>true</winDirChooser>
+                    <linuxShortcut>true</linuxShortcut>
+                    <macPackageIdentifier>com.example.projectmanagement</macPackageIdentifier>
+                    <macPackageName>ProjectManagement</macPackageName>
                 </configuration>
             </plugin>
 

@@ -16,8 +16,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
 
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
@@ -47,15 +47,11 @@ jobs:
 
       - name: Package application
         run: |
-          # 设置特定于操作系统的参数
-          if [[ "${{ runner.os }}" == "macOS" ]]; then
-            mvn jpackage:jpackage -Dimage-extension=${{ env.image-extension }} \
-                -Dinstaller.dir="${{ github.workspace }}/target/installer" \
-                -Dinstaller.name="ProjectManagement-${{ runner.os }}"
-          else
-            mvn jpackage:jpackage -Dimage-extension=${{ env.image-extension }} \
-                -Dinstaller.dir="${{ github.workspace }}/target/installer"
-          fi
+          mvn jpackage:jpackage \
+            -Dimage-extension=${{ env.image-extension }} \
+            -Dinstaller.dir="${{ github.workspace }}/target/installer" \
+            -Dinstaller.name="ProjectManagement-${{ runner.os }}" \
+            -Djpackage.dest="${{ github.workspace }}/target/installer"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
