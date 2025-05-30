@@ -171,6 +171,7 @@
                     <icon>src/main/resources/icon.${image-extension}</icon>
                     <mainClass>${main.class}</mainClass>
                     <mainJar>${project.build.finalName}-jar-with-dependencies.jar</mainJar>
+                    <verbose>true</verbose> <!-- 添加详细日志 -->
                     <runtimeImage>${project.build.directory}/app</runtimeImage>
                     <input>${project.build.directory}</input>
                     <destination>${project.build.directory}/installer</destination>

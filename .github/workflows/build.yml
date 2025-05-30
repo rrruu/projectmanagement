@@ -56,7 +56,7 @@ jobs:
 
       - name: Package application for Windows
         if: runner.os == 'Windows'
-        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}" "--runtime-image" "${project.build.directory}/app"
+        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}" "-DruntimeImage=${project.build.directory}/app"
 
       - name: Package application for Unix-like systems
         if: runner.os != 'Windows'
@@ -64,7 +64,8 @@ jobs:
           mvn jpackage:jpackage \
             -Dimage-extension=${{ env.image-extension }} \
             -Dinstaller.dir="${{ github.workspace }}/target/installer" \
-            -Dinstaller.name="ProjectManagement-${{ runner.os }}"
+            -Dinstaller.name="ProjectManagement-${{ runner.os }}" \
+            -DruntimeImage="${project.build.directory}/app"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
