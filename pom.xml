@@ -112,6 +112,11 @@
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
+                            <modules>
+                                <module>javafx.controls</module>
+                                <module>javafx.fxml</module>
+                                <module>javafx.swing</module>
+                            </modules>
                         </configuration>
                     </execution>
                 </executions>
@@ -158,7 +163,7 @@
                     <appVersion>${jpackage.app-version}</appVersion>
                     <icon>src/main/resources/icon.${image-extension}</icon>
                     <mainClass>${main.class}</mainClass>
-                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <mainJar>${project.build.finalName}-jar-with-dependencies.jar</mainJar>
                     <input>${project.build.directory}</input>
                     <destination>${project.build.directory}/installer</destination>
                     <javaOptions>
