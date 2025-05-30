@@ -19,10 +19,6 @@ module com.example.projectmanagement {
     exports com.example.projectmanagement;
     exports com.example.projectmanagement.controller;
 
-    // 关键配置：允许 javafx.fxml 模块访问 controller 包
-    opens com.example.projectmanagement.controller to javafx.fxml;
-
-    exports com.example.projectmanagement.controller; // 导出控制器包（可选）
 
     opens com.example.projectmanagement.model to com.google.gson, javafx.base, javafx.fxml;
 

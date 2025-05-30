@@ -8,7 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 
 /**
@@ -33,25 +35,38 @@ public class Main extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-
-        FXMLLoader loader = new FXMLLoader(
-                Main.class.getResource("/com/example/projectmanagement/MainFrame.fxml")
-        );
-        Parent root = loader.load();
+    public void start(Stage primaryStage) {
 
 
-        // 获取主框架控制器并设置主舞台
-        MainFrameController mainFrameController = loader.getController();
-        mainFrameController.setPrimaryStage(primaryStage);
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    Main.class.getResource("/com/example/projectmanagement/MainFrame.fxml")
+            );
+            Parent root = loader.load();
 
 
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
-        primaryStage.setTitle("Project Management Tool");
-        primaryStage.setMaximized(true); // 窗口最大化
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            // 获取主框架控制器并设置主舞台
+            MainFrameController mainFrameController = loader.getController();
+            mainFrameController.setPrimaryStage(primaryStage);
+
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Main.class.getResource("/com/example/projectmanagement/style.css").toExternalForm());
+            primaryStage.setTitle("Project Management Tool");
+            primaryStage.setMaximized(true); // 窗口最大化
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 将错误写入日志文件
+            try (PrintWriter writer = new PrintWriter("startup-error.log")) {
+                e.printStackTrace(writer);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            System.exit(1);
+        }
+
     }
 
     @Override
