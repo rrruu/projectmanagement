@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.canvas.Canvas?>
+<AnchorPane prefHeight="600.0" prefWidth="1100.0"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.projectmanagement.controller.TaskController"
+            fx:id="mainContent"
+            style="-fx-padding: 20;"
+            stylesheets="@style.css">
+
+
+    <children>
+
+
+        <VBox spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+            <children>
+                <HBox spacing="10" style="-fx-padding: 10;">
+                    <children>
+                        <Button onAction="#handleAddTask" text="添加任务" styleClass="navButton"/>
+                        <Button onAction="#handleEditTask" text="编辑任务" styleClass="navButton"/>
+                        <Button onAction="#handleDeleteTask" text="删除任务" styleClass="navButton"/>
+                        <Button onAction="#handleExport" text="导出图片" styleClass="navButton"/>
+                        <Button onAction="#handleImportProject" text="导入项目" styleClass="navButton"/>
+                        <Button onAction="#handleExportProject" text="导出项目" styleClass="navButton"/>
+                        <Button onAction="#handleLinkResources" text="关联资源" styleClass="navButton"/>
+                    </children>
+                </HBox>
+
+                <TableView fx:id="taskTable" style="-fx-pref-height: 250;">
+                    <columns>
+                        <TableColumn fx:id="taskNameColumn" prefWidth="150" text="任务名称" />
+                        <TableColumn fx:id="idColumn" prefWidth="150" text="ID" />
+                        <TableColumn fx:id="startDateColumn" prefWidth="100" text="开始日期" />
+                        <TableColumn fx:id="endDateColumn" prefWidth="100" text="结束日期" />
+                        <TableColumn fx:id="durationColumn" prefWidth="100" text="工期" />
+                        <TableColumn fx:id="progressColumn" prefWidth="150" text="完成进度" />
+                        <TableColumn fx:id="leaderColumn" prefWidth="150" text="负责人" />
+                        <TableColumn fx:id="commentColumn" prefWidth="150" text="备注" />
+                        <TableColumn fx:id="costColumn" prefWidth="150" text="任务成本"/>
+                    </columns>
+                </TableView>
+
+
+                    <Label text="任务甘特图" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
+                    <ScrollPane fx:id="ganttScrollPane" fitToHeight="true" fitToWidth="true" hvalue="0.0" vvalue="0.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120" style="-fx-border-color: #cccccc;-fx-pref-height: 400;">
+                        <content>
+                            <Canvas fx:id="ganttCanvas" />
+                        </content>
+                    </ScrollPane>
+
+
+            </children>
+
+
+        </VBox>
+    </children>
+</AnchorPane>

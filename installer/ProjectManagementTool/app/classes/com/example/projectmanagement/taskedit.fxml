@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.projectmanagement.controller.TaskEditController"
+            prefHeight="400.0" prefWidth="600.0"
+            stylesheets="@style.css">
+
+    <children>
+        <GridPane hgap="10" vgap="10">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+            <Label text="任务名称:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="ID:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="idField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="开始日期:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="startPicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="结束日期:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="endPicker" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="完成进度:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="progressField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="负责人:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="leaderField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <Label text="备注:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <ScrollPane prefHeight="120" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                <TextArea fx:id="commentField" wrapText="true"/>
+            </ScrollPane>
+
+
+        </GridPane>
+
+        <HBox spacing="10" layoutX="20" layoutY="350" AnchorPane.rightAnchor="20">
+            <Button text="确定" onAction="#handleConfirm" styleClass="button1"/>
+            <Button text="取消" onAction="#handleCancel" styleClass="button1"/>
+        </HBox>
+    </children>
+
+
+</AnchorPane>

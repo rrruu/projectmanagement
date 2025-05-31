@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--style="-fx-padding: 20;"代表20像素内边距-->
+
+<AnchorPane style="-fx-padding: 20;-fx-background-color: #52708c;"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.projectmanagement.controller.WelcomeController"
+            stylesheets="@style.css">
+
+          <Label style="-fx-font-size: 100;-fx-background-color: #acd5e1;-fx-text-fill: white;" text="WELCOME!"
+                 AnchorPane.leftAnchor="0"
+                 AnchorPane.rightAnchor="0"
+                 AnchorPane.topAnchor="0"
+                 AnchorPane.bottomAnchor="0"
+                 alignment="CENTER"/>
+
+
+</AnchorPane>
