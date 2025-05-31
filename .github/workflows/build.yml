@@ -55,13 +55,21 @@ jobs:
         run: mvn javafx:jlink
 
       # 获取目标目录路径
-      - name: Get target directory path
+      - name: Get target directory path on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $targetDir = mvn help:evaluate -Dexpression=project.build.directory -q -DforceStdout
+          echo "TARGET_DIR=$targetDir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Get target directory path on Unix-like systems
+        if: runner.os != 'Windows'
         run: |
           echo "TARGET_DIR=$(mvn help:evaluate -Dexpression=project.build.directory -q -DforceStdout)" >> $GITHUB_ENV
 
       - name: Package application for Windows
         if: runner.os == 'Windows'
-        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}" "-DruntimeImage=${project.build.directory}/app"
+        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}" "-DruntimeImage=${{ env.TARGET_DIR }}/app"
 
       - name: Package application for Unix-like systems
         if: runner.os != 'Windows'
