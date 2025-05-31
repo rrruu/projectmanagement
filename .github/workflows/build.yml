@@ -68,18 +68,13 @@ jobs:
         run: mvn javafx:jlink
         continue-on-error: false
 
-      # 获取目标目录路径
-      - name: Get target directory path on Windows
+      - name: Set target directory for Windows
         if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $targetDir = mvn help:evaluate -Dexpression=project.build.directory -q -DforceStdout
-          Write-Output "TARGET_DIR=$targetDir" >> $env:GITHUB_ENV
+        run: echo "TARGET_DIR=${{ github.workspace }}/target" >> $env:GITHUB_ENV
 
-      - name: Get target directory path on Unix-like systems
+      - name: Set target directory for Unix-like systems
         if: runner.os != 'Windows'
-        run: |
-          echo "TARGET_DIR=$(mvn help:evaluate -Dexpression=project.build.directory -q -DforceStdout)" >> $GITHUB_ENV
+        run: echo "TARGET_DIR=${{ github.workspace }}/target" >> $GITHUB_ENV
 
       - name: Package application for Windows
         if: runner.os == 'Windows'
