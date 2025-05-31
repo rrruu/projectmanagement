@@ -78,12 +78,8 @@ jobs:
 
       - name: Package application for Windows
         if: runner.os == 'Windows'
-        run: |
-          mvn jpackage:jpackage \
-            "-Dimage-extension=${{ env.image-extension }}" \
-            "-Dinstaller.dir=${{ github.workspace }}/target/installer" \
-            "-Dinstaller.name=ProjectManagement-${{ runner.os }}" \
-            "-DruntimeImage=${{ env.TARGET_DIR }}/app"
+        shell: pwsh
+        run: mvn jpackage:jpackage "-Dimage-extension=${{ env.image-extension }}" "-Dinstaller.dir=${{ github.workspace }}/target/installer" "-Dinstaller.name=ProjectManagement-${{ runner.os }}" "-DruntimeImage=${{ env.TARGET_DIR }}/app"
         continue-on-error: false
 
       - name: Package application for Unix-like systems
