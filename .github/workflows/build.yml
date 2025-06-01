@@ -154,9 +154,9 @@ jobs:
           Get-ChildItem -Path "target/installer" -Force
 
           # 查找安装包
-          $installer = Get-ChildItem -Path "target/installer" -Filter "*.msi" | Select-Object -First 1
+          $installer = Get-ChildItem -Path "target/installer" -Filter "*.exe" | Select-Object -First 1
           if (-not $installer) {
-            Write-Host "No .msi file found in target/installer"
+            Write-Host "No .exe file found in target/installer"
             exit 1
           }
 
@@ -164,7 +164,7 @@ jobs:
 
           # 安装应用程序
           Write-Host "Installing application..."
-          Start-Process msiexec.exe -ArgumentList "/i", $installer.FullName, "/quiet", "/norestart" -Wait
+          Start-Process $installer.FullName -ArgumentList "/S" -Wait
 
           # 等待应用程序安装完成
           Write-Host "Waiting for installation to complete..."
@@ -213,7 +213,15 @@ jobs:
 
           # 卸载应用程序
           Write-Host "Uninstalling application..."
-          Start-Process msiexec.exe -ArgumentList "/x", $installer.FullName, "/quiet", "/norestart" -Wait
+          $uninstaller = "C:\Program Files\ProjectManagementTool\bin\uninstall.exe"
+          if (Test-Path $uninstaller) {
+            Start-Process $uninstaller -ArgumentList "/S" -Wait
+          } else {
+            Write-Host "Uninstaller not found at: $uninstaller"
+            Write-Host "Listing application directory:"
+            Get-ChildItem "C:\Program Files\ProjectManagementTool" -Recurse -Force
+            exit 1
+          }
 
       - name: Test installation on Linux
         if: runner.os == 'Linux'
