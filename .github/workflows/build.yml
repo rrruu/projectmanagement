@@ -97,4 +97,77 @@ jobs:
         with:
           name: ProjectManagement-${{ runner.os }}
           path: target/installer/
-          retention-days: 7
+          retention-days: 90
+
+      # 添加测试步骤
+      - name: Test installation on Windows
+        if: runner.os == 'Windows'
+        run: |
+          # 安装应用程序
+          $installer = Get-ChildItem -Path "target/installer" -Filter "*.msi" | Select-Object -First 1
+          Start-Process msiexec.exe -ArgumentList "/i", $installer.FullName, "/quiet", "/norestart" -Wait
+
+          # 等待应用程序安装完成
+          Start-Sleep -Seconds 10
+
+          # 启动应用程序
+          Start-Process "C:\Program Files\ProjectManagementTool\bin\ProjectManagementTool.exe" -Wait
+
+          # 检查应用程序是否成功运行
+          $process = Get-Process "ProjectManagementTool" -ErrorAction SilentlyContinue
+          if ($process) {
+            Write-Host "Application started successfully"
+            Stop-Process $process
+          } else {
+            Write-Host "Failed to start application"
+            exit 1
+          }
+
+      - name: Test installation on Linux
+        if: runner.os == 'Linux'
+        run: |
+          # 安装应用程序
+          sudo dpkg -i target/installer/*.deb
+
+          # 等待应用程序安装完成
+          sleep 10
+
+          # 启动应用程序
+          ProjectManagementTool &
+          APP_PID=$!
+
+          # 等待应用程序启动
+          sleep 5
+
+          # 检查应用程序是否成功运行
+          if ps -p $APP_PID > /dev/null; then
+            echo "Application started successfully"
+            kill $APP_PID
+          else
+            echo "Failed to start application"
+            exit 1
+          fi
+
+      - name: Test installation on macOS
+        if: runner.os == 'macOS'
+        run: |
+          # 安装应用程序
+          sudo installer -pkg target/installer/*.pkg -target /
+
+          # 等待应用程序安装完成
+          sleep 10
+
+          # 启动应用程序
+          open /Applications/ProjectManagementTool.app
+
+          # 等待应用程序启动
+          sleep 5
+
+          # 检查应用程序是否成功运行
+          if pgrep -f "ProjectManagementTool" > /dev/null; then
+            echo "Application started successfully"
+            pkill -f "ProjectManagementTool"
+          else
+            echo "Failed to start application"
+            exit 1
+          fi
