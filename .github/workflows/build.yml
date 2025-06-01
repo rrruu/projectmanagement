@@ -226,11 +226,28 @@ jobs:
           # 检查应用程序是否成功运行
           if pgrep -f "ProjectManagementTool" > /dev/null; then
             echo "Application started successfully"
+            
+            # 等待一段时间让应用程序完全启动
+            sleep 10
+            
+            # 关闭应用程序
             pkill -f "ProjectManagementTool"
+            
+            # 等待应用程序完全关闭
+            sleep 5
+            
+            # 确保应用程序已关闭
+            if pgrep -f "ProjectManagementTool" > /dev/null; then
+              echo "Application is still running, force killing..."
+              pkill -9 -f "ProjectManagementTool"
+              sleep 2
+            fi
+            
+            # 卸载 DMG 文件
+            hdiutil detach /Volumes/ProjectManagementTool -force
           else
             echo "Failed to start application"
+            # 尝试卸载 DMG 文件
+            hdiutil detach /Volumes/ProjectManagementTool -force
             exit 1
           fi
-
-          # 卸载 DMG 文件
-          hdiutil detach /Volumes/ProjectManagementTool
