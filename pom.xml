@@ -171,7 +171,7 @@
                     <icon>src/main/resources/icon.${image-extension}</icon>
                     <mainClass>${main.class}</mainClass>
                     <mainJar>${project.build.finalName}-jar-with-dependencies.jar</mainJar>
-                    <verbose>true</verbose> <!-- 添加详细日志 -->
+                    <verbose>true</verbose>
                     <runtimeImage>${project.build.directory}/app</runtimeImage>
                     <input>${project.build.directory}</input>
                     <destination>${project.build.directory}/installer</destination>
@@ -189,6 +189,9 @@
                     <linuxShortcut>true</linuxShortcut>
                     <macPackageIdentifier>com.example.projectmanagement</macPackageIdentifier>
                     <macPackageName>ProjectManagement</macPackageName>
+                    <macSign>false</macSign>
+                    <macSigningKeyDeveloperName>Developer ID Application</macSigningKeyDeveloperName>
+                    <type>pkg</type>
                 </configuration>
             </plugin>
 

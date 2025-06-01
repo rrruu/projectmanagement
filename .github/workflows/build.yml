@@ -85,12 +85,18 @@ jobs:
       - name: Package application for Unix-like systems
         if: runner.os != 'Windows'
         run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing target directory:"
+          ls -la target/
+          echo "Listing installer directory:"
+          ls -la target/installer/
           mvn jpackage:jpackage \
             -Dimage-extension=${{ env.image-extension }} \
             -Dinstaller.dir="${{ github.workspace }}/target/installer" \
             -Dinstaller.name="ProjectManagement-${{ runner.os }}" \
             -DruntimeImage="${{ env.TARGET_DIR }}/app"
-        continue-on-error: false
+          echo "After jpackage - Listing installer directory:"
+          ls -la target/installer/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -151,6 +157,12 @@ jobs:
       - name: Test installation on macOS
         if: runner.os == 'macOS'
         run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing target directory:"
+          ls -la target/
+          echo "Listing installer directory:"
+          ls -la target/installer/
+
           # 查找安装包
           PKG_FILE=$(find target/installer -name "*.pkg")
           if [ -z "$PKG_FILE" ]; then
