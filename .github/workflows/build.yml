@@ -88,15 +88,38 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Listing target directory:"
           ls -la target/
+
+          # 创建 installer 目录
+          mkdir -p target/installer
+          echo "Created installer directory"
+
           echo "Listing installer directory:"
           ls -la target/installer/
+
+          echo "Running jpackage with parameters:"
+          echo "image-extension: ${{ env.image-extension }}"
+          echo "installer.dir: ${{ github.workspace }}/target/installer"
+          echo "installer.name: ProjectManagement-${{ runner.os }}"
+          echo "runtimeImage: ${{ env.TARGET_DIR }}/app"
+
           mvn jpackage:jpackage \
             -Dimage-extension=${{ env.image-extension }} \
             -Dinstaller.dir="${{ github.workspace }}/target/installer" \
             -Dinstaller.name="ProjectManagement-${{ runner.os }}" \
-            -DruntimeImage="${{ env.TARGET_DIR }}/app"
+            -DruntimeImage="${{ env.TARGET_DIR }}/app" \
+            -Dtype=pkg \
+            -DmacSign=false
+
           echo "After jpackage - Listing installer directory:"
           ls -la target/installer/
+
+          # 检查是否生成了安装包
+          if [ -f "target/installer/ProjectManagement-${{ runner.os }}.pkg" ]; then
+            echo "Installation package created successfully"
+          else
+            echo "Failed to create installation package"
+            exit 1
+          fi
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
