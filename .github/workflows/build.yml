@@ -129,10 +129,14 @@ jobs:
               exit 1
             fi
           elif [ "${{ runner.os }}" == "Linux" ]; then
-            if [ -f "target/installer/ProjectManagement-${{ runner.os }}.deb" ]; then
+            if ls target/installer/*.deb 1> /dev/null 2>&1; then
               echo "Installation package created successfully"
+              echo "Found .deb file:"
+              ls -lh target/installer/*.deb
             else
               echo "Failed to create installation package"
+              echo "Contents of installer directory:"
+              ls -la target/installer/
               exit 1
             fi
           fi

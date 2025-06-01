@@ -187,6 +187,11 @@
                     <winMenu>true</winMenu>
                     <winDirChooser>true</winDirChooser>
                     <linuxShortcut>true</linuxShortcut>
+                    <linuxPackageName>projectmanagementtool</linuxPackageName>
+                    <linuxDebMaintainer>rrru33</linuxDebMaintainer>
+                    <linuxMenuGroup>Development</linuxMenuGroup>
+                    <linuxAppCategory>Development</linuxAppCategory>
+                    <linuxPackageType>DEB</linuxPackageType>
                     <macPackageIdentifier>com.example.projectmanagement</macPackageIdentifier>
                     <macPackageName>ProjectManagement</macPackageName>
                     <macSign>false</macSign>
