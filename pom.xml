@@ -190,12 +190,6 @@
                     <macPackageIdentifier>com.example.projectmanagement</macPackageIdentifier>
                     <macPackageName>ProjectManagement</macPackageName>
                     <macSign>false</macSign>
-                    <macSigningKeyDeveloperName>Developer ID Application</macSigningKeyDeveloperName>
-                    <type>pkg</type>
-                    <macPackageVersion>1.0</macPackageVersion>
-                    <macPackageCategory>public.app-category.developer-tools</macPackageCategory>
-                    <macAppStore>false</macAppStore>
-                    <macEntitlements>false</macEntitlements>
                 </configuration>
             </plugin>
 
