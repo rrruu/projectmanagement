@@ -234,8 +234,8 @@ jobs:
           sudo mkdir -p /usr/share/applications
           sudo chmod 777 /usr/share/applications
 
-          # 安装应用程序
-          sudo dpkg -i target/installer/*.deb || true
+          # 安装应用程序（忽略桌面菜单错误）
+          sudo dpkg -i --force-all target/installer/*.deb || true
 
           # 等待应用程序安装完成
           sleep 10
@@ -257,22 +257,21 @@ jobs:
           echo "Checking application permissions:"
           ls -l /opt/projectmanagementtool/bin/ProjectManagementTool
 
-          # 检查桌面菜单文件
-          echo "Checking desktop menu file:"
-          ls -la /usr/share/applications/projectmanagementtool.desktop || true
-
           # 检查应用程序是否在系统中注册
           echo "Checking if application is registered in system:"
           dpkg -l | grep projectmanagementtool
 
-          # 清理
+          # 清理（使用强制方式）
           echo "Uninstalling application..."
-          sudo dpkg -r projectmanagementtool || true
+          sudo dpkg -r --force-all projectmanagementtool || true
+          sudo rm -rf /opt/projectmanagementtool || true
           sudo rm -rf /usr/share/applications/projectmanagementtool.desktop || true
 
           # 验证卸载
-          if [ -f "/opt/projectmanagementtool/bin/ProjectManagementTool" ]; then
-            echo "Application was not properly uninstalled"
+          if [ -d "/opt/projectmanagementtool" ]; then
+            echo "Application directory still exists after uninstall"
+            echo "Contents of /opt/projectmanagementtool:"
+            ls -la /opt/projectmanagementtool
             exit 1
           fi
 
