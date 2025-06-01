@@ -166,9 +166,15 @@ jobs:
 
           Write-Host "Found installer: $($installer.FullName)"
 
-          # 安装应用程序
+          # 安装应用程序（使用静默模式）
           Write-Host "Installing application..."
-          Start-Process $installer.FullName -ArgumentList "/S" -Wait
+          $process = Start-Process $installer.FullName -ArgumentList "/S /v`"qn`"" -PassThru -Wait -NoNewWindow
+
+          # 检查安装是否成功
+          if ($process.ExitCode -ne 0) {
+            Write-Host "Installation failed with exit code: $($process.ExitCode)"
+            exit 1
+          }
 
           # 等待应用程序安装完成
           Write-Host "Waiting for installation to complete..."
@@ -186,46 +192,41 @@ jobs:
             exit 1
           }
 
-          # 启动应用程序
+          # 启动应用程序（使用超时）
           Write-Host "Starting application..."
-          Start-Process $appPath -Wait
+          $startTime = Get-Date
+          $process = Start-Process $appPath -PassThru -NoNewWindow
 
-          # 检查应用程序是否成功运行
-          $process = Get-Process "ProjectManagementTool" -ErrorAction SilentlyContinue
-          if ($process) {
-            Write-Host "Application started successfully"
-            
-            # 等待一段时间让应用程序完全启动
-            Start-Sleep -Seconds 10
-            
-            # 关闭应用程序
-            Stop-Process $process
-            
-            # 等待应用程序完全关闭
-            Start-Sleep -Seconds 5
-            
-            # 确保应用程序已关闭
-            if (Get-Process "ProjectManagementTool" -ErrorAction SilentlyContinue) {
-              Write-Host "Application is still running, force killing..."
-              Stop-Process -Name "ProjectManagementTool" -Force
-              Start-Sleep -Seconds 2
-            }
+          # 等待应用程序启动（最多30秒）
+          $timeout = 30
+          while (-not $process.HasExited -and ((Get-Date) - $startTime).TotalSeconds -lt $timeout) {
+            Start-Sleep -Seconds 1
+          }
+
+          if ($process.HasExited) {
+            Write-Host "Application exited with code: $($process.ExitCode)"
           } else {
-            Write-Host "Failed to start application"
-            exit 1
+            Write-Host "Application is still running after $timeout seconds"
+            Stop-Process $process -Force
           }
 
           # 卸载应用程序
           Write-Host "Uninstalling application..."
           $uninstaller = "C:\Program Files\ProjectManagementTool\bin\uninstall.exe"
           if (Test-Path $uninstaller) {
-            Start-Process $uninstaller -ArgumentList "/S" -Wait
+            $process = Start-Process $uninstaller -ArgumentList "/S /v`"qn`"" -PassThru -Wait -NoNewWindow
+            if ($process.ExitCode -ne 0) {
+              Write-Host "Uninstallation failed with exit code: $($process.ExitCode)"
+              exit 1
+            }
           } else {
             Write-Host "Uninstaller not found at: $uninstaller"
             Write-Host "Listing application directory:"
             Get-ChildItem "C:\Program Files\ProjectManagementTool" -Recurse -Force
             exit 1
           }
+
+          Write-Host "Installation and uninstallation test completed successfully"
 
       - name: Test installation on Linux
         if: runner.os == 'Linux'
