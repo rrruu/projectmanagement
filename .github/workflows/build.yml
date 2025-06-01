@@ -151,8 +151,17 @@ jobs:
       - name: Test installation on macOS
         if: runner.os == 'macOS'
         run: |
+          # 查找安装包
+          PKG_FILE=$(find target/installer -name "*.pkg")
+          if [ -z "$PKG_FILE" ]; then
+            echo "No .pkg file found in target/installer"
+            exit 1
+          fi
+
+          echo "Found package: $PKG_FILE"
+
           # 安装应用程序
-          sudo installer -pkg target/installer/*.pkg -target /
+          sudo installer -pkg "$PKG_FILE" -target /
 
           # 等待应用程序安装完成
           sleep 10
