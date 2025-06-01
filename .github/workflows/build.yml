@@ -241,15 +241,15 @@ jobs:
           sleep 10
 
           # 检查应用程序是否已安装
-          if ! command -v ProjectManagementTool &> /dev/null; then
-            echo "Application not found in PATH"
+          if [ ! -f "/opt/projectmanagementtool/bin/ProjectManagementTool" ]; then
+            echo "Application not found in installation directory"
             echo "Checking installation directory:"
             ls -la /opt/projectmanagementtool/
             exit 1
           fi
 
           # 启动应用程序
-          ProjectManagementTool &
+          /opt/projectmanagementtool/bin/ProjectManagementTool &
           APP_PID=$!
 
           # 等待应用程序启动
@@ -263,6 +263,8 @@ jobs:
             echo "Failed to start application"
             echo "Checking process list:"
             ps aux | grep ProjectManagementTool
+            echo "Checking application logs:"
+            ls -la /opt/projectmanagementtool/lib/
             exit 1
           fi
 
