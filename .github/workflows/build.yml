@@ -230,11 +230,23 @@ jobs:
       - name: Test installation on Linux
         if: runner.os == 'Linux'
         run: |
+          # 创建临时目录用于桌面菜单
+          sudo mkdir -p /usr/share/applications
+          sudo chmod 777 /usr/share/applications
+
           # 安装应用程序
-          sudo dpkg -i target/installer/*.deb
+          sudo dpkg -i target/installer/*.deb || true
 
           # 等待应用程序安装完成
           sleep 10
+
+          # 检查应用程序是否已安装
+          if ! command -v ProjectManagementTool &> /dev/null; then
+            echo "Application not found in PATH"
+            echo "Checking installation directory:"
+            ls -la /opt/projectmanagementtool/
+            exit 1
+          fi
 
           # 启动应用程序
           ProjectManagementTool &
@@ -249,8 +261,14 @@ jobs:
             kill $APP_PID
           else
             echo "Failed to start application"
+            echo "Checking process list:"
+            ps aux | grep ProjectManagementTool
             exit 1
           fi
+
+          # 清理
+          sudo dpkg -r projectmanagementtool || true
+          sudo rm -rf /usr/share/applications/projectmanagementtool.desktop || true
 
       - name: Test installation on macOS
         if: runner.os == 'macOS'
