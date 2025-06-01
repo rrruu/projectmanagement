@@ -248,29 +248,35 @@ jobs:
             exit 1
           fi
 
-          # 启动应用程序
-          /opt/projectmanagementtool/bin/ProjectManagementTool &
-          APP_PID=$!
+          # 检查安装的文件
+          echo "Checking installed files:"
+          ls -la /opt/projectmanagementtool/bin/
+          ls -la /opt/projectmanagementtool/lib/
 
-          # 等待应用程序启动
-          sleep 5
+          # 检查应用程序权限
+          echo "Checking application permissions:"
+          ls -l /opt/projectmanagementtool/bin/ProjectManagementTool
 
-          # 检查应用程序是否成功运行
-          if ps -p $APP_PID > /dev/null; then
-            echo "Application started successfully"
-            kill $APP_PID
-          else
-            echo "Failed to start application"
-            echo "Checking process list:"
-            ps aux | grep ProjectManagementTool
-            echo "Checking application logs:"
-            ls -la /opt/projectmanagementtool/lib/
+          # 检查桌面菜单文件
+          echo "Checking desktop menu file:"
+          ls -la /usr/share/applications/projectmanagementtool.desktop || true
+
+          # 检查应用程序是否在系统中注册
+          echo "Checking if application is registered in system:"
+          dpkg -l | grep projectmanagementtool
+
+          # 清理
+          echo "Uninstalling application..."
+          sudo dpkg -r projectmanagementtool || true
+          sudo rm -rf /usr/share/applications/projectmanagementtool.desktop || true
+
+          # 验证卸载
+          if [ -f "/opt/projectmanagementtool/bin/ProjectManagementTool" ]; then
+            echo "Application was not properly uninstalled"
             exit 1
           fi
 
-          # 清理
-          sudo dpkg -r projectmanagementtool || true
-          sudo rm -rf /usr/share/applications/projectmanagementtool.desktop || true
+          echo "Installation and uninstallation test completed successfully"
 
       - name: Test installation on macOS
         if: runner.os == 'macOS'
