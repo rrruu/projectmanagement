@@ -122,7 +122,7 @@ jobs:
 
           # 检查是否生成了安装包
           if [ "${{ runner.os }}" == "macOS" ]; then
-            if [ -f "target/installer/ProjectManagement-${{ runner.os }}.pkg" ]; then
+            if [ -f "target/installer/ProjectManagementTool-1.0.dmg" ]; then
               echo "Installation package created successfully"
             else
               echo "Failed to create installation package"
@@ -203,22 +203,22 @@ jobs:
           ls -la target/installer/
 
           # 查找安装包
-          PKG_FILE=$(find target/installer -name "*.pkg")
-          if [ -z "$PKG_FILE" ]; then
-            echo "No .pkg file found in target/installer"
+          DMG_FILE=$(find target/installer -name "*.dmg")
+          if [ -z "$DMG_FILE" ]; then
+            echo "No .dmg file found in target/installer"
             exit 1
           fi
 
-          echo "Found package: $PKG_FILE"
+          echo "Found package: $DMG_FILE"
 
-          # 安装应用程序
-          sudo installer -pkg "$PKG_FILE" -target /
+          # 挂载 DMG 文件
+          hdiutil attach "$DMG_FILE"
 
-          # 等待应用程序安装完成
-          sleep 10
+          # 等待挂载完成
+          sleep 5
 
           # 启动应用程序
-          open /Applications/ProjectManagementTool.app
+          open /Volumes/ProjectManagementTool/ProjectManagementTool.app
 
           # 等待应用程序启动
           sleep 5
@@ -231,3 +231,6 @@ jobs:
             echo "Failed to start application"
             exit 1
           fi
+
+          # 卸载 DMG 文件
+          hdiutil detach /Volumes/ProjectManagementTool
