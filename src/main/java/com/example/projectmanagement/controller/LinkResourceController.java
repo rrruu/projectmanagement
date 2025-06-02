@@ -167,18 +167,16 @@ public class LinkResourceController {
 
 
     private void updateBidirectionalAssociations(ObservableList<ResourceModel> selectedResources) {
-        //从所有资源中移除当前任务（如果存在）
+        //从所有资源中移除当前任务
         DataModel.getInstance().getResources().forEach(res -> {
             res.getAssignedTasks().remove(currentTask);
         });
-
         //将当前任务添加到选中的资源中
         selectedResources.forEach(res -> {
             if (!res.getAssignedTasks().contains(currentTask)) {
                 res.getAssignedTasks().add(currentTask);
             }
         });
-
         //更新当前任务的关联资源
         currentTask.getAssignedResources().setAll(selectedResources);
     }

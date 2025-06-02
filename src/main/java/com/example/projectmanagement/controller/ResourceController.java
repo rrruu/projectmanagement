@@ -225,7 +225,7 @@ public class ResourceController {
             // 由于 ResourceModel 是对象引用，直接修改后无需额外操作
             // ObservableList 会自动通知 ResourceView 更新
 
-
+            drawResourceGantt(); // 手动触发重绘
 
 
         } catch (IOException e) {

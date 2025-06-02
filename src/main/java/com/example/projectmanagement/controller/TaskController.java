@@ -339,21 +339,17 @@ public class TaskController {
 
 
     // 导入导出项目文件方法
+
     @FXML
     private void handleExportProject() {
+        //创建文件选择器
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("导出项目文件");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON 文件", "*.json"));
-
-
-
         fileChooser.setInitialFileName("project_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE));
-
         File file = fileChooser.showSaveDialog(taskTable.getScene().getWindow());
         if (file == null) return;
-
-
-
+        //使用Gson进行JSON序列化
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
@@ -361,16 +357,14 @@ public class TaskController {
                     .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                     .setPrettyPrinting()
                     .create();
-
+            //构建项目数据对象
             JsonObject project = new JsonObject();
             project.add("tasks", gson.toJsonTree(dataModel.getTasks()));
             project.add("resources", gson.toJsonTree(dataModel.getResources()));
-
+            //写入文件
             gson.toJson(project, writer);
             new Alert(Alert.AlertType.INFORMATION, "项目导出成功！").show();
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "导出失败：" + e.getMessage()).show();
         }
     }
@@ -380,24 +374,19 @@ public class TaskController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("选择项目文件");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON 文件", "*.json"));
-
         File file = fileChooser.showOpenDialog(taskTable.getScene().getWindow());
         if (file == null) return;
 
-
-
+        //进行反序列化
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
 
-            Gson gson = new GsonBuilder()
+            Gson gson = new GsonBuilder()//配置Gson解析器
                     .registerTypeAdapter(TaskModel.class, new TaskModelTypeAdapter())
                     .registerTypeAdapter(ResourceModel.class, new ResourceModelTypeAdapter())
                     .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                     .create();
-
-            // 解析完整项目数据
-            JsonObject project = gson.fromJson(reader, JsonObject.class);
-
-            // 在事务中操作数据库
+            JsonObject project = gson.fromJson(reader, JsonObject.class);//解析完整项目数据
+            //在事务中操作数据库
             DatabaseManager.executeTransaction(() -> {
                 try {
                     // 1. 清空所有表（注意顺序）
@@ -435,8 +424,7 @@ public class TaskController {
                     throw new RuntimeException("数据库操作失败", e);
                 }
             });
-
-            // 5. 刷新数据模型
+            //刷新数据模型
             DataModel.getInstance().loadAllData();//确保重新加载所有数据
             rebuildAssociations();//重建双向关联
             drawGanttChart();
@@ -507,6 +495,7 @@ public class TaskController {
 
 
         // 计算调整后的时间范围（以周为单位）
+
         LocalDate minTaskStart = dataModel.getTasks().stream()
                 .map(TaskModel::getStartDate)
                 .min(LocalDate::compareTo)
@@ -555,42 +544,24 @@ public class TaskController {
 
         double yPos = TIME_AXIS_HEIGHT + 20; // 任务条起始Y坐标
         for (TaskModel task : dataModel.getTasks()) {
-
-
             long startOffset = ChronoUnit.DAYS.between(adjustedProjectStart, task.getStartDate());
             long duration = ChronoUnit.DAYS.between(task.getStartDate(), task.getEndDate()) + 1;
             double progress = task.getProgress();
-
-            //任务起始位置
-            double x = 50 + (startOffset * BASE_DAY_WIDTH);
-            //任务总宽度
-            double width = duration * BASE_DAY_WIDTH;
-            //已完成部分宽度
-            double finishedWidth = progress * width;
-            //未完成部分宽度
-            double unfinishedWidth = width - finishedWidth;
-
-
-
-
-
+            double x = 50 + (startOffset * BASE_DAY_WIDTH);//任务起始位置
+            double width = duration * BASE_DAY_WIDTH;//任务总宽度
+            double finishedWidth = progress * width;//已完成部分宽度
+            double unfinishedWidth = width - finishedWidth;//未完成部分宽度
             if(finishedWidth > 0){
                 gc.setFill(completedColor);
                 gc.fillRect(x, yPos, finishedWidth, 20);
             }
-
             if(unfinishedWidth > 0){
                 gc.setFill(uncompletedColor);
                 gc.fillRect(x + finishedWidth, yPos, unfinishedWidth, 20);
             }
-
-
-
-
             // 绘制任务名称
             gc.setFill(Color.WHITE);
             gc.fillText(task.getTaskName(), x + 5, yPos + 15);
-
             yPos += ROW_HEIGHT;
         }
 
